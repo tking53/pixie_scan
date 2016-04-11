@@ -84,7 +84,7 @@ void VandleProcessor::DeclarePlots(void) {
         "Det Loc vs Trace QDC - Left Even - Right Odd");
 //        DeclareHistogram2D(DD_MAXIMUMBARS, SD, S8,
 //        "Det Loc vs Maximum - Left Even - Right Odd");
-        DeclareHistogram2D(DD_TIMEDIFFBARS, S9, S8,
+        DeclareHistogram2D(DD_TIMEDIFFBARS, SC, S8,
         "Bars vs. Time Differences");
         DeclareHistogram2D(DD_TOFBARS, SC, S8,
         "Bar vs. Time of Flight");
@@ -112,7 +112,7 @@ void VandleProcessor::DeclarePlots(void) {
         "Det Loc vs Trace QDC");
 //        DeclareHistogram2D(DD_MAXIMUMBARS+BIG_OFFSET, SD, S8,
 //        "Det Loc vs Maximum");
-        DeclareHistogram2D(DD_TIMEDIFFBARS+BIG_OFFSET, S9, S8,
+        DeclareHistogram2D(DD_TIMEDIFFBARS+BIG_OFFSET, SC, S8,
         "Bars vs. Time Differences");
         DeclareHistogram2D(DD_TOFBARS+BIG_OFFSET, SC, S8,
         "Bar vs. Time of Flight");
@@ -136,15 +136,15 @@ void VandleProcessor::DeclarePlots(void) {
 //        "Bar vs CorTOF - Gamma Veto");
     }
     if(hasMed_) {
-        DeclareHistogram2D(DD_TQDCBARS+MED_OFFSET, SD, S8,
+        DeclareHistogram2D(DD_TQDCBARS+MED_OFFSET, SD, S6,
         "Det Loc vs Trace QDC");
 //        DeclareHistogram2D(DD_MAXIMUMBARS+MED_OFFSET, SD, S8,
 //        "Det Loc vs Maximum");
-        DeclareHistogram2D(DD_TIMEDIFFBARS+MED_OFFSET, S9, S8,
+        DeclareHistogram2D(DD_TIMEDIFFBARS+MED_OFFSET, SB, S6,
         "Bars vs. Time Differences");
-        DeclareHistogram2D(DD_TOFBARS+MED_OFFSET, SC, S8,
+        DeclareHistogram2D(DD_TOFBARS+MED_OFFSET, SC, S6,
         "Bar vs. Time of Flight");
-        DeclareHistogram2D(DD_CORTOFBARS+MED_OFFSET, SC, S8,
+        DeclareHistogram2D(DD_CORTOFBARS+MED_OFFSET, SC, S6,
         "Bar vs  Cor Time of Flight");
         DeclareHistogram2D(DD_TQDCAVEVSTOF+MED_OFFSET, SC, SD,
         "<E> vs. TOF(0.5ns/bin)");
@@ -166,14 +166,6 @@ void VandleProcessor::DeclarePlots(void) {
 
     DeclareHistogram1D(D_DEBUGGING, S5, "1D Debugging");
     DeclareHistogram2D(DD_DEBUGGING, S8, S8, "2D Debugging");
-//    DeclareHistogram2D(DD_DEBUGGING0, SA, SA, "TOFL vs. TDIFF");
-//    DeclareHistogram2D(DD_DEBUGGING1, S9, SD, "TOFR vs. TDIFF");
-//    DeclareHistogram2D(DD_DEBUGGING2, SD, SD, "CorTOF vs. TDIFF");
-//    DeclareHistogram2D(DD_DEBUGGING4, S9, SC, "TOFL vs. QDCRATIO");
-//    DeclareHistogram2D(DD_DEBUGGING5, SC, SC, "TOFR vs. QDCRATIO");
-//    DeclareHistogram2D(DD_DEBUGGING6, SC, SC, "TOF vs. QDCRATIO");
-//    DeclareHistogram2D(DD_DEBUGGING7, SC, SC, "CorTOF vs. QDCRATIO");
-//    DeclareHistogram2D(DD_DEBUGGING8, SC, SC, "testTOF vs. QDCRATIO");
 }
 
 bool VandleProcessor::PreProcess(RawEvent &event) {

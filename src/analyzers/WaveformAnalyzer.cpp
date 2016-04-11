@@ -27,7 +27,7 @@ WaveformAnalyzer::WaveformAnalyzer() : TraceAnalyzer() {
     knownTypes_.push_back("liquid");
     knownTypes_.push_back("tvandle");
     knownTypes_.push_back("pulser");
-    knownTypes_.push_back("labr3");
+    knownTypes_.push_back("liglass");
 }
 
 void WaveformAnalyzer::Analyze(Trace &trace,
@@ -44,7 +44,7 @@ void WaveformAnalyzer::Analyze(Trace &trace,
     Globals *globals = Globals::get();
 
     pair<unsigned int, unsigned int> range = globals->waveformRange();
-    if(detType == "beta" && detSubtype == "double")
+    if((detType == "beta" && detSubtype == "double") || detType == "liglass")
         range = globals->siPmtWaveformRange();
     if(detType == "labr3")
         range = globals->labr3WaveformRange();

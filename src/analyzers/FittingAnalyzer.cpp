@@ -109,14 +109,10 @@ void FittingAnalyzer::Analyze(Trace &trace, const std::string &detType,
         return;
     }
 
-    trace.plot(D_SIGMA, sigmaBaseline*100);
+    if(isDoubleBeta)
+	trace.plot(D_SIGMA, sigmaBaseline*100);
 
-    if(sigmaBaseline > globals->sigmaBaselineThresh() && detSubtype != "double") {
-        EndAnalyze();
-        return;
-    }
-
-    if(sigmaBaseline > globals->siPmtSigmaBaselineThresh() && isDoubleBeta) {
+    if(sigmaBaseline > globals->sigmaBaselineThresh()) {
         EndAnalyze();
         return;
     }
@@ -136,6 +132,8 @@ void FittingAnalyzer::Analyze(Trace &trace, const std::string &detType,
             pars = globals->singleBetaPars();
         else
             pars = globals->doubleBetaPars();
+    } else if (detType == "li") {
+
     } else if(detType == "tvandle")
         pars = globals->tvandlePars();
     else if (detType =="labr3") {
@@ -172,53 +170,34 @@ void FittingAnalyzer::Analyze(Trace &trace, const std::string &detType,
     f.n = sizeFit;
     f.params = &data;
 
-    if(!isDoubleBeta) {
-        numParams = 2;
-        covar = gsl_matrix_alloc (numParams, numParams);
-        xInit[0] = 0.0; xInit[1]=2.5;
-        x = gsl_vector_view_array (xInit, numParams);
-
-        f.f = &PmtFunction;
-        f.df = &CalcPmtJacobian;
-        f.fdf = &PmtFunctionDerivative;
-        f.p = numParams;
-
-        s = gsl_multifit_fdfsolver_alloc (T, sizeFit, numParams);
-    } else {
-        numParams = 1;
-        covar = gsl_matrix_alloc (numParams, numParams);
-        xInit[0] = (double)globals->siPmtWaveformRange().first;
-        x = gsl_vector_view_array (xInit, numParams);
-
-        f.f = &SiPmtFunction;
-        f.df = &CalcSiPmtJacobian;
-        f.fdf = &SiPmtFunctionDerivative;
-        f.p = numParams;
-
-        s = gsl_multifit_fdfsolver_alloc (T, sizeFit, numParams);
-    }
-
+    numParams = 2;
+    covar = gsl_matrix_alloc (numParams, numParams);
+    xInit[0] = 0.0; xInit[1]=2.5;
+    x = gsl_vector_view_array (xInit, numParams);
+    
+    f.f = &PmtFunction;
+    f.df = &CalcPmtJacobian;
+    f.fdf = &PmtFunctionDerivative;
+    f.p = numParams;
+    
+    s = gsl_multifit_fdfsolver_alloc (T, sizeFit, numParams);
+    
     gsl_multifit_fdfsolver_set (s, &f, &x.vector);
-
-    for(unsigned int iter = 0; iter < 1e8; iter++) {
+    
+    for(unsigned int iter = 0; iter < 1e2; iter++) {
     	status = gsl_multifit_fdfsolver_iterate(s);
         if(status)
     	    break;
-        status = gsl_multifit_test_delta (s->dx, s->x, 1e-4, 1e-4);
+        status = gsl_multifit_test_delta (s->dx, s->x, 1e-2, 1e-2);
         if(status != GSL_CONTINUE)
     	    break;
     }
 
     gsl_multifit_covar (s->J, 0.0, covar);
 
-    if(!isDoubleBeta) {
-        phase = gsl_vector_get(s->x,0);
-        fitAmp = gsl_vector_get(s->x,1);
-    } else {
-        phase = gsl_vector_get(s->x,0);
-        fitAmp = 0.0;
-    }
-
+    phase = gsl_vector_get(s->x,0);
+    fitAmp = gsl_vector_get(s->x,1);
+    
     trace.InsertValue("phase", phase+maxPos);
     trace.InsertValue("walk", CalculateWalk(maxVal, detType, detSubtype));
 

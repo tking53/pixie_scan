@@ -11,7 +11,6 @@
 #include "RawEvent.hpp"
 #include "TimingMapBuilder.hpp"
 
-
 namespace dammIds {
     namespace doublebeta {
         const int DD_SINGLESQDC = 0;//!< ID for the singles QDC
@@ -54,7 +53,7 @@ bool DoubleBetaProcessor::PreProcess(RawEvent &event) {
     BarBuilder builder(events);
     betas_ = builder.GetBarMap();
 
-    double resolution = 2;
+    double resolution = 2; //500 ps/bin
     double offset = 1500;
 
     for(BarMap::const_iterator it = betas_.begin(); it != betas_.end(); it++) {

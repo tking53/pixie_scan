@@ -67,5 +67,7 @@ class TraceAnalyzer {
     void SetLevel(int i) {level=i;}
     /** \return the level of the trace analysis */
     int  GetLevel() {return level;}
+
+    std::string GetName(void){return(name);}
 };
 #endif // __TRACEANALYZER_HPP_

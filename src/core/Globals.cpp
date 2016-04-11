@@ -232,6 +232,11 @@ Globals::Globals() {
                     it->child("Beta").attribute("value").as_double();
                 liquidScintPars_.second =
                     it->child("Gamma").attribute("value").as_double();
+            }else if (std::string(it->name()).compare("LiGlass") == 0) {
+                liGlassPars_.first =
+                    it->child("Beta").attribute("value").as_double();
+                liGlassPars_.second =
+                    it->child("Gamma").attribute("value").as_double();
             }else if (std::string(it->name()).compare("LaBr3") == 0) {
                 labr3_r6231_100Pars_.first =
                     it->child("r6231_100").child("Beta").attribute("value").as_double(0);

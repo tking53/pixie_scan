@@ -2,9 +2,6 @@
  *
  * implementation for germanium processor for 3Hen experiment
  */
-
-//? Make a clover specific processor
-
 #include <algorithm>
 #include <fstream>
 #include <iomanip>
@@ -108,7 +105,7 @@ bool IS600GeProcessor::Process(RawEvent &event) {
     GeProcessor::Process(event);
 
     bool hasBeta = TreeCorrelator::get()->place("Beta")->status();
-     double clockInSeconds = Globals::get()->clockInSeconds();
+    double clockInSeconds = Globals::get()->clockInSeconds();
     // plot with 10 ms bins
     const double plotResolution = 10e-3 / clockInSeconds;
     double lastProtonTime =  TreeCorrelator::get()->place("mtc_t1_0")->last().time;
@@ -125,14 +122,10 @@ bool IS600GeProcessor::Process(RawEvent &event) {
 
         plot(neutron::D_ENERGY, gEnergy);
 	if(hasBeta)
-	  plot(neutron::betaGated::D_ENERGY, gEnergy);
-
-	// granploty(neutron::DD_ENERGY__TIMEX,
-        //             gEnergy, decayTime, timeResolution);
-     // iteration over events
-
-
-	plot(neutron::betaGated::DD_PROTONGAMMATDIFF_VS_GAMMAEN, gEnergy ,(gTime - lastProtonTime) / plotResolution) ;
+	    plot(neutron::betaGated::D_ENERGY, gEnergy);
+	
+	plot(neutron::betaGated::DD_PROTONGAMMATDIFF_VS_GAMMAEN, gEnergy, 
+	     (gTime - lastProtonTime) / plotResolution) ;
     }
     EndProcess(); 
     return true;

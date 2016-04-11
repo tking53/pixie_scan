@@ -39,6 +39,8 @@ public:
     double GetTheta() const {return(theta_);};
     /** \return the timeAve_ var */
     double GetTimeAverage() const {return(timeAve_);};
+    /** \return the pixieTimeAve_ var */
+    double GetPixieTimeAverage() const {return(timeAve_);};
     /** \return the timeDiff_ var */
     double GetTimeDifference() const {return(timeDiff_);};
     /** \return the walkCorTimeAve_ var */
@@ -63,6 +65,7 @@ private:
     double timeDiff_;//!< The time difference between the two ends
     double walkCorTimeDiff_;//!< The walk corrected time difference
     double walkCorTimeAve_;//!< The walk corrected time average
+    double pixieTimeAve_;//!< The Time average of the filter time
     std::string type_; //!< The type of bar detector it is
     HighResTimingData right_; //!< The Right side of the detector
     HighResTimingData left_; //!< The Left side of the detector

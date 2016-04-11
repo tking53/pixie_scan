@@ -27,6 +27,7 @@ BarDetector::BarDetector(const HighResTimingData &Left,
     qdc_       = sqrt(Right.GetTraceQdc()*Left.GetTraceQdc());
     theta_     = acos(cal.GetZ0()/flightPath_);
     timeAve_   = (Right.GetHighResTime() + Left.GetHighResTime())*0.5;
+    pixieTimeAve_   = (Right.GetPixieTime() + Left.GetPixieTime())*0.5;
     walkCorTimeDiff_ = (Left.GetWalkCorrectedTime() -
                         Right.GetWalkCorrectedTime()) +
                         cal.GetLeftRightTimeOffset();

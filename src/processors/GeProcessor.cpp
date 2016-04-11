@@ -85,6 +85,7 @@ GeProcessor::GeProcessor(double gammaThreshold, double lowRatio,
     // 1e-6, 10e-6, 100e-6, 1e-3, 10e-3, 100e-3
     timeResolution.push_back(5e-3);
     timeResolution.push_back(10e-3);
+    timeResolution.push_back(1000e-3);
     if (timeResolution.size() > MAX_TIMEX) {
         stringstream ss;
         ss << "Number of requested time resolution spectra is greater then"
@@ -483,24 +484,6 @@ bool GeProcessor::Process(RawEvent &event) {
     // beamOn is true for beam on and false for beam off
     bool beamOn =  TreeCorrelator::get()->place("Beam")->status();
     bool hasBeta = TreeCorrelator::get()->place("Beta")->status();
-
-    /** Place Cycle is activated by BeamOn event and deactivated by TapeMove
-     *  This condition will therefore skip events registered during
-     *  tape movement period and before the end of move and the beam start
-     */
-    if (!TreeCorrelator::get()->place("Cycle")->status()) {
-        for (vector<ChanEvent*>::iterator it = geEvents_.begin();
-        it != geEvents_.end(); ++it) {
-            ChanEvent* chan = *it;
-            double gEnergy = chan->GetCalEnergy();
-            if (gEnergy < gammaThreshold_)
-                continue;
-            plot(D_ENERGY_MOVE, gEnergy);
-            if (hasBeta)
-                plot(betaGated::D_ENERGY_MOVE, gEnergy);
-        }
-        return true;
-    }
 
     plot(D_MULT, geEvents_.size());
 

@@ -1,6 +1,7 @@
 /** \file TraceExtractor.cpp
  *  \brief Extract traces for a specific type and subtype
  */
+#include <iostream>
 #include <sstream>
 
 #include "Trace.hpp"
