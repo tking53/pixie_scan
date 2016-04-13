@@ -21,6 +21,9 @@ namespace dammIds {
         const int DD_MAXLCORGATE     = 8;//!< MaxLeft vs. Cor ToF - gated
         const int DD_QDCVSMAX        = 9;//!< QDC vs. Max Val
         const int DD_SNRANDSDEV      = 10;//!< SNR and Standard Dev Baseline
+      const int DD_WCTVSMAXL        = 11;//!< Max Left vs. Walk Corrected Time
+
+
     }
 }
 
@@ -48,6 +51,7 @@ void TeenyVandleProcessor::DeclarePlots(void) {
 			   "Max Left vs. Cor Time Diff");
 	DeclareHistogram2D(DD_QDCVSMAX, SC, SD,"QDC vs Max - Right");
 	DeclareHistogram2D(DD_SNRANDSDEV, S8, S2, "SNR and SDEV R01/L23");
+	DeclareHistogram2D(DD_WCTVSMAXL, SA ,SD, "Walk Corrected Time vs Max - Left");
 }
 
 bool TeenyVandleProcessor::PreProcess(RawEvent &event) {
@@ -96,7 +100,11 @@ bool TeenyVandleProcessor::PreProcess(RawEvent &event) {
             plot(DD_SNRANDSDEV, left.GetStdDevBaseline()*timeRes+timeOff, 3);
 
             double ampDiff = fabs(right.GetMaximumValue()-left.GetMaximumValue());
-            if(ampDiff <=50)
+            //made by toby
+	    double WCTDiff = fabs(right.GetWalkCorrectedTime()-left.GetWalkCorrectedTime());
+	    plot(DD_WCTVSMAXL, WCTDiff*timeRes+timeOff, left.GetMaximumValue());
+	    //Included
+	    if(ampDiff <=50) //default is 50
                 plot(DD_MAXLVSTDIFFAMP, timeDiff*timeRes+timeOff,
                      left.GetMaximumValue());
 
