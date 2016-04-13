@@ -74,7 +74,7 @@ bool PulserProcessor::Process(RawEvent &event) {
 }
 
 bool PulserProcessor::RetrieveData(RawEvent &event) {
-    pulserMap.clear();
+    pulserMap_.clear();
 
     static const vector<ChanEvent*> & pulserEvents =
         event.GetSummary("pulser")->GetList();
@@ -85,10 +85,10 @@ bool PulserProcessor::RetrieveData(RawEvent &event) {
         string subType = (*itPulser)->GetChanID().GetSubtype();
 
         TimingDefs::TimingIdentifier key(location, subType);
-        pulserMap.insert(make_pair(key, HighResTimingData(*itPulser)));
+        pulserMap_.insert(make_pair(key, HighResTimingData(*itPulser)));
     }
-
-    if(pulserMap.empty() || pulserMap.size()%2 != 0) {
+    
+    if(pulserMap_.empty() || pulserMap_.size()%2 != 0) {
         plot(D_PROBLEMSTUFF, 27);
         return(false);
     } else
@@ -97,36 +97,26 @@ bool PulserProcessor::RetrieveData(RawEvent &event) {
 
 void PulserProcessor::AnalyzeData(void) {
     HighResTimingData start =
-        (*pulserMap.find(make_pair(0,"start"))).second;
+        (*pulserMap_.find(make_pair(0,"start"))).second;
     HighResTimingData stop  =
-        (*pulserMap.find(make_pair(0,"stop"))).second;
-
+        (*pulserMap_.find(make_pair(0,"stop"))).second;
+	
     static int counter = 0;
     for(Trace::const_iterator it = start.GetTrace()->begin();
         it!= start.GetTrace()->end(); it++)
         plot(DD_PROBLEMS, int(it-start.GetTrace()->begin()), counter, *it);
     counter ++;
-
-    // unsigned int cutVal = 15;
-    // if(start.maxpos == 41)
-    // if(start.GetMaximumValue() < 2384-cutVal)
-    // 	for(Trace::const_iterator it = start.GetTrace()->begin();
-    // 	    it != start.GetTrace()->end(); it++)
-    // 	    plot(DD_AMPMAPSTART, int(it-start.GetTrace()->begin()), *it);
-
-    // if(stop.GetMaximumValue() < 2555-cutVal)
-    // 	for(Trace::const_iterator it = start.GetTrace()->begin();
-    // 	    it != start.GetTrace()->end(); it++)
-    // 	    plot(DD_AMPMAPSTOP, int(it-start.GetTrace()->begin()), *it);
-
+    
     if(start.GetIsValidData() && stop.GetIsValidData()) {
         double timeDiff = stop.GetHighResTime() - start.GetHighResTime();
-        double timeRes  = 50; //20 ps/bin
-        double timeOff  = 31000.;
-        double phaseX   = 7000.;
+        double timeRes  = 2; //20 ps/bin
+        double timeOff  = 1000.;
+        double phaseX   = -22000.;
 
-//        cout << timeDiff * timeRes + timeOff << " "
-//             << start.GetPhase()*timeRes-phaseX << endl;
+	// cout << timeDiff * timeRes + timeOff << " "
+	//      << start.GetPhase()*timeRes-phaseX << " " 
+	//      << start.GetCfdSourceBit() << " " << stop.GetCfdSourceBit() << " " 
+	//      << endl;
 
         plot(D_TIMEDIFF, timeDiff*timeRes + timeOff);
         plot(DD_PVSP, start.GetPhase()*timeRes-phaseX,

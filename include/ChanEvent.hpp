@@ -45,6 +45,13 @@ public:
      * \param [in] a : the high resolution time */
     void SetHighResTime(double a) {highResTime =a;}
 
+    bool GetCfdSourceBit() const {
+	return(cfdTrigSource);
+    }
+    bool CfdForceTrig() const {
+	return(cfdForceTrig);
+    }
+
     double GetEnergy() const      {
         return energy;   /**< \return the raw energy */
     }
@@ -134,21 +141,26 @@ private:
 
     double time;               /**< Raw channel time, 64 bit from pixie16 channel event time */
     double eventTime;          /**< The event time recorded by Pixie */
-    int    modNum;             /**< Module number */
-    int    chanNum;            /**< Channel number */
+    int modNum;             /**< Module number */
+    int chanNum;            /**< Channel number */
 
-    bool   virtualChannel;     /**< Flagged if generated virtually in Pixie DSP */
-    bool   pileupBit;          /**< Pile-up flag from Pixie */
-    bool   saturatedBit;       /**< Saturation flag from Pixie */
+    bool virtualChannel; /**< Flagged if generated virtually in Pixie DSP */
+    bool pileupBit;      /**< Pile-up flag from Pixie */
+    bool saturatedBit;   /**< Saturation flag from Pixie */
+    bool cfdForceTrig;   //!< CFD was forced to trigger
+    bool cfdTrigSource;  //!< The ADC that the CFD/FPGA synched with
 
-    void ZeroNums(void);       /**< Zero members which do not have constructors associated with them */
+    void ZeroNums(void); /**< Zero members which do not have constructors associated with them */
 
     /** Make the front end responsible for reading the data able to set the
      * channel data directly from ReadBuffDataA - REVISION A */
     friend int ReadBuffDataA(pixie::word_t *, unsigned long *, std::vector<ChanEvent *> &);
     /** Make the front end responsible for reading the data able to set the
-     * channel data directly from ReadBuffDataA - REVISION D and F */
-    friend int ReadBuffDataDF(pixie::word_t *, unsigned long *, std::vector<ChanEvent *> &);
+     * channel data directly from ReadBuffDataA - REVISION D */
+    friend int ReadBuffDataD(pixie::word_t *, unsigned long *, std::vector<ChanEvent *> &);
+    /** Make the front end responsible for reading the data able to set the
+     * channel data directly from ReadBuffDataA - REVISION F */
+    friend int ReadBuffDataF(pixie::word_t *, unsigned long *, std::vector<ChanEvent *> &);
 };
 
 /** Sort by increasing corrected time
