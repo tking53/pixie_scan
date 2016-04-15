@@ -1,9 +1,9 @@
 /** \file ORNL2016Processor.hpp
- * \brief A class to process data from ISOLDE 599 and 600 experiments using
- * VANDLE
+ * \brief A class to process data from the OLTF experiments in Feb/March 2016 using
+ * VANDLE at ORNl
  *
  *\author S. V. Paulauskas
- *\date July 14, 2015
+ *\date Feb, 2016
  */
 #ifndef __ORNL2016PROCESSOR_HPP_
 #define __ORNL2016PROCESSOR_HPP_
