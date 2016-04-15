@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+    <Author>
+        <Name>S. V. Paulauskas</Name>
+        <Email>stanpaulauskas AT gmail DOT com</Email>
+        <Date>February 10, 2016</Date>
+    </Author>
+
+    <Description>
+      Configuration for the ORNL 2016 VANDLE experiment at the OLTF. The setup 
+      contains 42 VANDLE, 10 NaI, 14 HAGRiD, 1 Ge Clover, 1 Beta Detector. 
+    </Description>
+
+    <Global>
+        <Revision version="F"/>
+        <EventWidth unit="s" value="1e-6"/>
+        <EnergyContraction value="1.0"/>
+        <Path>config/</Path>
+        <NumOfTraces value="50"/>
+    </Global>
+
+    <DetectorDriver>
+    </DetectorDriver>
+
+    <Map verbose_calibration="False" verbose_map="False" verbose_walk="False">
+        <Module number="0">
+            <Channel number="0" type="beta" subtype="double"
+                     tags="start,left"></Channel>
+            <Channel number="1" type="beta" subtype="double"
+                     tags="start,right"></Channel>
+	    <Channel number="2" type="labr3" subtype="hagrid">
+	      <Calibration model="linear" max="32000">
+		-24.1167 0.2003
+	      </Calibration>
+	    </Channel>
+            <Channel number="3" type="labr3" subtype="hagrid">
+	      <Calibration model="linear" max="32000">
+		-21.4429 0.2073
+	      </Calibration>
+	    </Channel>
+            <Channel number="4" type="labr3" subtype="hagrid">
+	      <Calibration model="linear" max="32000">
+		-25.0053 0.2025
+	      </Calibration>
+	    </Channel>
+            <Channel number="5" type="labr3" subtype="hagrid">
+	      <Calibration model="linear" max="32000">
+		-22.3679 0.1972
+	      </Calibration>
+	    </Channel>
+            <Channel number="6" type="labr3" subtype="hagrid">
+	      <Calibration model="linear" max="32000">
+		-30.6264 0.2070
+	      </Calibration>
+	    </Channel>
+            <Channel number="7" type="labr3" subtype="hagrid">
+	      <Calibration model="linear" max="32000">
+		-12.8333 0.1970
+	      </Calibration>
+	    </Channel>
+            <Channel number="8" type="labr3" subtype="hagrid">
+	      <Calibration model="linear" max="32000">
+		-17.4165 0.1934
+	      </Calibration>
+	    </Channel>
+            <Channel number="9" type="labr3" subtype="hagrid">
+	      <Calibration model="linear" max="32000">
+		-12.83 0.2031
+	      </Calibration>
+	    </Channel>
+            <Channel number="11" type="liglass" subtype="six"></Channel>
+	    <Channel number="12" type="liglass" subtype="seven"></Channel>
+	    <Channel number="13" type="liglass" subtype="six"></Channel>
+	    <Channel number="14" type="liglass" subtype="six"></Channel>
+	    <Channel number="15" type="liglass" subtype="six"></Channel>
+	</Module>
+	<Module number="7">
+            <Channel number="0" type="ge" subtype="clover_high">
+                <Calibration model="linear" max="16000">
+		   -1.529 0.337
+                </Calibration>
+            </Channel>
+            <Channel number="1" type="ge" subtype="clover_high" >
+                <Calibration model="linear" max="16000">
+		  -1.279 0.346
+                </Calibration>
+            </Channel>
+            <Channel number="2" type="ge" subtype="clover_high" >
+                <Calibration model="linear" max="16000">
+                   -0.227 0.329
+                </Calibration> 
+            </Channel>
+            <Channel number="3" type="ge" subtype="clover_high" >
+                <Calibration model="linear" max="16000">
+                   -0.447 0.366
+                </Calibration> 
+            </Channel>
+            <Channel number="8" type="mtc" subtype="start"></Channel>
+            <Channel number="9" type="mtc" subtype="stop"></Channel>
+            <Channel number="10" type="mtc" subtype="stop"></Channel>
+            <Channel number="11" type="mtc" subtype="beam_start"></Channel>
+            <Channel number="12" type="mtc" subtype="beam_stop"></Channel>
+            <Channel number="13" type="mtc" subtype="supercycle"></Channel>
+            <Channel number="14" type="generic" subtype="generic"></Channel>
+            <Channel number="15" type="generic" subtype="generic"></Channel>
+        </Module>
+	<Module number="8">
+            <Channel number="0" type="labr3" subtype="hagrid">
+	      <Calibration model="linear" max="32000">
+		-62.2699 0.2129
+	      </Calibration>
+	    </Channel>
+            <Channel number="1" type="labr3" subtype="hagrid">
+	      <Calibration model="linear" max="32000">
+		-18.5608 0.2140
+	      </Calibration>
+	    </Channel>
+            <Channel number="2" type="labr3" subtype="hagrid">
+	      <Calibration model="linear" max="32000">
+		-23.2073 0.1988
+	      </Calibration>
+	    </Channel>
+            <Channel number="7" type="labr3" subtype="hagrid">
+	      <Calibration model="linear" max="32000">
+		-22.6910 0.2094
+	      </Calibration>
+	    </Channel>
+            <Channel number="3" type="labr3" subtype="hagrid">
+	      <Calibration model="linear" max="32000">
+		-26.9885 0.2048
+	      </Calibration>
+	    </Channel>
+            <Channel number="4" type="labr3" subtype="hagrid">
+	      <Calibration model="linear" max="32000">
+		-26.0575 0.1993
+	      </Calibration>
+	    </Channel>
+            <Channel number="5" type="labr3" subtype="hagrid">
+	      <Calibration model="linear" max="32000">
+		-40.8445 0.2136
+  	      </Calibration>
+	    </Channel>
+	    <Channel number="14" type="generic" subtype="generic"></Channel>
+            <Channel number="15" type="labr3" subtype="hagrid">
+	      <Calibration model="linear" max="32000">
+		-24.5154 0.2121
+	      </Calibration>
+	    </Channel>
+        </Module>
+
+	<Module number="9">
+	            <Channel number="0" type="nai" subtype="beast">
+	    <Calibration model="linear" max="32000">
+	      -26.0825 1.2184
+	    </Calibration>
+	  </Channel>
+          <Channel number="1" type="nai" subtype="beast">
+	    <Calibration model="linear" max="32000">
+	      -13.7179 1.1631
+	    </Calibration>
+	  </Channel>
+          <Channel number="2" type="nai" subtype="beast">
+	    <Calibration model="linear" max="32000">
+	      -28.9549 1.2028
+	    </Calibration>
+	  </Channel>
+          <Channel number="3" type="nai" subtype="beast">
+	    <Calibration model="linear" max="32000">
+	      -18.3994 1.0859
+	    </Calibration>
+	  </Channel>
+          <Channel number="4" type="nai" subtype="beast">
+	    <Calibration model="linear" max="32000">
+	      -16.3526 1.1245
+	    </Calibration>
+	  </Channel>
+          <Channel number="5" type="nai" subtype="beast">
+	    <Calibration model="linear" max="32000">
+	      -18.7359 1.1468
+	    </Calibration>
+	  </Channel>
+          <Channel number="6" type="nai" subtype="beast">
+	    <Calibration model="linear" max="32000">
+	      -16.4605 1.1616
+	    </Calibration>
+	  </Channel>
+          <Channel number="7" type="nai" subtype="beast">
+	    <Calibration model="linear" max="32000">
+	      -21.2122 1.1886
+	    </Calibration>
+	  </Channel>
+          <Channel number="8" type="nai" subtype="beast">
+	    <Calibration model="linear" max="32000">
+	      -5.2434 1.1825
+	    </Calibration>
+	  </Channel>
+          <Channel number="9" type="nai" subtype="beast">
+	    <Calibration model="linear" max="32000">
+	      -16.9761 1.2053
+	    </Calibration>
+	  </Channel>
+	  <Channel number="14" type="beta" subtype="double" tags="left"></Channel>
+          <Channel number="15" type="beta" subtype="double" tags="right"></Channel>
+        </Module>
+
+	<Module number="10">
+            <Channel number="15" type="ignore" subtype="ignore"></Channel>
+        </Module>
+    </Map>
+
+    <TreeCorrelator name="root" verbose="False">
+
+    </TreeCorrelator>
+
+    <TimeCalibration verbose_timing="False">
+        <Vandle>
+	</Vandle>
+        <Beta>
+        </Beta>
+    </TimeCalibration>
+
+    <Timing>
+        <Physical>
+            <NeutronMass unit="MeV/c/c" value="939.565560"/>
+            <SpeedOfLight unit="cm/ns" value="29.9792458"/>
+            <SpeedOfLightSmall unit="cm/ns" value="12.65822"/>
+            <SmallLength unit="cm" value="60.0"/>
+            <SpeedOfLightBig unit="cm/ns" value="15.22998"/>
+            <BigLength unit="cm" value="200.0"/>
+            <SpeedOfLightMedium unit="cm/ns" value="13.4414"/>
+            <MediumLength unit="cm" value="120.0"/>
+        </Physical>
+        <Trace>
+            <WaveformRange>
+                <Low unit="sample" value="5"/>
+                <High unit="sample" value="10"/>
+            </WaveformRange>
+            <SiPmtWaveformRange>
+                <Low unit="sample" value="15"/>
+                <High unit="sample" value="50"/>
+            </SiPmtWaveformRange>
+            <DiscriminationStart unit="sample" value="3"/>
+            <TrapezoidalWalk unit="ns" value="80"/>
+            <TraceDelay unit="ns" value="200"/>
+            <TraceLength unit="ns" value="520"/>
+            <QdcCompression value="4.0"/>
+        </Trace>
+
+        <Fitting>
+            <SigmaBaselineThresh value="3.0"/>
+            <SiPmtSigmaBaselineThresh value = "25.0"/>
+            <Vandle>
+                <Small>
+                    <Beta value="0.32969"/>
+                    <Gamma value="0.212945"/>
+                </Small>
+                <Medium>
+                    <Beta value="0.254373"/>
+                    <Gamma value="0.208072"/>
+                </Medium>
+                <Big>
+                    <Beta value="0.32969"/>
+                    <Gamma value="0.212945"/>
+                </Big>
+                <TeenyVandle>
+                    <Beta value="0.362307"/>
+                    <Gamma value="0.186129"/>
+                </TeenyVandle>
+            </Vandle>
+            <SingleBeta>
+                <Beta value="0.574531"/>
+                <Gamma value="0.274512"/>
+            </SingleBeta>
+            <DoubleBeta>
+	        <Beta value="0.004329388"/>
+                <Gamma value="0.163596"/>
+            </DoubleBeta>
+            <Pulser>
+                <Beta value="0.832272"/>
+                <Gamma value="0.236525"/>
+            </Pulser>
+            <Liquid>
+                <Beta value="4.52672"/>
+                <Gamma value="1.73376"/>
+            </Liquid>
+	    <LiGlass>
+                <Beta value="0.049601"/>
+                <Gamma value="0.163596"/>	      
+	    </LiGlass>
+        </Fitting>
+    </Timing>
+
+    <Notebook file="notes.txt" mode="r"/>
+</Configuration>

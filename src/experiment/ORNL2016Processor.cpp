@@ -245,20 +245,19 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 	for(vector<ChanEvent*>::const_iterator itGe = geEvts.begin();
 	    itGe != geEvts.end(); itGe++) {
 	  int genum = (*itGe)->GetChanID().GetLocation();
-	   plot(DD_GEVSLOCA, (*itGe)->GetCalEnergy(), genum);
-	   plot(DD_UNGEVSLOCA, (*itGe)->GetEnergy(), genum);
-	   if (genum==2){
-	     
-	     double geTime= (*itGe)->GetTime();
-	   time_t geWallTime =  DetectorDriver::get()->GetWallTime(geTime);
-	   cout << geWallTime <<endl;
-	   }
-
-
-
-	   //HOW To match beta event to Gamma event????? Tree correlator
+	  plot(DD_NAIVSGE, (*itGe)->GetCalEnergy() , (*naiIt)->GetCalEnergy()); 
+	  plot(DD_GEVSLOCA, (*itGe)->GetCalEnergy(), genum);
+	  plot(DD_UNGEVSLOCA, (*itGe)->GetEnergy(), genum);
 	   
-	   plot(DD_NAIVSGE, (*itGe)->GetCalEnergy() , (*naiIt)->GetCalEnergy());
+	  double cycleTime = TreeCorrelator::get()->place("Cycle")->last().time;
+          cycleTime *= (Globals::get()->clockInSeconds()*1.e9);
+	   
+	   
+	   
+
+
+	   
+	   
 	  if (hasbeta)
 	    plot(DD_NAIVSGEGATE, (*itGe)->GetCalEnergy() , (*naiIt)->GetCalEnergy());
 	} //GE loop end
@@ -274,7 +273,7 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 
       
       
-	  // plot( get_loc vs nai#
+
 
     EndProcess();
     hasbeta=false;  
