@@ -24,7 +24,7 @@ public:
         trace_ = &chan->GetTrace();
         highResTime_ = chan->GetHighResTime()*1e9;
         pixieEnergy_ = chan->GetEnergy();
-	pixieTime_ = chan->GetTime();
+        pixieTime_ = chan->GetTime();
 	cfdSourceBit_ = chan->GetCfdSourceBit();
 
         snr_ =

@@ -10,7 +10,7 @@
 
 using std::string;
 
-const int TraceExtractor::numTraces = dammIds::trace::extractor::maxSingleTraces;
+const unsigned int TraceExtractor::numTraces = dammIds::trace::extractor::maxSingleTraces;
 
 TraceExtractor::TraceExtractor(const std::string& aType,
                                const std::string &aSubtype) :
