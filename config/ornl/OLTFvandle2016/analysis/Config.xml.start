@@ -34,9 +34,7 @@
             cycle_gate1_max="1.5"
             cycle_gate2_min="1.5"
             cycle_gate2_max="2.0" />
-        <Processor name="MtcProcessor"
-            double_stop="True"
-            double_start="True"/>
+	<Processor name="LogicProcessor"/>
 	<Processor name="DoubleBetaProcessor"/>
 	<Processor name="ORNL2016Processor"
 		   types="medium" res="2" offset="1000" NumStarts="1"/>
@@ -211,12 +209,12 @@
                    -0.523 0.367 2.458E-8
                 </Calibration> 
             </Channel>
-            <Channel number="8" type="mtc" subtype="start"></Channel>
-            <Channel number="9" type="mtc" subtype="stop"></Channel>
-            <Channel number="10" type="mtc" subtype="stop"></Channel>
-            <Channel number="11" type="mtc" subtype="beam_start"></Channel>
-            <Channel number="12" type="mtc" subtype="beam_stop"></Channel>
-            <Channel number="13" type="mtc" subtype="supercycle"></Channel>
+            <Channel number="8" type="logic" subtype="start"></Channel>
+            <Channel number="9" type="logic" subtype="stop"></Channel>
+            <Channel number="10" type="logic" subtype="stop"></Channel>
+            <Channel number="11" type="logic" subtype="beam_start"></Channel>
+            <Channel number="12" type="logic" subtype="beam_stop"></Channel>
+            <Channel number="13" type="logic" subtype="supercycle"></Channel>
             <Channel number="14" type="generic" subtype="generic"></Channel>
             <Channel number="15" type="generic" subtype="generic"></Channel>
         </Module>

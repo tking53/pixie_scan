@@ -32,7 +32,7 @@
 #include "LiquidScintProcessor.hpp"
 #include "LogicProcessor.hpp"
 #include "McpProcessor.hpp"
-#include "MtcProcessor.hpp"
+
 #include "NeutronScintProcessor.hpp"
 #include "PositionProcessor.hpp"
 #include "PspmtProcessor.hpp"
@@ -240,8 +240,6 @@ void DetectorDriver::LoadProcessors(Messenger& m) {
             vecProcess.push_back(new PulserProcessor());
         } else if (name == "SsdProcessor") {
             vecProcess.push_back(new SsdProcessor());
-        } else if (name == "TriggerLogicProcessor") {
-            vecProcess.push_back(new TriggerLogicProcessor());
         } else if (name == "VandleProcessor" || name == "ORNL2016Processor") {
             double res = processor.attribute("res").as_double(2.0);
             double offset = processor.attribute("offset").as_double(200.0);
