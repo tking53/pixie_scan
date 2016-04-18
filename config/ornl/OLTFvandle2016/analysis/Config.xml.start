@@ -209,9 +209,9 @@
                    -0.523 0.367 2.458E-8
                 </Calibration> 
             </Channel>
-            <Channel number="8" type="logic" subtype="start"></Channel>
-            <Channel number="9" type="logic" subtype="stop"></Channel>
-            <Channel number="10" type="logic" subtype="stop"></Channel>
+            <Channel number="8" type="logic" subtype="mtc_start"></Channel>
+            <Channel number="9" type="logic" subtype="mtc_stop"></Channel>
+<!--            <Channel number="10" type="logic" subtype="mtc_stop"></Channel> -->
             <Channel number="11" type="logic" subtype="beam_start"></Channel>
             <Channel number="12" type="logic" subtype="beam_stop"></Channel>
             <Channel number="13" type="logic" subtype="supercycle"></Channel>
@@ -339,6 +339,7 @@
       <Place type="PlaceDetector" name="TapeMove" reset="false"/>
       <Place type="PlaceDetector" name="Beam" reset="false"/>
       <Place type="PlaceDetector" name="Cycle" reset="false"/>
+      <Place type="PlaceDetector" name="Supercycle" reset="false"/>
     </TreeCorrelator>
     
     <TimeCalibration verbose_timing="False">

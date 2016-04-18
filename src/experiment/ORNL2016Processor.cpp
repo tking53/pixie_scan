@@ -23,6 +23,7 @@
 #include "ORNL2016Processor.hpp"
 #include "DoubleBetaProcessor.hpp"
 #include "TreeCorrelator.hpp"
+#include "LogicProcessor.hpp"
 
 namespace dammIds {
     namespace vandle {
@@ -249,9 +250,10 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 	  plot(DD_GEVSLOCA, (*itGe)->GetCalEnergy(), genum);
 	  plot(DD_UNGEVSLOCA, (*itGe)->GetEnergy(), genum);
 	   
-	  double cycleTime = TreeCorrelator::get()->place("Cycle")->last().time;
-	  cycleTime *= (Globals::get()->clockInSeconds()*1.e9);
-	  cout << "Cycle Time = "<<cycleTime<<endl; 
+	  //Cycle timing
+	   double cycleTime = TreeCorrelator::get()->place("Cycle")->last().time;
+	  	  cycleTime *= (Globals::get()->clockInSeconds()*1.e9);
+	  //cout << "Cycle Time = "<<cycleTime<<endl; 
 	   
 	   
 
