@@ -58,7 +58,12 @@ namespace dammIds {
       const int DD_HAGVSLOCA = 27+ORNL2016_OFFSET;
       const int DD_UNHAGVSLOCA = 26+ORNL2016_OFFSET;
       const int DD_GEVSTIME = 30+ORNL2016_OFFSET;
-
+      const int D_BEAMONRAW = 31+ORNL2016_OFFSET;
+      const int D_BEAMOFFRAW = 32+ORNL2016_OFFSET;
+      const int D_MEASUREONRAW = 33+ORNL2016_OFFSET;
+      const int D_MEASUREOFFRAW = 34+ORNL2016_OFFSET;
+      const int D_MTCSTARTRAW = 35+ORNL2016_OFFSET;
+      const int D_MTCSTOPRAW = 36+ORNL2016_OFFSET;
     }
 }//namespace dammIds
 
@@ -92,6 +97,13 @@ void ORNL2016Processor::DeclarePlots(void) {
     DeclareHistogram2D(DD_UNHAGVSLOCA, SF, S5, "HAGRiD (Raw) vs. Crystal #");
     DeclareHistogram2D(DD_HAGVSLOCA, SF, S5, "HAGRiD (Cal) vs. Crystal #");
     DeclareHistogram2D(DD_GEVSTIME, SD, S3,"Time Diff between beta and Ge");
+    DeclareHistogram1D(D_BEAMONRAW, SF, "Beam on leading edge");
+    DeclareHistogram1D(D_BEAMOFFRAW, SF, "Beam on Trailing edge");
+    DeclareHistogram1D(D_MEASUREONRAW, SF, "Beam off leading edge");
+    DeclareHistogram1D(D_MEASUREOFFRAW, SF, "Beam off Trailing edge");
+    DeclareHistogram1D(D_MTCSTARTRAW, SF , "MTC move Start signal");
+    DeclareHistogram1D(D_MTCSTOPRAW, SF , "MTC move Stop signal");
+
 }
 
 ORNL2016Processor::ORNL2016Processor(const std::vector<std::string> &typeList,
@@ -251,8 +263,8 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 	  plot(DD_UNGEVSLOCA, (*itGe)->GetEnergy(), genum);
 	   
 	  //Cycle timing
-	   double cycleTime = TreeCorrelator::get()->place("Cycle")->last().time;
-	  	  cycleTime *= (Globals::get()->clockInSeconds()*1.e9);
+	  //	   double cycleTime = TreeCorrelator::get()->place("Cycle")->last().time;
+	  //	  cycleTime *= (Globals::get()->clockInSeconds()*1.e9);
 	  //cout << "Cycle Time = "<<cycleTime<<endl; 
 	   
 	   
@@ -272,9 +284,16 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 	plot(DD_UNHAGVSLOCA, (*itHag)->GetEnergy(),hagnum);
       } //Hagrid loop end	  
 
+    static const vector<ChanEvent*> &logicEvents =
+        event.GetSummary("logic", true)->GetList();
 
-      
-      
+
+    //      for(vector<ChanEvents*>::const_iterator itLogic = logicEvents.begin();
+    //	  it != logicEvents.end (); itLogic++)
+    //	int mtcstart= (*itLogic)->
+
+
+
 
 
     EndProcess();

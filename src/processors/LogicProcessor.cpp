@@ -23,7 +23,7 @@ namespace dammIds {
 	static const unsigned int MAX_LOGIC = 10; //!<Maximum Number of Logic Signals
 	const double logicPlotResolution = 
 	    10e-6 / Globals::get()->clockInSeconds(); //!<Resolution for Logic Plots
-	const double mtcPlotResolution = 10e-3 / clockInSeconds; //!<Res. for MTC Plots
+	const double mtcPlotResolution = 10e-2 / clockInSeconds; //!<Res. for MTC Plots set as 100ms/bin
 
 	///Original Logic Processor 
         const int D_COUNTER_START  = 0;//!< Counter for the starts
@@ -79,7 +79,7 @@ LogicProcessor::LogicProcessor(int offset, int range, bool doubleStop/*=false*/,
 
 void LogicProcessor::DeclarePlots(void) {
     const int counterBins = S4;
-    const int timeBins = SC;
+    const int timeBins = SF;
     
     ///From Original Logic Processor
     DeclareHistogram1D(D_COUNTER_START, counterBins, "logic start counter");
@@ -90,10 +90,10 @@ void LogicProcessor::DeclarePlots(void) {
     DeclareHistogram2D(DD_TDIFF_LENGTH, S4,timeBins, "TDiff btwn starts, 10 us/bin");
 
     ///From MTC Processor
-    DeclareHistogram1D(D_TDIFF_BEAM_START, timeBins, "Time diff btwn beam starts, 10 ms/bin");
-    DeclareHistogram1D(D_TDIFF_BEAM_STOP, timeBins, "Time diff btwn beam stops, 10 ms/bin");
-    DeclareHistogram1D(D_TDIFF_MOVE_START, timeBins, "Time diff btwn move starts, 10 ms/bin");
-    DeclareHistogram1D(D_TDIFF_MOVE_STOP, timeBins, "Time diff btwn move stops, 10 ms/bin");
+    DeclareHistogram1D(D_TDIFF_BEAM_START, timeBins, "Time diff btwn beam starts, 100 ms/bin");
+    DeclareHistogram1D(D_TDIFF_BEAM_STOP, timeBins, "Time diff btwn beam stops, 100 ms/bin");
+    DeclareHistogram1D(D_TDIFF_MOVE_START, timeBins, "Time diff btwn move starts, 100 ms/bin");
+    DeclareHistogram1D(D_TDIFF_MOVE_STOP, timeBins, "Time diff btwn move stops, 100 ms/bin");
     DeclareHistogram1D(D_MOVETIME, timeBins, "Move time, 10 ms/bin");
     DeclareHistogram1D(D_BEAMTIME, timeBins, "Beam on time, 10 ms/bin");
     DeclareHistogram1D(D_COUNTER, counterBins, "MTC and beam counter");
