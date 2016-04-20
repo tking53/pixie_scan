@@ -58,13 +58,14 @@ namespace dammIds {
       const int DD_UNGEVSLOCA = 24+ORNL2016_OFFSET;
       const int DD_HAGVSLOCA = 27+ORNL2016_OFFSET;
       const int DD_UNHAGVSLOCA = 26+ORNL2016_OFFSET;
-      const int DD_GEVSTIME = 30+ORNL2016_OFFSET;
-      const int D_BEAMONRAW = 31+ORNL2016_OFFSET;
-      const int D_BEAMOFFRAW = 32+ORNL2016_OFFSET;
-      const int D_MEASUREONRAW = 33+ORNL2016_OFFSET;
-      const int D_MEASUREOFFRAW = 34+ORNL2016_OFFSET;
-      const int D_MTCSTARTRAW = 35+ORNL2016_OFFSET;
-      const int D_MTCSTOPRAW = 36+ORNL2016_OFFSET;
+      const int DD_GE1VSTIME = 30+ORNL2016_OFFSET; //Full Histogram # is 3300
+      const int DD_RAWGE1VSTIME = 31+ORNL2016_OFFSET; 
+      const int DD_GE2VSTIME = 32+ORNL2016_OFFSET;
+      const int DD_RAWGE2VSTIME = 33+ORNL2016_OFFSET;
+      const int DD_GE3VSTIME = 34+ORNL2016_OFFSET;
+      const int DD_RAWGE3VSTIME = 35+ORNL2016_OFFSET;
+      const int DD_GE4VSTIME = 36+ORNL2016_OFFSET;
+      const int DD_RAWGE4VSTIME = 37+ORNL2016_OFFSET;
     }
 }//namespace dammIds
 
@@ -88,7 +89,6 @@ void ORNL2016Processor::DeclarePlots(void) {
     DeclareHistogram2D(DD_TOFVSHAGRID, SC, SB, "ToF vs. HAGRiD");
     DeclareHistogram2D(DD_TOFVSGE, SC, SB, "ToF vs. Ge");
     //TOBY ADDS
-    //    DecalreHistogram2d(DD_GAMMVSTIME, SC , SB "Ge Gamma Vs Cycle");
     DeclareHistogram2D(DD_NAIVSGE, SD, SB, "NaI vs. Ge");
     DeclareHistogram2D(DD_NAIVSGEGATE, SD, SB, "NaI vs. Ge -Beta Gated");
     DeclareHistogram2D(DD_UNNAIVSLOCA, SF, S4, "NaI (Raw) vs. Crystal #");
@@ -97,13 +97,15 @@ void ORNL2016Processor::DeclarePlots(void) {
     DeclareHistogram2D(DD_GEVSLOCA, SD, S3, "HPGe (Cal) vs. Crystal #");
     DeclareHistogram2D(DD_UNHAGVSLOCA, SF, S5, "HAGRiD (Raw) vs. Crystal #");
     DeclareHistogram2D(DD_HAGVSLOCA, SF, S5, "HAGRiD (Cal) vs. Crystal #");
-    DeclareHistogram2D(DD_GEVSTIME, SD, S3,"Time Diff between beta and Ge");
-    DeclareHistogram1D(D_BEAMONRAW, SF, "Beam on leading edge");
-    DeclareHistogram1D(D_BEAMOFFRAW, SF, "Beam on Trailing edge");
-    DeclareHistogram1D(D_MEASUREONRAW, SF, "Beam off leading edge");
-    DeclareHistogram1D(D_MEASUREOFFRAW, SF, "Beam off Trailing edge");
-    DeclareHistogram1D(D_MTCSTARTRAW, SF , "MTC move Start signal");
-    DeclareHistogram1D(D_MTCSTOPRAW, SF , "MTC move Stop signal");
+    DeclareHistogram2D(DD_GE1VSTIME, SD, SB,"Cal Spectrum per cycle for Ge Leaf 1");
+    DeclareHistogram2D(DD_RAWGE1VSTIME,SE,SB,"Raw VS Cycle Number for Ge Leaf 1");
+    DeclareHistogram2D(DD_GE2VSTIME, SD, SB,"Cal Spectrum per cycle for Ge Leaf 2");
+    DeclareHistogram2D(DD_RAWGE2VSTIME,SE,SB,"Raw VS Cycle Number for Ge Leaf 2");
+    DeclareHistogram2D(DD_GE3VSTIME, SD, SB,"Cal Spectrum per cycle for Ge Leaf 3");
+    DeclareHistogram2D(DD_RAWGE3VSTIME,SE,SB,"Raw VS Cycle Number for Ge Leaf 3");
+    DeclareHistogram2D(DD_GE4VSTIME, SD, SB,"Cal Spectrum per cycle for Ge Leaf 4");
+    DeclareHistogram2D(DD_RAWGE4VSTIME,SE,SB,"Raw VS Cycle Number for Ge Leaf 4");
+
 
 }
 
@@ -249,16 +251,9 @@ bool ORNL2016Processor::Process(RawEvent &event) {
     
    /// PLOT CHARLIE REQUESTS
 
-
-    //  if (TreeCorrelator::get()->place("Cycle")->status()){	  
     static double cycleLast = 2;
-    //static double cycleLast = TreeCorrelator::get()->place("Cycle")->last().time;
-      //   cycleLast *= (Globals::get()->clockInSeconds()*1.e9);
-    	    
-//	    cout<<"FIRST CYCLE LAST   "<<cycleLast<<endl;
+    static int cycleNum = 0;
 
-	    //  }
-    //    if (hasbeta)
 
       for(vector<ChanEvent*>::const_iterator naiIt = naiEvts.begin();
 	  naiIt != naiEvts.end(); naiIt++) {
@@ -276,23 +271,30 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 	  //Cycle timing
 
 	  if (TreeCorrelator::get()->place("Cycle")->status()){	  
-	    
-	    
-	    if (genum ==2){	     
-	 
-	   double cycleTime = TreeCorrelator::get()->place("Cycle")->last().time;
-	    cycleTime *= (Globals::get()->clockInSeconds()*1.e9);
-	     
-	      //	      cout<<setprecision(16)<<"time = "<<cycleTime<<endl<<"last= "<<cycleLast<<endl;
-	    if ( cycleTime != cycleLast ){
-		cout <<setprecision(15)<< "Cycle Time = "<<cycleTime<<endl<<"Last= "<<cycleLast<<endl; 
-		double tdiff = (cycleTime - cycleLast) / 1e9;
+	      double cycleTime = TreeCorrelator::get()->place("Cycle")->last().time;
+	      cycleTime *= (Globals::get()->clockInSeconds()*1.e9);
+	      if ( cycleTime != cycleLast ){
+		//cout <<setprecision(15)<< "Cycle Time = "<<cycleTime<<endl<<"Last= "<<cycleLast<<endl; 
+		double tdiff = (cycleTime - cycleLast) / 1e7; //Outputs cycle length in msecs.
 		cycleLast = cycleTime;
-	      	cout<< "Cycle Last UPDATED "<<endl<<"Tdiff = "<<tdiff<<endl; 
+	      	cycleNum = cycleNum + 1;
+		cout<< "Cycle Change "<<endl<<"Tdiff (ms)= "<<tdiff<<endl<<"Now on Cycle #"<<cycleNum<<endl; 
 	      }
-	    }
+	      if (genum == 1){
+		plot(DD_GE1VSTIME, (*itGe)->GetCalEnergy(),cycleNum);
+		  plot(DD_RAWGE1VSTIME, (*itGe)->GetEnergy(),cycleNum);}
+	      else if (genum ==2){
+		plot(DD_GE2VSTIME, (*itGe)->GetCalEnergy(),cycleNum);
+		  plot(DD_RAWGE2VSTIME, (*itGe)->GetEnergy(),cycleNum);}
+	      else if (genum ==3){
+	      plot(DD_GE3VSTIME, (*itGe)->GetCalEnergy(),cycleNum);
+	      plot(DD_RAWGE3VSTIME, (*itGe)->GetEnergy(),cycleNum);}
+	      else if (genum ==4){
+	      plot(DD_GE4VSTIME, (*itGe)->GetCalEnergy(),cycleNum);
+	      plot(DD_RAWGE4VSTIME, (*itGe)->GetEnergy(),cycleNum);}
+
 	  }
-	   
+	     	   
 	   
 	  if (hasbeta)
 	    plot(DD_NAIVSGEGATE, (*itGe)->GetCalEnergy() , (*naiIt)->GetCalEnergy());
