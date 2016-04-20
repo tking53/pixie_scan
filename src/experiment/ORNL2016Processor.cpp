@@ -10,6 +10,7 @@
  */
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 
 #include <cmath>
 
@@ -246,9 +247,19 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 	hasbeta=true;}
     
     
-    
-    /// PLOT CHARLIE REQUESTS
+   /// PLOT CHARLIE REQUESTS
+
+
+    //  if (TreeCorrelator::get()->place("Cycle")->status()){	  
+    static double cycleLast = 2;
+    //static double cycleLast = TreeCorrelator::get()->place("Cycle")->last().time;
+      //   cycleLast *= (Globals::get()->clockInSeconds()*1.e9);
+    	    
+//	    cout<<"FIRST CYCLE LAST   "<<cycleLast<<endl;
+
+	    //  }
     //    if (hasbeta)
+
       for(vector<ChanEvent*>::const_iterator naiIt = naiEvts.begin();
 	  naiIt != naiEvts.end(); naiIt++) {
 	int nainum= (*naiIt)->GetChanID().GetLocation();
@@ -261,15 +272,26 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 	  plot(DD_NAIVSGE, (*itGe)->GetCalEnergy() , (*naiIt)->GetCalEnergy()); 
 	  plot(DD_GEVSLOCA, (*itGe)->GetCalEnergy(), genum);
 	  plot(DD_UNGEVSLOCA, (*itGe)->GetEnergy(), genum);
-	   
+
 	  //Cycle timing
-	  //	   double cycleTime = TreeCorrelator::get()->place("Cycle")->last().time;
-	  //	  cycleTime *= (Globals::get()->clockInSeconds()*1.e9);
-	  //cout << "Cycle Time = "<<cycleTime<<endl; 
-	   
-	   
 
-
+	  if (TreeCorrelator::get()->place("Cycle")->status()){	  
+	    
+	    
+	    if (genum ==2){	     
+	 
+	   double cycleTime = TreeCorrelator::get()->place("Cycle")->last().time;
+	    cycleTime *= (Globals::get()->clockInSeconds()*1.e9);
+	     
+	      //	      cout<<setprecision(16)<<"time = "<<cycleTime<<endl<<"last= "<<cycleLast<<endl;
+	    if ( cycleTime != cycleLast ){
+		cout <<setprecision(15)<< "Cycle Time = "<<cycleTime<<endl<<"Last= "<<cycleLast<<endl; 
+		double tdiff = (cycleTime - cycleLast) / 1e9;
+		cycleLast = cycleTime;
+	      	cout<< "Cycle Last UPDATED "<<endl<<"Tdiff = "<<tdiff<<endl; 
+	      }
+	    }
+	  }
 	   
 	   
 	  if (hasbeta)
@@ -284,8 +306,8 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 	plot(DD_UNHAGVSLOCA, (*itHag)->GetEnergy(),hagnum);
       } //Hagrid loop end	  
 
-    static const vector<ChanEvent*> &logicEvents =
-        event.GetSummary("logic", true)->GetList();
+      //static const vector<ChanEvent*> &logicEvents =
+      // event.GetSummary("logic", true)->GetList();
 
 
     //      for(vector<ChanEvents*>::const_iterator itLogic = logicEvents.begin();

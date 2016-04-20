@@ -23,7 +23,7 @@ namespace dammIds {
 	static const unsigned int MAX_LOGIC = 10; //!<Maximum Number of Logic Signals
 	const double logicPlotResolution = 
 	    10e-6 / Globals::get()->clockInSeconds(); //!<Resolution for Logic Plots
-	const double mtcPlotResolution = 10e-2 / clockInSeconds; //!<Res. for MTC Plots set as 100ms/bin
+	const double mtcPlotResolution = 10e-3 / clockInSeconds; //!<Res. for MTC Plots set as 10ms/bin
 
 	///Original Logic Processor 
         const int D_COUNTER_START  = 0;//!< Counter for the starts
@@ -194,7 +194,9 @@ bool LogicProcessor::PreProcess(RawEvent &event) {
 	    }
 	    TreeCorrelator::get()->place("Beam")->activate(time);
 	    TreeCorrelator::get()->place("Cycle")->activate(time);
-	    
+	    double lastCycle = TreeCorrelator::get()->place("Cycle")->last().time;
+	      cout <<"TreeCor call = "<<lastCycle<<endl;
+	      cout <<"dt_start = "<<dt_start/mtcPlotResolution<<endl;
 	    plot(D_TDIFF_BEAM_START, dt_start / mtcPlotResolution);
 	    plot(D_COUNTER, BEAM_START_BIN);
 	    plot(DD_TIME_DET_MTCEVENTS, time_x, BEAM_START);
