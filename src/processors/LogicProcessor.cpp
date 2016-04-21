@@ -194,7 +194,7 @@ bool LogicProcessor::PreProcess(RawEvent &event) {
 	    }
 	    TreeCorrelator::get()->place("Beam")->activate(time);
 	    TreeCorrelator::get()->place("Cycle")->activate(time);
-	    double lastCycle = TreeCorrelator::get()->place("Cycle")->last().time;
+	    //	    double lastCycle = TreeCorrelator::get()->place("Cycle")->last().time;
 	    //	      cout <<"TreeCor call = "<<lastCycle<<endl;
 	    // cout <<"dt_start = "<<dt_start/mtcPlotResolution<<endl;
 	    plot(D_TDIFF_BEAM_START, dt_start / mtcPlotResolution);

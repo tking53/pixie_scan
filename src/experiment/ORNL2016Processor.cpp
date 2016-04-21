@@ -280,18 +280,18 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 	      	cycleNum = cycleNum + 1;
 		cout<< "Cycle Change "<<endl<<"Tdiff (ms)= "<<tdiff<<endl<<"Now on Cycle #"<<cycleNum<<endl; 
 	      }
-	      if (genum == 1){
+	      if (genum == 0){
 		plot(DD_GE1VSTIME, (*itGe)->GetCalEnergy(),cycleNum);
 		  plot(DD_RAWGE1VSTIME, (*itGe)->GetEnergy(),cycleNum);}
-	      else if (genum ==2){
+	      else if (genum ==3){
 		plot(DD_GE2VSTIME, (*itGe)->GetCalEnergy(),cycleNum);
 		  plot(DD_RAWGE2VSTIME, (*itGe)->GetEnergy(),cycleNum);}
-	      else if (genum ==3){
-	      plot(DD_GE3VSTIME, (*itGe)->GetCalEnergy(),cycleNum);
-	      plot(DD_RAWGE3VSTIME, (*itGe)->GetEnergy(),cycleNum);}
 	      else if (genum ==4){
-	      plot(DD_GE4VSTIME, (*itGe)->GetCalEnergy(),cycleNum);
-	      plot(DD_RAWGE4VSTIME, (*itGe)->GetEnergy(),cycleNum);}
+		plot(DD_GE3VSTIME, (*itGe)->GetCalEnergy(),cycleNum);
+		plot(DD_RAWGE3VSTIME, (*itGe)->GetEnergy(),cycleNum);}
+	      else if (genum ==5){
+		plot(DD_GE4VSTIME, (*itGe)->GetCalEnergy(),cycleNum);
+		plot(DD_RAWGE4VSTIME, (*itGe)->GetEnergy(),cycleNum);}
 
 	  }
 	     	   
