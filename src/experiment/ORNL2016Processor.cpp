@@ -11,6 +11,7 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 
 #include <cmath>
 
@@ -48,24 +49,25 @@ namespace dammIds {
 	const int DD_TOFVSNAI = 12+ORNL2016_OFFSET;
 	const int DD_TOFVSHAGRID = 13+ORNL2016_OFFSET;
 	const int DD_TOFVSGE = 14+ORNL2016_OFFSET;
-      // const int DD_GAMMVSTIME =20+ORNL2016_OFFSET;
+
       //Toby Adds
-      const int DD_NAIVSGE = 20+ORNL2016_OFFSET;
-      const int DD_NAIVSGEGATE = 21+ORNL2016_OFFSET;
+      
+     
       const int DD_NAIVSLOCA =23+ORNL2016_OFFSET;
       const int DD_UNNAIVSLOCA = 22+ORNL2016_OFFSET;
       const int DD_GEVSLOCA = 25+ORNL2016_OFFSET;
       const int DD_UNGEVSLOCA = 24+ORNL2016_OFFSET;
       const int DD_HAGVSLOCA = 27+ORNL2016_OFFSET;
       const int DD_UNHAGVSLOCA = 26+ORNL2016_OFFSET;
-      const int DD_GE1VSTIME = 30+ORNL2016_OFFSET; //Full Histogram # is 3300
-      const int DD_RAWGE1VSTIME = 31+ORNL2016_OFFSET; 
-      const int DD_GE2VSTIME = 32+ORNL2016_OFFSET;
-      const int DD_RAWGE2VSTIME = 33+ORNL2016_OFFSET;
-      const int DD_GE3VSTIME = 34+ORNL2016_OFFSET;
-      const int DD_RAWGE3VSTIME = 35+ORNL2016_OFFSET;
-      const int DD_GE4VSTIME = 36+ORNL2016_OFFSET;
-      const int DD_RAWGE4VSTIME = 37+ORNL2016_OFFSET;
+  
+      //Ge Vs Cycle both Raw and calibrate
+      const int DD_GEXVSTIME = 30+ORNL2016_OFFSET; //Full Histogram # is 3300
+  
+      //RAW NaI vs cycle
+            const int DD_RAWNAIXVSTIME = 38+ORNL2016_OFFSET; 
+      //RAW HAGRiD vs cycle
+           const int DD_RAWHAGXVSTIME = 48+ORNL2016_OFFSET;
+      //63 is the next free id
     }
 }//namespace dammIds
 
@@ -89,24 +91,45 @@ void ORNL2016Processor::DeclarePlots(void) {
     DeclareHistogram2D(DD_TOFVSHAGRID, SC, SB, "ToF vs. HAGRiD");
     DeclareHistogram2D(DD_TOFVSGE, SC, SB, "ToF vs. Ge");
     //TOBY ADDS
-    DeclareHistogram2D(DD_NAIVSGE, SD, SB, "NaI vs. Ge");
-    DeclareHistogram2D(DD_NAIVSGEGATE, SD, SB, "NaI vs. Ge -Beta Gated");
+  
     DeclareHistogram2D(DD_UNNAIVSLOCA, SF, S4, "NaI (Raw) vs. Crystal #");
     DeclareHistogram2D(DD_NAIVSLOCA, SF, S4, "NaI (Cal) vs. Crystal #");
     DeclareHistogram2D(DD_UNGEVSLOCA, SF, S3, "HPGe (Raw) vs. Crystal #");
     DeclareHistogram2D(DD_GEVSLOCA, SD, S3, "HPGe (Cal) vs. Crystal #");
     DeclareHistogram2D(DD_UNHAGVSLOCA, SF, S5, "HAGRiD (Raw) vs. Crystal #");
     DeclareHistogram2D(DD_HAGVSLOCA, SF, S5, "HAGRiD (Cal) vs. Crystal #");
-    DeclareHistogram2D(DD_GE1VSTIME, SD, SB,"Cal Spectrum per cycle for Ge Leaf 1");
-    DeclareHistogram2D(DD_RAWGE1VSTIME,SE,SB,"Raw VS Cycle Number for Ge Leaf 1");
-    DeclareHistogram2D(DD_GE2VSTIME, SD, SB,"Cal Spectrum per cycle for Ge Leaf 2");
-    DeclareHistogram2D(DD_RAWGE2VSTIME,SE,SB,"Raw VS Cycle Number for Ge Leaf 2");
-    DeclareHistogram2D(DD_GE3VSTIME, SD, SB,"Cal Spectrum per cycle for Ge Leaf 3");
-    DeclareHistogram2D(DD_RAWGE3VSTIME,SE,SB,"Raw VS Cycle Number for Ge Leaf 3");
-    DeclareHistogram2D(DD_GE4VSTIME, SD, SB,"Cal Spectrum per cycle for Ge Leaf 4");
-    DeclareHistogram2D(DD_RAWGE4VSTIME,SE,SB,"Raw VS Cycle Number for Ge Leaf 4");
+   
+    //Declaring Ge vs Cycle
+    for (unsigned int i=0; i < 8; i+=2){
+      static  int n=1;
+      stringstream ss;
+      stringstream sss;
+      int odd=i+1;
+      ss<< "Raw VS Cycle Number for Ge Leaf " << n ;
+      sss<< "Calibrated VS Cycle Number for Ge Leaf " << n ;
+      DeclareHistogram2D(DD_GEXVSTIME + i,SE,SB,ss.str().c_str());
+      DeclareHistogram2D(DD_GEXVSTIME + odd,SE,SB,sss.str().c_str());
+      n=n+1;
+    }
 
+    //Declaring NaI vs Cycle
+    for (unsigned int i=0; i < 10; i++){
+      static int n=1;
+      stringstream ss;
+      ss<< "Raw VS Cycle Number for NaI# " << n ;
+      DeclareHistogram2D(DD_RAWNAIXVSTIME + i,SE,SB,ss.str().c_str());
+      n=n+1;
+    }
+    //Declaring HAGRiD vs Cycle
+    for (unsigned int i = 0; i < 16; i++){
+      static int n=1;
+      stringstream ss;
+      ss<< "Raw VS Cycle Number for HAGRiD# " << n;
+      DeclareHistogram2D(DD_RAWHAGXVSTIME + i,SE,SB,ss.str().c_str());
+      n=n+1;
+    }
 
+ 
 }
 
 ORNL2016Processor::ORNL2016Processor(const std::vector<std::string> &typeList,
@@ -251,73 +274,51 @@ bool ORNL2016Processor::Process(RawEvent &event) {
     
    /// PLOT CHARLIE REQUESTS
 
+	  //Cycle timing
     static double cycleLast = 2;
     static int cycleNum = 0;
-
+  if (TreeCorrelator::get()->place("Cycle")->status()){	  
+      double cycleTime = TreeCorrelator::get()->place("Cycle")->last().time;
+      cycleTime *= (Globals::get()->clockInSeconds()*1.e9);
+      if ( cycleTime != cycleLast ){
+	//cout <<setprecision(15)<< "Cycle Time = "<<cycleTime<<endl<<"Last= "<<cycleLast<<endl; 
+	double tdiff = (cycleTime - cycleLast) / 1e7; //Outputs cycle length in msecs.
+	cycleLast = cycleTime;
+	cycleNum = cycleNum + 1;
+	cout<< "Cycle Change "<<endl<<"Tdiff (ms)= "<<tdiff<<endl<<"Now on Cycle #"<<cycleNum<<endl; 
+      }
+  }
 
       for(vector<ChanEvent*>::const_iterator naiIt = naiEvts.begin();
 	  naiIt != naiEvts.end(); naiIt++) {
 	int nainum= (*naiIt)->GetChanID().GetLocation();
 	plot(DD_NAIVSLOCA, (*naiIt)->GetCalEnergy(), nainum);
 	plot(DD_UNNAIVSLOCA, (*naiIt)->GetEnergy(), nainum);
-   
-	for(vector<ChanEvent*>::const_iterator itGe = geEvts.begin();
+	
+	//Filling NaI vs Cycle
+	plot(DD_RAWNAIXVSTIME + nainum, (*naiIt)->GetEnergy(),cycleNum);
+    
+
+      } //NaI loop End
+      for(vector<ChanEvent*>::const_iterator itGe = geEvts.begin();
 	    itGe != geEvts.end(); itGe++) {
 	  int genum = (*itGe)->GetChanID().GetLocation();
-	  plot(DD_NAIVSGE, (*itGe)->GetCalEnergy() , (*naiIt)->GetCalEnergy()); 
+
 	  plot(DD_GEVSLOCA, (*itGe)->GetCalEnergy(), genum);
 	  plot(DD_UNGEVSLOCA, (*itGe)->GetEnergy(), genum);
 
-	  //Cycle timing
+	  plot(DD_GEXVSTIME + genum,(*itGe)->GetEnergy(),cycleNum);
+	  plot(DD_GEXVSTIME + genum + 1,(*itGe)->GetCalEnergy(),cycleNum);
+      } //GE loop end
 
-	  if (TreeCorrelator::get()->place("Cycle")->status()){	  
-	      double cycleTime = TreeCorrelator::get()->place("Cycle")->last().time;
-	      cycleTime *= (Globals::get()->clockInSeconds()*1.e9);
-	      if ( cycleTime != cycleLast ){
-		//cout <<setprecision(15)<< "Cycle Time = "<<cycleTime<<endl<<"Last= "<<cycleLast<<endl; 
-		double tdiff = (cycleTime - cycleLast) / 1e7; //Outputs cycle length in msecs.
-		cycleLast = cycleTime;
-	      	cycleNum = cycleNum + 1;
-		cout<< "Cycle Change "<<endl<<"Tdiff (ms)= "<<tdiff<<endl<<"Now on Cycle #"<<cycleNum<<endl; 
-	      }
-	      if (genum == 0){
-		plot(DD_GE1VSTIME, (*itGe)->GetCalEnergy(),cycleNum);
-		  plot(DD_RAWGE1VSTIME, (*itGe)->GetEnergy(),cycleNum);}
-	      else if (genum ==3){
-		plot(DD_GE2VSTIME, (*itGe)->GetCalEnergy(),cycleNum);
-		  plot(DD_RAWGE2VSTIME, (*itGe)->GetEnergy(),cycleNum);}
-	      else if (genum ==4){
-		plot(DD_GE3VSTIME, (*itGe)->GetCalEnergy(),cycleNum);
-		plot(DD_RAWGE3VSTIME, (*itGe)->GetEnergy(),cycleNum);}
-	      else if (genum ==5){
-		plot(DD_GE4VSTIME, (*itGe)->GetCalEnergy(),cycleNum);
-		plot(DD_RAWGE4VSTIME, (*itGe)->GetEnergy(),cycleNum);}
-
-	  }
-	     	   
-	   
-	  if (hasbeta)
-	    plot(DD_NAIVSGEGATE, (*itGe)->GetCalEnergy() , (*naiIt)->GetCalEnergy());
-	} //GE loop end
-      }//Nai Loop end
       for(vector<ChanEvent*>::const_iterator itHag = labr3Evts.begin();
 	  itHag != labr3Evts.end(); itHag++){
 	int hagnum = (*itHag)->GetChanID().GetLocation();
 	
 	plot(DD_HAGVSLOCA, (*itHag)->GetCalEnergy(),hagnum);
 	plot(DD_UNHAGVSLOCA, (*itHag)->GetEnergy(),hagnum);
+	plot(DD_RAWHAGXVSTIME + hagnum, (*itHag)->GetEnergy(),cycleNum);
       } //Hagrid loop end	  
-
-      //static const vector<ChanEvent*> &logicEvents =
-      // event.GetSummary("logic", true)->GetList();
-
-
-    //      for(vector<ChanEvents*>::const_iterator itLogic = logicEvents.begin();
-    //	  it != logicEvents.end (); itLogic++)
-    //	int mtcstart= (*itLogic)->
-
-
-
 
 
     EndProcess();
