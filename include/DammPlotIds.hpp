@@ -103,18 +103,18 @@ namespace dammIds {
     ///in VandleProcessor.cpp
     namespace vandle{
         const int OFFSET = 3200;//!< Offset for the VandleProcessor
-        const int RANGE = 150;//!< Range for the VandleProcessor
+        const int RANGE = 300;//!< Range for the VandleProcessor
     }
 
     ///in TeenyVandleProcessor.cpp
     namespace teenyvandle {
-        const int OFFSET = 3350;//!<Offset for TeenyVandleProcessor
+        const int OFFSET = 3500;//!<Offset for TeenyVandleProcessor
         const int RANGE = 20;//!<Range for TeenyVandleProcessor
     }
 
     ///in PulserProcessor.cpp
     namespace pulser{
-        const int OFFSET = 3400; //!< Offset for the PulserProcessor Hists
+        const int OFFSET = 3600; //!< Offset for the PulserProcessor Hists
         const int RANGE = 20;//!< Range for the PulserProcessor Hists
     }
 
