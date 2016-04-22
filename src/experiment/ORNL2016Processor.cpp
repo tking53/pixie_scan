@@ -55,7 +55,7 @@ namespace dammIds {
 
       //Ge Vs Cycle both Raw and calibrate
       const int DD_GEXVSTIME = 30+ORNL2016_OFFSET; //Full Histogram # is 3300
-  
+      const int DD_CALGEXVSTIME = 34+ORNL2016_OFFSET;
       //RAW NaI vs cycle
             const int DD_RAWNAIXVSTIME = 38+ORNL2016_OFFSET; 
       //RAW HAGRiD vs cycle
@@ -90,16 +90,16 @@ void ORNL2016Processor::DeclarePlots(void) {
     DeclareHistogram1D(D_BETASCALARVSTIME,cycleCount,"Beta scalar per cycle");
 
     //Declaring Ge vs Cycle
-    for (unsigned int i=0; i < 8; i+=2){
-      static  int n=1;
+    for (unsigned int i=0; i < 4; i++){
+      //static  int n=1;
       stringstream ss;
       stringstream sss;
-      int odd=i+1;
-      ss<< "Raw  Energy/2 VS Cycle Number Ge " << n ;
-      sss<< "Cal  Energy/2 VS Cycle Number Ge " << n ;
+      //      int odd=i+1;
+      ss<< "Raw  Energy/2 VS Cycle Number Ge " << i ;
+      sss<< "Cal  Energy/2 VS Cycle Number Ge " << i ;
       DeclareHistogram2D(DD_GEXVSTIME + i,SD,cycleCount,ss.str().c_str());
-      DeclareHistogram2D(DD_GEXVSTIME + odd,SD,cycleCount,sss.str().c_str());
-      n=n+1;
+      DeclareHistogram2D(DD_CALGEXVSTIME + i,SD,cycleCount,sss.str().c_str());
+      //n=n+1;
     }
 
     //Declaring NaI vs Cycle
@@ -267,7 +267,7 @@ bool ORNL2016Processor::Process(RawEvent &event) {
       if ( cycleTime != cycleLast ){
 	double tdiff = (cycleTime - cycleLast) / 1e7; //Outputs cycle length in msecs.
 	if (cycleNum == 0){	
-	  cout<<" #  There might be some events that are not included in Histograms that use cycleNum."<<endl<<" #  This is a product of not starting the cycle After the LDF."<<endl<<" #  This First TDIFF is most likly nonsense"<<endl;
+	  cout<<" #  There are some events at the beginning of the first segment missing from Histograms that use cycleNum."<<endl<<" #  This is a product of not starting the cycle After the LDF."<<endl<<" #  This First TDIFF is most likly nonsense"<<endl;
 	}
 	cycleLast = cycleTime;
 	cycleNum = cycleNum + 1;
@@ -297,9 +297,10 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 	itGe != geEvts.end(); itGe++) {
       int genum = (*itGe)->GetChanID().GetLocation();
       if (TreeCorrelator::get()->place("Cycle")->status()){
-	plot(DD_GEXVSTIME + genum,((*itGe)->GetEnergy())/2,cycleNum);
-	plot(DD_GEXVSTIME + genum + 1,((*itGe)->GetCalEnergy())/2,cycleNum);
+	plot(DD_GEXVSTIME + genum,(*itGe)->GetEnergy()/2,cycleNum);
+	plot(DD_CALGEXVSTIME + genum,(*itGe)->GetCalEnergy()/2,cycleNum);
       }
+
     } //GE loop end
     
     for(vector<ChanEvent*>::const_iterator itHag = labr3Evts.begin();
