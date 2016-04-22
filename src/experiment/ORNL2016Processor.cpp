@@ -51,7 +51,9 @@ namespace dammIds {
 	const int DD_TOFVSGE = 14+ORNL2016_OFFSET;
 
       //Toby Adds
-       //Ge Vs Cycle both Raw and calibrate
+      const int D_BETASCALARVSTIME= 20+ORNL2016_OFFSET;
+
+      //Ge Vs Cycle both Raw and calibrate
       const int DD_GEXVSTIME = 30+ORNL2016_OFFSET; //Full Histogram # is 3300
   
       //RAW NaI vs cycle
@@ -83,6 +85,7 @@ void ORNL2016Processor::DeclarePlots(void) {
     DeclareHistogram2D(DD_TOFVSGE, SC, SB, "ToF vs. Ge");
     //TOBY ADDS
   
+    DeclareHistogram1D(D_BETASCALARVSTIME,S9,"Beta scalar per cycle");
     //Declaring Ge vs Cycle
     for (unsigned int i=0; i < 8; i+=2){
       static  int n=1;
@@ -90,7 +93,7 @@ void ORNL2016Processor::DeclarePlots(void) {
       stringstream sss;
       int odd=i+1;
       ss<< "Raw  Energy/2 VS Cycle Number Ge " << n ;
-      sss<< "Calibrated  Energy/2 VS Cycle Number Ge " << n ;
+      sss<< "Cal  Energy/2 VS Cycle Number Ge " << n ;
       DeclareHistogram2D(DD_GEXVSTIME + i,SD,S9,ss.str().c_str());
       DeclareHistogram2D(DD_GEXVSTIME + odd,SD,S9,sss.str().c_str());
       n=n+1;
@@ -249,16 +252,10 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 	}
     }
 
-    static bool hasbeta=false;
-    for(vector<ChanEvent*>::const_iterator bIt = betaEvts.begin(); 
-	bIt != betaEvts.end(); bIt++) {
-      if((*bIt)->GetID() == 158 || (*bIt)->GetID() == 159)
-	hasbeta=true;}
-    
-    
-   /// PLOT CHARLIE REQUESTS
+   
+   /// PLOT ANALYSIS HISTOGRAMS
 
-	  //Cycle timing
+    //Cycle timing
     static double cycleLast = 2;
     static int cycleNum = 0;
   if (TreeCorrelator::get()->place("Cycle")->status()){	  
@@ -271,36 +268,46 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 	}
 	cycleLast = cycleTime;
 	cycleNum = cycleNum + 1;
-	cout<< "Cycle Change "<<endl<<"Tdiff (ms)= "<<tdiff<<endl<<"Now on Cycle #"<<cycleNum<<endl; 
+	cout<< "Cycle Change "<<endl<<"Tdiff (Cycle start and Now) (ms)= "<<tdiff<<endl<<"Starting on Cycle #"<<cycleNum<<endl; 
       }
   }
 
-      for(vector<ChanEvent*>::const_iterator naiIt = naiEvts.begin();
-	  naiIt != naiEvts.end(); naiIt++) {
-	int nainum= (*naiIt)->GetChanID().GetLocation();
+    static bool hasbeta=false;
+    for(vector<ChanEvent*>::const_iterator bIt = betaEvts.begin(); 
+	bIt != betaEvts.end(); bIt++) {
+      plot(D_BETASCALARVSTIME,cycleNum ); //PLOTTING BETA SCALAR RATE (HIS# 759) per CYCLE
+      if((*bIt)->GetID() == 158 || (*bIt)->GetID() == 159)
+	hasbeta=true;
+    }
 
-	//Filling NaI vs Cycle
-	if (TreeCorrelator::get()->place("Cycle")->status()){
+    for(vector<ChanEvent*>::const_iterator naiIt = naiEvts.begin();
+	naiIt != naiEvts.end(); naiIt++) {
+      int nainum= (*naiIt)->GetChanID().GetLocation();
+
+      //Filling NaI vs Cycle
+      if (TreeCorrelator::get()->place("Cycle")->status()){
 	plot(DD_RAWNAIXVSTIME + nainum,( (*naiIt)->GetEnergy())/2,cycleNum);
-	}
-      } //NaI loop End
- 
-     for(vector<ChanEvent*>::const_iterator itGe = geEvts.begin();
-	    itGe != geEvts.end(); itGe++) {
-	  int genum = (*itGe)->GetChanID().GetLocation();
-	  if (TreeCorrelator::get()->place("Cycle")->status()){
-	  plot(DD_GEXVSTIME + genum,(*itGe)->GetEnergy(),cycleNum);
-	  plot(DD_GEXVSTIME + genum + 1,(*itGe)->GetCalEnergy(),cycleNum);
-	  }
-      } //GE loop end
-
-      for(vector<ChanEvent*>::const_iterator itHag = labr3Evts.begin();
-	  itHag != labr3Evts.end(); itHag++){
-	int hagnum = (*itHag)->GetChanID().GetLocation();
-	if (TreeCorrelator::get()->place("Cycle")->status()){
+      }
+    } //NaI loop End
+    
+    for(vector<ChanEvent*>::const_iterator itGe = geEvts.begin();
+	itGe != geEvts.end(); itGe++) {
+      int genum = (*itGe)->GetChanID().GetLocation();
+      if (TreeCorrelator::get()->place("Cycle")->status()){
+	plot(DD_GEXVSTIME + genum,(*itGe)->GetEnergy(),cycleNum);
+	plot(DD_GEXVSTIME + genum + 1,(*itGe)->GetCalEnergy(),cycleNum);
+      }
+    } //GE loop end
+    
+    for(vector<ChanEvent*>::const_iterator itHag = labr3Evts.begin();
+	itHag != labr3Evts.end(); itHag++){
+      int hagnum = (*itHag)->GetChanID().GetLocation();
+      if (TreeCorrelator::get()->place("Cycle")->status()){
 	plot(DD_RAWHAGXVSTIME + hagnum, (*itHag)->GetEnergy(),cycleNum);
-	}
-     } //Hagrid loop end	  
+      }
+    } //Hagrid loop end	  
+    
+      
 
 
     EndProcess();
