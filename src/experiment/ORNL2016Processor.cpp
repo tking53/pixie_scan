@@ -51,16 +51,7 @@ namespace dammIds {
 	const int DD_TOFVSGE = 14+ORNL2016_OFFSET;
 
       //Toby Adds
-      
-     
-      const int DD_NAIVSLOCA =23+ORNL2016_OFFSET;
-      const int DD_UNNAIVSLOCA = 22+ORNL2016_OFFSET;
-      const int DD_GEVSLOCA = 25+ORNL2016_OFFSET;
-      const int DD_UNGEVSLOCA = 24+ORNL2016_OFFSET;
-      const int DD_HAGVSLOCA = 27+ORNL2016_OFFSET;
-      const int DD_UNHAGVSLOCA = 26+ORNL2016_OFFSET;
-  
-      //Ge Vs Cycle both Raw and calibrate
+       //Ge Vs Cycle both Raw and calibrate
       const int DD_GEXVSTIME = 30+ORNL2016_OFFSET; //Full Histogram # is 3300
   
       //RAW NaI vs cycle
@@ -92,23 +83,16 @@ void ORNL2016Processor::DeclarePlots(void) {
     DeclareHistogram2D(DD_TOFVSGE, SC, SB, "ToF vs. Ge");
     //TOBY ADDS
   
-    DeclareHistogram2D(DD_UNNAIVSLOCA, SF, S4, "NaI (Raw) vs. Crystal #");
-    DeclareHistogram2D(DD_NAIVSLOCA, SF, S4, "NaI (Cal) vs. Crystal #");
-    DeclareHistogram2D(DD_UNGEVSLOCA, SF, S3, "HPGe (Raw) vs. Crystal #");
-    DeclareHistogram2D(DD_GEVSLOCA, SD, S3, "HPGe (Cal) vs. Crystal #");
-    DeclareHistogram2D(DD_UNHAGVSLOCA, SF, S5, "HAGRiD (Raw) vs. Crystal #");
-    DeclareHistogram2D(DD_HAGVSLOCA, SF, S5, "HAGRiD (Cal) vs. Crystal #");
-   
     //Declaring Ge vs Cycle
     for (unsigned int i=0; i < 8; i+=2){
       static  int n=1;
       stringstream ss;
       stringstream sss;
       int odd=i+1;
-      ss<< "Raw VS Cycle Number for Ge Leaf " << n ;
-      sss<< "Calibrated VS Cycle Number for Ge Leaf " << n ;
-      DeclareHistogram2D(DD_GEXVSTIME + i,SE,SB,ss.str().c_str());
-      DeclareHistogram2D(DD_GEXVSTIME + odd,SE,SB,sss.str().c_str());
+      ss<< "Raw  Energy/2 VS Cycle Number Ge " << n ;
+      sss<< "Calibrated  Energy/2 VS Cycle Number Ge " << n ;
+      DeclareHistogram2D(DD_GEXVSTIME + i,SD,S9,ss.str().c_str());
+      DeclareHistogram2D(DD_GEXVSTIME + odd,SD,S9,sss.str().c_str());
       n=n+1;
     }
 
@@ -116,16 +100,16 @@ void ORNL2016Processor::DeclarePlots(void) {
     for (unsigned int i=0; i < 10; i++){
       static int n=1;
       stringstream ss;
-      ss<< "Raw VS Cycle Number for NaI# " << n ;
-      DeclareHistogram2D(DD_RAWNAIXVSTIME + i,SE,SB,ss.str().c_str());
+      ss<< "Raw Energy/2 VS Cycle Number NaI# " << n ;
+      DeclareHistogram2D(DD_RAWNAIXVSTIME + i,SD,S9,ss.str().c_str());
       n=n+1;
     }
     //Declaring HAGRiD vs Cycle
     for (unsigned int i = 0; i < 16; i++){
       static int n=1;
       stringstream ss;
-      ss<< "Raw VS Cycle Number for HAGRiD# " << n;
-      DeclareHistogram2D(DD_RAWHAGXVSTIME + i,SE,SB,ss.str().c_str());
+      ss<< "Raw Energy/2 VS Cycle Number HAGRiD# " << n;
+      DeclareHistogram2D(DD_RAWHAGXVSTIME + i,SD,S9,ss.str().c_str());
       n=n+1;
     }
 
@@ -281,8 +265,10 @@ bool ORNL2016Processor::Process(RawEvent &event) {
       double cycleTime = TreeCorrelator::get()->place("Cycle")->last().time;
       cycleTime *= (Globals::get()->clockInSeconds()*1.e9);
       if ( cycleTime != cycleLast ){
-	//cout <<setprecision(15)<< "Cycle Time = "<<cycleTime<<endl<<"Last= "<<cycleLast<<endl; 
 	double tdiff = (cycleTime - cycleLast) / 1e7; //Outputs cycle length in msecs.
+	if (cycleNum == 0){	
+	  cout<<" #  There might be some events that are not included in Histograms that use cycleNum."<<endl<<" #  This is a product of not starting the cycle After the LDF."<<endl<<" #  This First TDIFF is most likly nonsense"<<endl;
+	}
 	cycleLast = cycleTime;
 	cycleNum = cycleNum + 1;
 	cout<< "Cycle Change "<<endl<<"Tdiff (ms)= "<<tdiff<<endl<<"Now on Cycle #"<<cycleNum<<endl; 
@@ -292,33 +278,29 @@ bool ORNL2016Processor::Process(RawEvent &event) {
       for(vector<ChanEvent*>::const_iterator naiIt = naiEvts.begin();
 	  naiIt != naiEvts.end(); naiIt++) {
 	int nainum= (*naiIt)->GetChanID().GetLocation();
-	plot(DD_NAIVSLOCA, (*naiIt)->GetCalEnergy(), nainum);
-	plot(DD_UNNAIVSLOCA, (*naiIt)->GetEnergy(), nainum);
-	
-	//Filling NaI vs Cycle
-	plot(DD_RAWNAIXVSTIME + nainum, (*naiIt)->GetEnergy(),cycleNum);
-    
 
+	//Filling NaI vs Cycle
+	if (TreeCorrelator::get()->place("Cycle")->status()){
+	plot(DD_RAWNAIXVSTIME + nainum,( (*naiIt)->GetEnergy())/2,cycleNum);
+	}
       } //NaI loop End
-      for(vector<ChanEvent*>::const_iterator itGe = geEvts.begin();
+ 
+     for(vector<ChanEvent*>::const_iterator itGe = geEvts.begin();
 	    itGe != geEvts.end(); itGe++) {
 	  int genum = (*itGe)->GetChanID().GetLocation();
-
-	  plot(DD_GEVSLOCA, (*itGe)->GetCalEnergy(), genum);
-	  plot(DD_UNGEVSLOCA, (*itGe)->GetEnergy(), genum);
-
+	  if (TreeCorrelator::get()->place("Cycle")->status()){
 	  plot(DD_GEXVSTIME + genum,(*itGe)->GetEnergy(),cycleNum);
 	  plot(DD_GEXVSTIME + genum + 1,(*itGe)->GetCalEnergy(),cycleNum);
+	  }
       } //GE loop end
 
       for(vector<ChanEvent*>::const_iterator itHag = labr3Evts.begin();
 	  itHag != labr3Evts.end(); itHag++){
 	int hagnum = (*itHag)->GetChanID().GetLocation();
-	
-	plot(DD_HAGVSLOCA, (*itHag)->GetCalEnergy(),hagnum);
-	plot(DD_UNHAGVSLOCA, (*itHag)->GetEnergy(),hagnum);
+	if (TreeCorrelator::get()->place("Cycle")->status()){
 	plot(DD_RAWHAGXVSTIME + hagnum, (*itHag)->GetEnergy(),cycleNum);
-      } //Hagrid loop end	  
+	}
+     } //Hagrid loop end	  
 
 
     EndProcess();
