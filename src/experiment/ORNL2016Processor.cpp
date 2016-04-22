@@ -297,8 +297,8 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 	itGe != geEvts.end(); itGe++) {
       int genum = (*itGe)->GetChanID().GetLocation();
       if (TreeCorrelator::get()->place("Cycle")->status()){
-	plot(DD_GEXVSTIME + genum,(*itGe)->GetEnergy(),cycleNum);
-	plot(DD_GEXVSTIME + genum + 1,(*itGe)->GetCalEnergy(),cycleNum);
+	plot(DD_GEXVSTIME + genum,((*itGe)->GetEnergy())/2,cycleNum);
+	plot(DD_GEXVSTIME + genum + 1,((*itGe)->GetCalEnergy())/2,cycleNum);
       }
     } //GE loop end
     
@@ -306,7 +306,7 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 	itHag != labr3Evts.end(); itHag++){
       int hagnum = (*itHag)->GetChanID().GetLocation();
       if (TreeCorrelator::get()->place("Cycle")->status()){
-	plot(DD_RAWHAGXVSTIME + hagnum, (*itHag)->GetEnergy(),cycleNum);
+	plot(DD_RAWHAGXVSTIME + hagnum, ((*itHag)->GetEnergy()/2),cycleNum);
       }
     } //Hagrid loop end	  
     
