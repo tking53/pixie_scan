@@ -83,9 +83,12 @@ void ORNL2016Processor::DeclarePlots(void) {
     DeclareHistogram2D(DD_TOFVSNAI, SC, SB, "ToF vs. NaI");
     DeclareHistogram2D(DD_TOFVSHAGRID, SC, SB, "ToF vs. HAGRiD");
     DeclareHistogram2D(DD_TOFVSGE, SC, SB, "ToF vs. Ge");
+
     //TOBY ADDS
-  
-    DeclareHistogram1D(D_BETASCALARVSTIME,S9,"Beta scalar per cycle");
+    static int cycleCount = SA; // Sets max ploted cycles for the "per cycle" histograms
+   
+    DeclareHistogram1D(D_BETASCALARVSTIME,cycleCount,"Beta scalar per cycle");
+
     //Declaring Ge vs Cycle
     for (unsigned int i=0; i < 8; i+=2){
       static  int n=1;
@@ -94,8 +97,8 @@ void ORNL2016Processor::DeclarePlots(void) {
       int odd=i+1;
       ss<< "Raw  Energy/2 VS Cycle Number Ge " << n ;
       sss<< "Cal  Energy/2 VS Cycle Number Ge " << n ;
-      DeclareHistogram2D(DD_GEXVSTIME + i,SD,S9,ss.str().c_str());
-      DeclareHistogram2D(DD_GEXVSTIME + odd,SD,S9,sss.str().c_str());
+      DeclareHistogram2D(DD_GEXVSTIME + i,SD,cycleCount,ss.str().c_str());
+      DeclareHistogram2D(DD_GEXVSTIME + odd,SD,cycleCount,sss.str().c_str());
       n=n+1;
     }
 
@@ -104,7 +107,7 @@ void ORNL2016Processor::DeclarePlots(void) {
       static int n=1;
       stringstream ss;
       ss<< "Raw Energy/2 VS Cycle Number NaI# " << n ;
-      DeclareHistogram2D(DD_RAWNAIXVSTIME + i,SD,S9,ss.str().c_str());
+      DeclareHistogram2D(DD_RAWNAIXVSTIME + i,SD,cycleCount,ss.str().c_str());
       n=n+1;
     }
     //Declaring HAGRiD vs Cycle
@@ -112,7 +115,7 @@ void ORNL2016Processor::DeclarePlots(void) {
       static int n=1;
       stringstream ss;
       ss<< "Raw Energy/2 VS Cycle Number HAGRiD# " << n;
-      DeclareHistogram2D(DD_RAWHAGXVSTIME + i,SD,S9,ss.str().c_str());
+      DeclareHistogram2D(DD_RAWHAGXVSTIME + i,SD,cycleCount,ss.str().c_str());
       n=n+1;
     }
 
