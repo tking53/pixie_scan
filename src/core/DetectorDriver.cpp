@@ -22,7 +22,6 @@
 #include "RawEvent.hpp"
 #include "TreeCorrelator.hpp"
 
-#include "BeamLogicProcessor.hpp"
 #include "BetaScintProcessor.hpp"
 #include "DoubleBetaProcessor.hpp"
 #include "Hen3Processor.hpp"
@@ -123,10 +122,7 @@ void DetectorDriver::LoadProcessors(Messenger& m) {
         string name = processor.attribute("name").value();
 
         m.detail("Loading " + name);
-        if (name == "BeamLogicProcessor") {
-            vecProcess.push_back(new BeamLogicProcessor());
-        }
-        else if (name == "BetaScintProcessor") {
+	if (name == "BetaScintProcessor") {
             double gamma_beta_limit =
                 processor.attribute("gamma_beta_limit").as_double(-1);
             if (gamma_beta_limit == -1) {
