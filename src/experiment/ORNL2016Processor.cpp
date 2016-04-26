@@ -265,18 +265,24 @@ bool ORNL2016Processor::Process(RawEvent &event) {
    /// PLOT ANALYSIS HISTOGRAMS
 
  
-  //declare and initalize arrays for root tree.
-  type rootGe [4];
-  type rootNaI [10];
-  type rootHag [16];
-  double rootGe [4] = {};
-  double rootNaI [10] = {};
-  double rootHag [16] = {};
-  // Create Root File and tree+ branch
-  TFile hfile("ORNL2016-gamma.root","RECREATE");
-  TTree *tree = new TTree("gammaCycle","Tree containing gamma events with cycle and betas");
-  tree->Branch("gamma",&gamma,"cycle,beta,Ge,NaI,Hag");
+  //declare and initalize struct for root tree.
+  typedef struct { 
+    double Hag[16];
+    double NaI[10];
+    double Ge[4];
+    double beta;
+    int cycle;
+  } RAY;
+  static RAY calgam;
+  static RAY rawgam;
 
+  // Create Root File and tree+ branchs
+  TFile hfile("ORNL2016-gamma.root","UPDATE");
+  TTree *tree = new TTree("gammas","Tree containing gamma events with cycle and betas");
+  TBranch *calbranch = tree->Branch("calgam",&calgam,"Hag[16]/D:NaI[10]/D:Ge[4]/D:beta/D:cycle/i");
+  TBranch *rawbranch = tree->Branch("rawgam",&rawgam,"Hag[16]/D:NaI[10]/D:Ge[4]/D:beta/D:cycle/i");
+  TRandom3 rand;
+  
    //Cycle timing
     static double cycleLast = 2;
     static int cycleNum = 0;
@@ -291,8 +297,8 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 	cycleLast = cycleTime;
 	cycleNum = cycleNum + 1;
 	cout<< "Cycle Change "<<endl<<"Tdiff (Cycle start and Now) (ms)= "<<tdiff<<endl<<"Starting on Cycle #"<<cycleNum<<endl; 
-	gamma.cycle = cycleNum;
-
+	calgam.cycle = cycleNum;
+	rawgam.cycle = cycleNum;
       }
   
   }
@@ -302,8 +308,9 @@ bool ORNL2016Processor::Process(RawEvent &event) {
     for(vector<ChanEvent*>::const_iterator bIt = betaEvts.begin(); 
 	bIt != betaEvts.end(); bIt++) {
       plot(D_BETASCALARVSTIME,cycleNum ); //PLOTTING BETA SCALAR RATE (HIS# 759) per CYCLE
-      gamma.beta = 
-
+      calgam.beta = (*bIt)->GetCalEnergy();
+      rawgam.beta = (*bIt)->GetEnergy();
+ 
       if((*bIt)->GetID() == 158 || (*bIt)->GetID() == 159)
 	hasbeta=true;
       
@@ -316,6 +323,8 @@ bool ORNL2016Processor::Process(RawEvent &event) {
       //Filling NaI vs Cycle
       if (TreeCorrelator::get()->place("Cycle")->status()){
 	plot(DD_RAWNAIXVSTIME + nainum,( (*naiIt)->GetEnergy())/2,cycleNum);
+	calgam.NaI[nainum] = (*naiIt)->GetCalEnergy();
+	rawgam.NaI[nainum] = (*naiIt)->GetEnergy();
       }
     } //NaI loop End
     
@@ -326,6 +335,9 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 	plot(DD_GEXVSTIME + genum,(*itGe)->GetEnergy()/2,cycleNum);
 	plot(DD_CALGEXVSTIME + genum,(*itGe)->GetCalEnergy()/2,cycleNum);
       }
+      rawgam.Ge[genum] = (*itGe)->GetEnergy();
+      calgam.Ge[genum] = (*itGe)->GetCalEnergy();
+          
 
     } //GE loop end
     
