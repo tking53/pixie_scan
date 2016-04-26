@@ -26,6 +26,12 @@
 #include "DoubleBetaProcessor.hpp"
 #include "TreeCorrelator.hpp"
 #include "LogicProcessor.hpp"
+ #include "TFile.h"
+ #include "TH1.h"
+ #include "TH2.h"
+ #include "TProfile.h"
+ #include "TRandom.h"
+ #include "TTree.h"
 
 namespace dammIds {
     namespace vandle {
@@ -258,7 +264,20 @@ bool ORNL2016Processor::Process(RawEvent &event) {
    
    /// PLOT ANALYSIS HISTOGRAMS
 
-    //Cycle timing
+ 
+  //declare and initalize arrays for root tree.
+  type rootGe [4];
+  type rootNaI [10];
+  type rootHag [16];
+  double rootGe [4] = {};
+  double rootNaI [10] = {};
+  double rootHag [16] = {};
+  // Create Root File and tree+ branch
+  TFile hfile("ORNL2016-gamma.root","RECREATE");
+  TTree *tree = new TTree("gammaCycle","Tree containing gamma events with cycle and betas");
+  tree->Branch("gamma",&gamma,"cycle,beta,Ge,NaI,Hag");
+
+   //Cycle timing
     static double cycleLast = 2;
     static int cycleNum = 0;
   if (TreeCorrelator::get()->place("Cycle")->status()){	  
@@ -272,15 +291,22 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 	cycleLast = cycleTime;
 	cycleNum = cycleNum + 1;
 	cout<< "Cycle Change "<<endl<<"Tdiff (Cycle start and Now) (ms)= "<<tdiff<<endl<<"Starting on Cycle #"<<cycleNum<<endl; 
+	gamma.cycle = cycleNum;
+
       }
+  
   }
 
+  //Betas
     static bool hasbeta=false;
     for(vector<ChanEvent*>::const_iterator bIt = betaEvts.begin(); 
 	bIt != betaEvts.end(); bIt++) {
       plot(D_BETASCALARVSTIME,cycleNum ); //PLOTTING BETA SCALAR RATE (HIS# 759) per CYCLE
+      gamma.beta = 
+
       if((*bIt)->GetID() == 158 || (*bIt)->GetID() == 159)
 	hasbeta=true;
+      
     }
 
     for(vector<ChanEvent*>::const_iterator naiIt = naiEvts.begin();
