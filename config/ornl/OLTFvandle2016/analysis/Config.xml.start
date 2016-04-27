@@ -19,11 +19,7 @@
     </Global>
 
     <DetectorDriver>
-        <Analyzer name="TraceExtractor" type="liglass" subtype="six"/>
-        <Analyzer name="WaveformAnalyzer"/>
-        <Analyzer name="FittingAnalyzer"/>
-
-	<Processor name="GeProcessor"
+      <Processor name="GeProcessor"
             gamma_threshold="10.0"
             low_ratio="1.5"
             high_ratio="3.0"

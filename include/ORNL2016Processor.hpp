@@ -5,20 +5,27 @@
  *\author S. V. Paulauskas
  *\date Feb, 2016
  */
+
 #ifndef __ORNL2016PROCESSOR_HPP_
 #define __ORNL2016PROCESSOR_HPP_
+#include <fstream>
 
 #include "DoubleBetaProcessor.hpp"
 #include "EventProcessor.hpp"
 #include "VandleProcessor.hpp"
 
-/// Class to process VANDLE analysis for ISOLDE experiments 599 and 600 related events
+#ifdef useroot
+#include <TFile.h>
+#include <TTree.h>
+#endif
+
+/// Class to process VANDLE analysis for ORNL2016 campaign  at the OLTF
 class ORNL2016Processor : public VandleProcessor {
 public:
     /** Default Constructor */
     ORNL2016Processor();
     /** Default Destructor */
-    ~ORNL2016Processor() {};
+    ~ORNL2016Processor() ;
     /** Declare the plots used in the analysis */
     virtual void DeclarePlots(void);
 
@@ -39,6 +46,20 @@ public:
     * \param [in] event : the event to process
     * \return Returns true if the processing was successful */
     virtual bool Process(RawEvent &event);
-private:
+private:  
+  TTree *tree ;
+  TBranch *calbranch;
+  TBranch *rawbranch;
+
+  struct RAY { 
+    double Hag[16];
+    double NaI[10];
+    double Ge[4];
+    double beta;
+    int cycle;
+  } calgam, rawgam;
+
+  TFile *rootFName_;
+  
 };
 #endif
