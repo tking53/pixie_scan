@@ -46,6 +46,9 @@ public:
     * \param [in] event : the event to process
     * \return Returns true if the processing was successful */
     virtual bool Process(RawEvent &event);
+
+
+
 private:  
   TTree *tree ;
   TBranch *calbranch;
@@ -57,9 +60,14 @@ private:
     double Ge[4];
     double beta;
     int cycle;
-  } calgam, rawgam;
+  } calgam, rawgam, blank;
+
 
   TFile *rootFName_;
-  
+    //functions for root preocessing
+  void rootArrayreset(double arrayName[], int arraySize);
+
+  void rootGstrutInit(RAY &strutName);
 };
 #endif
+
