@@ -33,12 +33,12 @@ ValgrindOut.xml
 *.tgz
 *.tar.gz
 
-#DAMM files
+#DAMM/ROOT files
 *.drr
 *.his
 *.list
 *.log
-
+*.root
 # Data directories
 HIS
 LDF

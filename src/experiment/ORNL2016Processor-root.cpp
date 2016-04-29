@@ -56,8 +56,11 @@ namespace dammIds {
 	const int DD_TOFVSHAGRID = 13+ORNL2016_OFFSET;
 	const int DD_TOFVSGE = 14+ORNL2016_OFFSET;
 
-      const int D_GE0 = 30+ORNL2016_OFFSET;
-
+      // const int DD_CYCVSGE0 = 30+ORNL2016_OFFSET;
+      // const int DD_CYCVSGE0R = 31+ORNL2016_OFFSET;
+      // const int D_GE0 = 34+ORNL2016_OFFSET;
+      // const int D_GE0R = 35+ORNL2016_OFFSET;
+      
     }
 }//namespace dammIds
 
@@ -80,7 +83,11 @@ void ORNL2016Processor::DeclarePlots(void) {
     DeclareHistogram2D(DD_TOFVSNAI, SC, SB, "ToF vs. NaI");
     DeclareHistogram2D(DD_TOFVSHAGRID, SC, SB, "ToF vs. HAGRiD");
     DeclareHistogram2D(DD_TOFVSGE, SC, SB, "ToF vs. Ge");
-    DeclareHistogram1D(D_GE0 , SD, "Apples+apples GE[0]");
+    // DeclareHistogram2D(DD_CYCVSGE0 , SD ,S7, "Apples+apples GE[0]");
+    // DeclareHistogram2D(DD_CYCVSGE0R , SD ,S7, "Apples+apples RAW GE[0]");
+    // DeclareHistogram1D(D_GE0 , SD , "Apples+apples GE[0] remove of 1313");
+    // DeclareHistogram1D(D_GE0R , SD , "Apples+apples GE[0] remove of 113");
+
 }
 
 void ORNL2016Processor::rootArrayreset(double arrayName[], int arraySize){ //refills arrayName with 0s 
@@ -113,10 +120,10 @@ ORNL2016Processor::ORNL2016Processor(const std::vector<std::string> &typeList,
     rootname<<tmp<<".root";
     rootFName_ =  new TFile(rootname.str().c_str(),"RECREATE");
     tree = new TTree("gammas","Tree containing gamma events with cycle and betas");
-    calbranch = tree->Branch("calgam",&calgam,"Hag[16]/D:NaI[10]/D:Ge[4]/D:beta/D:cycle/i");
+    //    calbranch = tree->Branch("calgam",&calgam,"Hag[16]/D:NaI[10]/D:Ge[4]/D:beta/D:cycle/i");
     rawbranch = tree->Branch("rawgam",&rawgam,"Hag[16]/D:NaI[10]/D:Ge[4]/D:beta/D:cycle/i");
     tree->SetAutoFlush(3000);
-    rootGstrutInit(calgam);
+    //    rootGstrutInit(calgam);
     rootGstrutInit(rawgam);
 }
 
@@ -124,6 +131,7 @@ ORNL2016Processor::ORNL2016Processor(const std::vector<std::string> &typeList,
 ORNL2016Processor::~ORNL2016Processor(){
   rootFName_->Write();
   rootFName_->Close();
+  
   delete(rootFName_);
 
 
@@ -133,8 +141,7 @@ ORNL2016Processor::~ORNL2016Processor(){
 bool ORNL2016Processor::PreProcess(RawEvent &event) {
     if (!EventProcessor::PreProcess(event))
         return(false);
-    if (!VandleProcessor::PreProcess(event))
-	return(false);
+   
 
     EndProcess();
     return(true);
@@ -143,13 +150,10 @@ bool ORNL2016Processor::PreProcess(RawEvent &event) {
 bool ORNL2016Processor::Process(RawEvent &event) {
     if (!EventProcessor::Process(event))
         return(false);
-    if(!VandleProcessor::Process(event))
-        return(false);
+  
 
     static const vector<ChanEvent*> & betaEvts =
         event.GetSummary("beta:double")->GetList();
-    static const vector<ChanEvent*> &liEvts =
-        event.GetSummary("liglass")->GetList();
     static const vector<ChanEvent*> &labr3Evts =
         event.GetSummary("labr3")->GetList();
     static const vector<ChanEvent*> &naiEvts =
@@ -157,78 +161,7 @@ bool ORNL2016Processor::Process(RawEvent &event) {
     static const vector<ChanEvent*> &geEvts =
         event.GetSummary("ge")->GetList();
 
-    BarBuilder builder(betaEvts);
-    BarMap betas = builder.GetBarMap();
-    
-    bool hasMultOne = bars_.size() == 1;
 
-    if(bars_.size() != 0)
-	plot(D_VANDLEMULT, bars_.size());
-    
-    for(BarMap::iterator itStart = betas.begin();
-	itStart != betas.end(); itStart++) {
-	
-	unsigned int startLoc = (*itStart).first.first;
-	BarDetector start = (*itStart).second;
-	
-	if(bars_.size() != 0) {
-	    for (BarMap::iterator it = bars_.begin(); it !=  bars_.end(); it++) {
-		TimingDefs::TimingIdentifier barId = (*it).first;
-		BarDetector bar = (*it).second;
-		
-		if(!bar.GetHasEvent())
-		    continue;
-		
-		TimingCalibration cal = bar.GetCalibration();
-		
-		double tofOffset = cal.GetTofOffset(startLoc);
-		double tof = bar.GetWalkCorTimeAve() -
-		    start.GetWalkCorTimeAve() + tofOffset;
-		
-		double corTof =
-		    CorrectTOF(tof, bar.GetFlightPath(), cal.GetZ0());
-		
-		plot(DD_QDCTOFNOGATE, tof*plotMult_+plotOffset_, bar.GetQdc());
-		if(hasMultOne)
-		    plot(DD_QDCVSCORTOFMULT1, corTof*plotMult_+plotOffset_, bar.GetQdc());
-		
-		for(vector<ChanEvent*>::const_iterator it = labr3Evts.begin(); 
-		    it != labr3Evts.end(); it++)
-		    plot(DD_TOFVSHAGRID, (*it)->GetCalEnergy(), tof*plotMult_+200);
-		
-		for(vector<ChanEvent*>::const_iterator naiIt = naiEvts.begin(); 
-		    naiIt != naiEvts.end(); naiIt++)
-		    plot(DD_TOFVSNAI, (*naiIt)->GetCalEnergy(), tof*plotMult_+200);
-		
-		for (vector<ChanEvent *>::const_iterator itGe = geEvts.begin();
-		     itGe != geEvts.end(); itGe++) 
-		    plot(DD_TOFVSGE, (*itGe)->GetCalEnergy(), tof*plotMult_+200);
-		//		for (vector<ChanEvent *>::const_iterator itGe = geEvts.begin();
-		//   itGe != geEvts.end(); itGe++) 
-		//  plot(DD_GAMMVSTIME, (*itGe)->GetCalEnergy(), tof*plotMult_+200);
-	    } //(BarMap::iterator itBar
-	} //if(bars_.size != 0)
-	
-	for(vector<ChanEvent*>::const_iterator liIt = liEvts.begin(); 
-	    liIt != liEvts.end(); liIt++) {
-	    unsigned int id = (*liIt)->GetID();
-	    
-	    //Beta gated energy
-	    plot(DD_LIGLEN, (*liIt)->GetEnergy(), id);
-
-	    double li_tof = ((*liIt)->GetTime() - 0.5*(start.GetLeftSide().GetPixieTime()+
-						       start.GetRightSide().GetPixieTime()));
-	    //cout << id << " " << li_tof+1000 << endl;
-	    if((*liIt)->GetID() != 12)
-		plot(DD_LIGLTOF, li_tof+1000, (*liIt)->GetEnergy());
-	}
-    } // for(TimingMap::iterator itStart
-    
-    ///PLOTTING THE SINGLES SPECTRA FOR THE LIGLASS
-    for(vector<ChanEvent*>::const_iterator liIt = liEvts.begin(); 
-	liIt != liEvts.end(); liIt++)
-	plot(DD_LIGLEN, (*liIt)->GetEnergy(), (*liIt)->GetID()-11);
-    
     ///PLOTTING THE SINGLES AND BETA GATED SPECTRA FOR HAGRiD
     for(vector<ChanEvent*>::const_iterator it = labr3Evts.begin(); 
 	it != labr3Evts.end(); it++) {
@@ -256,7 +189,8 @@ bool ORNL2016Processor::Process(RawEvent &event) {
    
    /// PLOT ANALYSIS HISTOGRAMS
     //resets root struct
-
+    //rootGstrutInit(calgam);
+    rootGstrutInit(rawgam);
       
    //Cycle timing
     static double cycleLast = 2;
@@ -274,69 +208,65 @@ bool ORNL2016Processor::Process(RawEvent &event) {
       }
   	
   }
-  calgam.cycle = cycleNum; //ROOT Set
+  //  calgam.cycle = cycleNum; //ROOT Set
   rawgam.cycle = cycleNum;
-  tree->Fill();
+  
   //Betas
     static bool hasbeta=false;
     for(vector<ChanEvent*>::const_iterator bIt = betaEvts.begin(); 
 	bIt != betaEvts.end(); bIt++) {
       
 
-      calgam.beta = (*bIt)->GetCalEnergy();
+      //calgam.beta = (*bIt)->GetCalEnergy();
       rawgam.beta = (*bIt)->GetEnergy();
       
-      if((*bIt)->GetID() == 158 || (*bIt)->GetID() == 159)
-	hasbeta=true;
+      // if((*bIt)->GetID() == 158 || (*bIt)->GetID() == 159)
+      // 	hasbeta=true;
       
     }
     
     for(vector<ChanEvent*>::const_iterator naiIt = naiEvts.begin();
 	naiIt != naiEvts.end(); naiIt++) {
       int nainum= (*naiIt)->GetChanID().GetLocation();
-      // fill(calgam.NaI,calgam.NaI+10,0);
-      // fill(rawgam.NaI,rawgam.NaI+10,0);
-      rootArrayreset(calgam.NaI,10);
-      rootArrayreset(rawgam.NaI,10);
-      calgam.NaI[nainum] = (*naiIt)->GetCalEnergy();
+     
+      //calgam.NaI[nainum] = (*naiIt)->GetCalEnergy();
       rawgam.NaI[nainum] = (*naiIt)->GetEnergy();
    
 
-      if (TreeCorrelator::get()->place("Cycle")->status()){
+      //if (TreeCorrelator::get()->place("Cycle")->status()){
 
-      }
+      //}
     } //NaI loop End
 
     for(vector<ChanEvent*>::const_iterator itGe = geEvts.begin();
 	itGe != geEvts.end(); itGe++) {
       int genum = (*itGe)->GetChanID().GetLocation();
-      // fill(calgam.Ge,calgam.Ge+4,0);
-      // fill(rawgam.Ge,rawgam.Ge+4,0);
-      
-      rootArrayreset(calgam.Ge,4);
-      rootArrayreset(rawgam.Ge,4);
+    
+      // if (genum == 0){
+      // 	plot(DD_CYCVSGE0,(*itGe)->GetCalEnergy(),cycleNum);
+      // 	plot(DD_CYCVSGE0R,(*itGe)->GetEnergy(),cycleNum);
+      // 	plot(D_GE0,(*itGe)->GetCalEnergy());
+      // 	plot(D_GE0R,(*itGe)->GetEnergy());
+      // }
       // if (TreeCorrelator::get()->place("Cycle")->status()){
       // }
       rawgam.Ge[genum] = (*itGe)->GetEnergy();
-      calgam.Ge[genum] = (*itGe)->GetCalEnergy();
-   
+      //      calgam.Ge[genum] = (*itGe)->GetCalEnergy();
+      
      
     } //GE loop end
 
     for(vector<ChanEvent*>::const_iterator itHag = labr3Evts.begin();
 	itHag != labr3Evts.end(); itHag++){
       int hagnum = (*itHag)->GetChanID().GetLocation();
-      // fill(calgam.Hag,calgam.Hag+16,0);
-      // fill(rawgam.Hag,rawgam.Hag+16,0);    
-      rootArrayreset(calgam.Hag,16);
-      rootArrayreset(rawgam.Hag,16);
+   
 
       rawgam.Hag[hagnum]= (*itHag)->GetEnergy();
-      calgam.Hag[hagnum]= (*itHag)->GetCalEnergy();
+      //     calgam.Hag[hagnum]= (*itHag)->GetCalEnergy();
    
       // if (TreeCorrelator::get()->place("Cycle")->status()){
-
       // }
+
     } //Hagrid loop end	  
     
     tree->Fill();      

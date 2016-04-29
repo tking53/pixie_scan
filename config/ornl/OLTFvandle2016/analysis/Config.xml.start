@@ -319,23 +319,22 @@
     </Map>
     
     <TreeCorrelator name="root" verbose="False">
-      <Place type="PlaceAND" name="DoubleBeta0" fifo="2">
-        <Place type="PlaceThreshold" name="beta_double_2,3"
-               low_limit="50.0" high_limit="16382" fifo="5"
-               replace="true"/>
+      <Place type="PlaceOR" name="Beta" fifo="5">
+	 <Place type="PlaceThreshold" name="DoubleBeta1"
+	     low_limit="50.0" high_limit="16382" replace="false"/>
+       </Place>
+    
+       <Place type="PlaceOR" name="Gamma">
+	 <Place type="PlaceOR" name="Clover0">
+           <Place type="PlaceThreshold" name="ge_clover_high_0-3"
+               low_limit="20.0" high_limit="99999" replace="true"/>
+	 </Place>
       </Place>
-      
-      <Place type="PlaceOR" name="Beta" fifo="10">
-        <Place type="PlaceThreshold" name="beta_double_2,3"
-               low_limit="50.0" high_limit="16382" fifo="5"
-               replace="true"/>
-      </Place>
-      
+            
       <Place type="PlaceDetector" name="Vandle" reset="false"/>
       <Place type="PlaceDetector" name="TapeMove" reset="false"/>
       <Place type="PlaceDetector" name="Beam" reset="false"/>
       <Place type="PlaceDetector" name="Cycle" reset="false"/>
-      <Place type="PlaceDetector" name="Supercycle" reset="false"/>
     </TreeCorrelator>
     
     <TimeCalibration verbose_timing="False">

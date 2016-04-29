@@ -538,7 +538,7 @@ int DetectorDriver::ThreshAndCal(ChanEvent *chan, RawEvent& rawev) {
     double energy = 0.0;
 
     if (type == "ignore" || type == "")
-        return 0;
+        return(0);
 
     if ( !trace.empty() ) {
         plot(D_HAS_TRACE, id);
@@ -594,10 +594,11 @@ int DetectorDriver::ThreshAndCal(ChanEvent *chan, RawEvent& rawev) {
         }
 
         if (trace.HasValue("phase") ) {
-            double phase = trace.GetValue("phase");
-            chan->SetHighResTime( phase * Globals::get()->adcClockInSeconds() +
-                                  chan->GetTrigTime() *
-                                  Globals::get()->filterClockInSeconds());
+	    //Saves the time in ns
+            chan->SetHighResTime((trace.GetValue("phase") * 
+				 Globals::get()->adcClockInSeconds() +
+				 chan->GetTrigTime() *
+				  Globals::get()->filterClockInSeconds())*1.e9);
         }
 
     } else {
@@ -607,11 +608,18 @@ int DetectorDriver::ThreshAndCal(ChanEvent *chan, RawEvent& rawev) {
 
         energy = chan->GetEnergy() + randoms->Get();
         energy /= Globals::get()->energyContraction();
+	chan->SetHighResTime(0.0);
     }
 
     /** Calibrate energy and apply the walk correction. */
-    double time = chan->GetTime();
-    double walk_correction = walk.GetCorrection(chanId, energy);
+    double time, walk_correction;
+    if(chan->GetHighResTime() == 0.0) {
+	time = chan->GetTime(); //time is in clock ticks
+	walk_correction = walk.GetCorrection(chanId, energy);
+    } else {
+	time = chan->GetHighResTime(); //time here is in ns
+	walk_correction = walk.GetCorrection(chanId, trace.GetValue("tqdc"));
+    }
 
     chan->SetCalEnergy(cali.GetCalEnergy(chanId, energy));
     chan->SetCorrectedTime(time - walk_correction);
@@ -630,7 +638,7 @@ int DetectorDriver::ThreshAndCal(ChanEvent *chan, RawEvent& rawev) {
             summary->AddEvent(chan);
     }
 
-    return 1;
+    return(1);
 }
 
 int DetectorDriver::PlotRaw(const ChanEvent *chan) {
@@ -650,16 +658,13 @@ int DetectorDriver::PlotCal(const ChanEvent *chan) {
     return 0;
 }
 
-vector<EventProcessor *> DetectorDriver::GetProcessors(const std::string& type) const {
-  vector<EventProcessor *> retVec;
-
-  for (vector<EventProcessor *>::const_iterator it = vecProcess.begin();
-       it != vecProcess.end(); it++) {
-    if ( (*it)->GetTypes().count(type) > 0 )
-      retVec.push_back(*it);
-  }
-
-  return retVec;
+EventProcessor* DetectorDriver::GetProcessor(const std::string& name) const {
+    for (vector<EventProcessor *>::const_iterator it = vecProcess.begin();
+	 it != vecProcess.end(); it++) {
+	if ( (*it)->GetName() == name )
+	    return(*it); 
+    }
+    return(NULL);
 }
 
 void DetectorDriver::ReadCalXml() {

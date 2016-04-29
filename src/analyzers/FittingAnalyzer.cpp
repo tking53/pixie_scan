@@ -89,12 +89,11 @@ void FittingAnalyzer::Analyze(Trace &trace, const std::string &detType,
                               const std::map<std::string, int> & tagMap) {
     TraceAnalyzer::Analyze(trace, detType, detSubtype, tagMap);
 
-    if(trace.HasValue("saturation") || trace.empty()) {
+    if(trace.HasValue("saturation") || trace.empty() || 
+       trace.GetWaveform().size() == 0) {
      	EndAnalyze();
      	return;
     }
-
-    bool isDoubleBeta = detType == "beta" && detSubtype == "double";
 
     Globals *globals = Globals::get();
 
@@ -103,48 +102,26 @@ void FittingAnalyzer::Analyze(Trace &trace, const std::string &detType,
     const double qdc = trace.GetValue("tqdc");
     const unsigned int maxPos = (unsigned int)trace.GetValue("maxpos");
     const vector<double> waveform = trace.GetWaveform();
+    bool isDblBeta = detType == "beta" && detSubtype == "double";
+    bool isDblBetaT = isDblBeta && tagMap.find("timing") != tagMap.end();
 
-    if(waveform.size() == 0) {
-        EndAnalyze();
-        return;
+    trace.plot(D_SIGMA, sigmaBaseline*100);
+
+    if(!isDblBetaT) {
+	if(sigmaBaseline > globals->sigmaBaselineThresh()) {
+	    EndAnalyze();
+	    return;
+	}
+    } else {
+	if(sigmaBaseline > globals->siPmtSigmaBaselineThresh()) {
+	    EndAnalyze();
+	    return;
+	}
     }
-
-    if(isDoubleBeta)
-	trace.plot(D_SIGMA, sigmaBaseline*100);
-
-    if(sigmaBaseline > globals->sigmaBaselineThresh()) {
-        EndAnalyze();
-        return;
-    }
-
-    pair<double,double> pars;
-    if (detType == "vandle") {
-        if(detSubtype == "small")
-            pars = globals->smallVandlePars();
-        else if(detSubtype == "medium")
-            pars = globals->mediumVandlePars();
-        else if(detSubtype == "big")
-            pars = globals->bigVandlePars();
-        else
-            pars = globals->smallVandlePars();
-    } else if (detType == "beta" || detType == "beta_scint") {
-        if(detSubtype == "single" || detSubtype == "beta")
-            pars = globals->singleBetaPars();
-        else
-            pars = globals->doubleBetaPars();
-    } else if (detType == "li") {
-
-    } else if(detType == "tvandle")
-        pars = globals->tvandlePars();
-    else if (detType =="labr3") {
-      if(detSubtype == "r6231_100")
-        pars = globals->labr3_r6231_100Pars();
-      if(detSubtype == "r7724_100")
-        pars = globals->labr3_r7724_100Pars();
-    } else if(detType == "pulser")
-        pars = globals->pulserPars();
-    else
-        pars = globals->smallVandlePars();
+	
+    pair<double,double> pars =  globals->fitPars(detType+":"+detSubtype);
+    if(isDblBetaT)
+	pars = globals->fitPars(detType+":"+detSubtype+":timing");
 
     const gsl_multifit_fdfsolver_type *T = gsl_multifit_fdfsolver_lmsder;
     gsl_multifit_fdfsolver *s;
@@ -170,18 +147,32 @@ void FittingAnalyzer::Analyze(Trace &trace, const std::string &detType,
     f.n = sizeFit;
     f.params = &data;
 
-    numParams = 2;
-    covar = gsl_matrix_alloc (numParams, numParams);
-    xInit[0] = 0.0; xInit[1]=2.5;
-    x = gsl_vector_view_array (xInit, numParams);
-    
-    f.f = &PmtFunction;
-    f.df = &CalcPmtJacobian;
-    f.fdf = &PmtFunctionDerivative;
-    f.p = numParams;
-    
-    s = gsl_multifit_fdfsolver_alloc (T, sizeFit, numParams);
-    
+    if(!isDblBetaT) {
+        numParams = 2;
+        covar = gsl_matrix_alloc (numParams, numParams);
+        xInit[0] = 0.0; xInit[1]=2.5;
+        x = gsl_vector_view_array (xInit, numParams);
+
+        f.f = &PmtFunction;
+        f.df = &CalcPmtJacobian;
+        f.fdf = &PmtFunctionDerivative;
+        f.p = numParams;
+
+        s = gsl_multifit_fdfsolver_alloc (T, sizeFit, numParams);
+    } else {
+        numParams = 1;
+        covar = gsl_matrix_alloc (numParams, numParams);
+        xInit[0] = (double)waveform.size()*0.5;
+        x = gsl_vector_view_array (xInit, numParams);
+
+        f.f = &SiPmtFunction;
+        f.df = &CalcSiPmtJacobian;
+        f.fdf = &SiPmtFunctionDerivative;
+        f.p = numParams;
+
+        s = gsl_multifit_fdfsolver_alloc (T, sizeFit, numParams);
+    }
+
     gsl_multifit_fdfsolver_set (s, &f, &x.vector);
     
     for(unsigned int iter = 0; iter < 1e2; iter++) {
@@ -195,11 +186,15 @@ void FittingAnalyzer::Analyze(Trace &trace, const std::string &detType,
 
     gsl_multifit_covar (s->J, 0.0, covar);
 
-    phase = gsl_vector_get(s->x,0);
-    fitAmp = gsl_vector_get(s->x,1);
-    
+    if(!isDblBetaT) {
+        phase = gsl_vector_get(s->x,0);
+        fitAmp = gsl_vector_get(s->x,1);
+    } else {
+        phase = gsl_vector_get(s->x,0);
+        fitAmp = 0.0;
+    }
+
     trace.InsertValue("phase", phase+maxPos);
-    trace.InsertValue("walk", CalculateWalk(maxVal, detType, detSubtype));
 
     trace.plot(DD_AMP, fitAmp, maxVal);
     trace.plot(D_PHASE, phase*1000+100);
@@ -209,26 +204,6 @@ void FittingAnalyzer::Analyze(Trace &trace, const std::string &detType,
     gsl_multifit_fdfsolver_free (s);
     gsl_matrix_free (covar);
     EndAnalyze();
-}
-
-double FittingAnalyzer::CalculateWalk(const double &val, const std::string &type,
-                                      const std::string &subType) {
-    if(type == "vandle" || type == "tvandle") {
-        if(val < 175)
-            return(1.09099*log(val)-7.76641);
-        if(val > 3700)
-            return(0.0);
-        else
-            return(-(9.13743e-12)*pow(val,3.) + (1.9485e-7)*pow(val,2.)
-            -0.000163286*val-2.13918);
-        //Original Function - RevD
-        // double f = 92.7907602830327 * exp(-val/186091.225414275) +
-        //  0.59140785215161 * exp(val/2068.14618331387) -
-        //  95.5388835298589;
-    } else if(type == "beta")
-        return(-(1.07908*log10(val)-8.27739));
-    else
-        return(0.0);
 }
 
 int PmtFunction (const gsl_vector * x, void *FitData, gsl_vector * f) {
