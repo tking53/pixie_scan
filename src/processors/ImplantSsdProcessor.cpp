@@ -13,7 +13,6 @@
 
 #include "DammPlotIds.hpp"
 
-#include "Correlator.hpp"
 #include "DetectorDriver.hpp"
 #include "ImplantSsdProcessor.hpp"
 #include "TriggerLogicProcessor.hpp"
@@ -69,9 +68,8 @@ namespace dammIds {
     }
 }
 
-ImplantSsdProcessor::ImplantSsdProcessor() :
-    EventProcessor(OFFSET, RANGE, "ssd")
-{
+ImplantSsdProcessor::ImplantSsdProcessor() : 
+    EventProcessor(OFFSET, RANGE, "ImplantSsdProcessor") {
     associatedTypes.insert("ssd");
 }
 

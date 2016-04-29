@@ -20,7 +20,6 @@
 #include "PlotsRegister.hpp"
 #include "DammPlotIds.hpp"
 
-#include "Correlator.hpp"
 #include "DetectorLibrary.hpp"
 #include "GeProcessor.hpp"
 #include "GeCalibProcessor.hpp"
@@ -57,9 +56,9 @@ namespace dammIds {
 
 GeCalibProcessor::GeCalibProcessor(double gammaThreshold, double lowRatio,
                                    double highRatio) :
-                         GeProcessor(gammaThreshold, lowRatio, highRatio,
-                                     100e-9, 200e-9,
-                                     200e-9, 0, 0, 0, 0) {
+    GeProcessor(gammaThreshold, lowRatio, highRatio,
+		100e-9, 200e-9,
+		200e-9, 0, 0, 0, 0) {
 }
 
 /** Declare plots including many for decay/implant/neutron gated analysis  */

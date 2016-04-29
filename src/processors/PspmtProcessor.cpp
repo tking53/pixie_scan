@@ -64,7 +64,7 @@ namespace dammIds{
 void PspmtProcessor::PspmtData::Clear(void) {    
 }
 
-PspmtProcessor::PspmtProcessor(void) : EventProcessor(OFFSET, RANGE, "pspmt") {
+PspmtProcessor::PspmtProcessor(void) : EventProcessor(OFFSET, RANGE, "PspmtProcessor") {
     associatedTypes.insert("pspmt");
 }
 
@@ -166,14 +166,14 @@ bool PspmtProcessor::PreProcess(RawEvent &event){
         string subtype    = chan->GetChanID().GetSubtype();
         int    ch         = chan->GetChanID().GetLocation();
         double calEnergy  = chan->GetCalEnergy();
-        double pspmtTime  = chan->GetTime();
+        //double pspmtTime  = chan->GetTime();
         Trace trace       = chan->GetTrace();
         
         double trace_energy;
         double trace_time;
         double baseline;
         double qdc;
-        int    num        = trace.GetValue("numPulses");
+        //int    num        = trace.GetValue("numPulses");
         
         if(trace.HasValue("filterEnergy")){
             traceNum++;   	  

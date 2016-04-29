@@ -19,7 +19,7 @@ using namespace dammIds::beta_scint;
 
 BetaScintProcessor::BetaScintProcessor(double gammaBetaLimit,
                                        double energyContraction) :
-    EventProcessor(OFFSET, RANGE, "beta_scint") {
+    EventProcessor(OFFSET, RANGE, "BetaScintProcessor") {
     associatedTypes.insert("beta_scint");
     gammaBetaLimit_ = gammaBetaLimit;
     energyContraction_ = energyContraction;
@@ -135,7 +135,7 @@ bool BetaScintProcessor::PreProcess(RawEvent &event){
         plot(D_ENERGY_BETA, energyBin);
     }
     plot(D_MULT_BETA, multiplicity);
-    return true;
+    return(true);
 }
 
 bool BetaScintProcessor::Process(RawEvent &event) {
@@ -220,5 +220,5 @@ bool BetaScintProcessor::Process(RawEvent &event) {
     plot(D_MULT_BETA_GAMMA_GATED, multiplicityGamma);
 
     EndProcess();
-    return true;
+    return(true);
 }
