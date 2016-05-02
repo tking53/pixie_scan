@@ -32,6 +32,7 @@ ValgrindOut.xml
 *.bz2
 *.tgz
 *.tar.gz
+*.gz
 
 #DAMM/ROOT files
 *.drr
