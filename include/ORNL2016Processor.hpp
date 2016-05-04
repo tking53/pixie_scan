@@ -10,9 +10,9 @@
 #define __ORNL2016PROCESSOR_HPP_
 #include <fstream>
 
-#include "DoubleBetaProcessor.hpp"
+
 #include "EventProcessor.hpp"
-#include "VandleProcessor.hpp"
+
 
 #ifdef useroot
 #include <TFile.h>
@@ -20,7 +20,7 @@
 #endif
 
 /// Class to process VANDLE analysis for ORNL2016 campaign  at the OLTF
-class ORNL2016Processor : public VandleProcessor {
+class ORNL2016Processor : public EventProcessor { 
 public:
     /** Default Constructor */
     ORNL2016Processor();
@@ -29,13 +29,6 @@ public:
     /** Declare the plots used in the analysis */
     virtual void DeclarePlots(void);
 
-    /** Constructor taking a list of detector types as an argument
-     * \param [in] typeList : the list of bar types that are in the analysis
-     * \param [in] res : The resolution of the DAMM histograms
-     * \param [in] offset : The offset of the DAMM histograms */
-    ORNL2016Processor(const std::vector<std::string> &typeList,
-                    const double &res, const double &offset,
-                    const double &numStarts);
 
     /** Preprocess the ORNL2016 data
      * \param [in] event : the event to preprocess

@@ -32,8 +32,8 @@
             cycle_gate2_max="2.0" />
 	<Processor name="LogicProcessor"/>
 	<Processor name="DoubleBetaProcessor"/>
-	<Processor name="ORNL2016Processor"
-		   types="medium" res="2" offset="1000" NumStarts="1"/>
+	<Processor name="ORNL2016Processor"/>
+		   
     </DetectorDriver>
 
     <Map verbose_calibration="False" verbose_map="False" verbose_walk="False">

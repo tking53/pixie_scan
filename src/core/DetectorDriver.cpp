@@ -236,23 +236,23 @@ void DetectorDriver::LoadProcessors(Messenger& m) {
             vecProcess.push_back(new PulserProcessor());
         } else if (name == "SsdProcessor") {
             vecProcess.push_back(new SsdProcessor());
-        } else if (name == "VandleProcessor" || name == "ORNL2016Processor") {
+        } else if (name == "VandleProcessor") {
             double res = processor.attribute("res").as_double(2.0);
             double offset = processor.attribute("offset").as_double(200.0);
             unsigned int numStarts = processor.attribute("NumStarts").as_int(2);
             vector<string> types =
                 strings::tokenize(processor.attribute("types").as_string(),",");
-	    if(name == "VandleProcessor")
 		vecProcess.push_back(new VandleProcessor(types, res, offset, numStarts));
-	    if(name == "ORNL2016Processor")
-		vecProcess.push_back(new ORNL2016Processor(types, res, offset, numStarts));
+
         } else if (name == "TeenyVandleProcessor") {
             vecProcess.push_back(new TeenyVandleProcessor());
         } else if (name == "DoubleBetaProcessor") {
 		vecProcess.push_back(new DoubleBetaProcessor());
         } else if (name == "PspmtProcessor") {
             vecProcess.push_back(new PspmtProcessor());
-        }
+        } else if(name == "ORNL2016Processor"){
+	  vecProcess.push_back(new ORNL2016Processor());
+	}
 #ifdef useroot
         else if (name == "RootProcessor") {
             vecProcess.push_back(new RootProcessor("tree.root", "tree"));
