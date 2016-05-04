@@ -146,7 +146,7 @@ public:
     const std::vector<EventProcessor *>& GetProcessors(void) const {
         return(vecProcess);
     }
-    
+
     /** \return The requested event processor
      * \param [in] type : the name of the processor to return */
     EventProcessor* GetProcessor(const std::string &name) const;

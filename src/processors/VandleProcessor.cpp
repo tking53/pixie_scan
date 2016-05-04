@@ -50,16 +50,15 @@ namespace dammIds {
 using namespace std;
 using namespace dammIds::vandle;
 
-VandleProcessor::VandleProcessor(): EventProcessor(dammIds::vandle::OFFSET,
-                                                   dammIds::vandle::RANGE,
-                                                   "VandleProcessor") {
+VandleProcessor::VandleProcessor(): 
+    EventProcessor(OFFSET, RANGE, "VandleProcessor") {
     associatedTypes.insert("vandle");
 }
 
 VandleProcessor::VandleProcessor(const std::vector<std::string> &typeList,
                                  const double &res, const double &offset,
                                  const unsigned int &numStarts):
-    EventProcessor(dammIds::vandle::OFFSET, dammIds::vandle::RANGE, "VandleProcessor") {
+    EventProcessor(OFFSET, RANGE, "VandleProcessor") {
     associatedTypes.insert("vandle");
     plotMult_ = res;
     plotOffset_ = offset;
@@ -172,9 +171,8 @@ void VandleProcessor::DeclarePlots(void) {
 bool VandleProcessor::PreProcess(RawEvent &event) {
     if (!EventProcessor::PreProcess(event))
         return false;
-
     ClearMaps();
-
+    
     static const vector<ChanEvent*> &events =
         event.GetSummary("vandle")->GetList();
 

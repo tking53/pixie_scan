@@ -52,6 +52,8 @@
 #include "TraceExtractor.hpp"
 #include "WaveformAnalyzer.hpp"
 
+#include "IS600Processor.hpp"
+
 #ifdef useroot
 #include "RootProcessor.hpp"
 #endif
@@ -202,13 +204,11 @@ void DetectorDriver::LoadProcessors(Messenger& m) {
                 cycle_gate2_max = 0.0;
                 m.warning("Using default cycle_gate2_max = 0.0", 1);
             }
-            if (name == "GeProcessor") {
-                vecProcess.push_back(new GeProcessor(gamma_threshold,
-                            low_ratio, high_ratio, sub_event,
-                            gamma_beta_limit, gamma_gamma_limit,
-                            cycle_gate1_min, cycle_gate1_max,
-                            cycle_gate2_min, cycle_gate2_max));
-            }
+	    vecProcess.push_back(new GeProcessor(gamma_threshold,
+						 low_ratio, high_ratio, sub_event,
+						 gamma_beta_limit, gamma_gamma_limit,
+						 cycle_gate1_min, cycle_gate1_max,
+						 cycle_gate2_min, cycle_gate2_max));
         } else if (name == "GeCalibProcessor") {
             double gamma_threshold =
                 processor.attribute("gamma_threshold").as_double(1);
@@ -249,7 +249,7 @@ void DetectorDriver::LoadProcessors(Messenger& m) {
         } else if (name == "TeenyVandleProcessor") {
             vecProcess.push_back(new TeenyVandleProcessor());
         } else if (name == "DoubleBetaProcessor") {
-            vecProcess.push_back(new DoubleBetaProcessor());
+		vecProcess.push_back(new DoubleBetaProcessor());
         } else if (name == "PspmtProcessor") {
             vecProcess.push_back(new PspmtProcessor());
         }

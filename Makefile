@@ -1,9 +1,9 @@
 #!/bin/make
 # GNUmakefile using implicit rules and standard definitions
-SHELL=/bin/sh
+SHELL=/bin/bash
 
 # Uncomment the following line for root functionality
- USEROOT = 1
+USEROOT = 1
 # Uncomment this line for a more verbose scan
 # CXXFLAGS += -DVERBOSE
 # Undefine to make a "online" version
@@ -39,7 +39,7 @@ endif
 #------- instruct make to search through these
 #------- directories to find files
 vpath %.f scan/
-vpath %.hpp include/:include/experiment
+vpath %.hpp include/
 vpath %.h include/
 vpath %.icc include/
 vpath %.cpp src/analyzers:src/core:src/experiment:src/processors
@@ -81,7 +81,7 @@ CINCLUDEDIRS += -Iinclude
 #------- define basic compiler flags, no warnings on code that is not our own
 FFLAGS   += -O3
 GCCFLAGS += -fPIC $(CINCLUDEDIRS) -Dnewreadout
-CXXFLAGS += -Wall -g -fPIC $(CINCLUDEDIRS) -Dnewreadout #-std=c++0x
+CXXFLAGS += -Wall -g -fPIC $(CINCLUDEDIRS) -Dnewreadout -std=c++0x
 
 ifdef ONLINE
 CXXFLAGS += -DONLINE
@@ -116,8 +116,8 @@ endif
 #---------- Adjust compilation if ROOT capability is desired
 ifdef USEROOT
 CXX_OBJS  += $(ROOTPROCESSORO)
-#PIXIE = pixie_ldf_c_root$(ExeSuf)
-ROOTCONFIG   := root-config
+PIXIE = pixie_ldf_c$(ExeSuf)
+ROOTCONFIG := $(ROOT_PATH)/bin/root-config
 
 #no uncomment ROOTCLFAGS   := $(filter-out pthread,$(ROOTCFLAGS))
 CXXFLAGS     += $(shell $(ROOTCONFIG) --cflags) -Duseroot
