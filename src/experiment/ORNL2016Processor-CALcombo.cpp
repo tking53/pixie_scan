@@ -9,7 +9,7 @@
  *\Edits by Thomas King 
  *\Starting April 2016
  * 
- *ONLY RUN on 1 ldf
+ *
 */
 #include <fstream>
 #include <iostream>
@@ -106,7 +106,7 @@ void ORNL2016Processor::DeclarePlots(void) {
 
     static int cycleCount = S8; // Sets max ploted cycles for the "per cycle" histograms
    
-    DeclareHistogram1D(D_BETASCALARVSTIME,cycleCount,"Beta scalar per cycle");
+    DeclareHistogram1D(D_BETASCALARVSTIME,SB,"Beta scalar per cycle");
 
     //Declaring Ge vs Cycle
     for (unsigned int i=0; i < 4; i++){
@@ -165,8 +165,8 @@ void ORNL2016Processor::rootGstrutInit(RAY &strutName) { //Zeros the entire root
   fill(strutName.Hag,strutName.Hag + 16,0);
   fill(strutName.NaI,strutName.NaI + 10,0);
   fill(strutName.Ge,strutName.Ge + 4,0);
-  strutName.beta = 0;
-  strutName.cycle=0;
+  strutName.beta = -9999;
+  strutName.cycle=-9999;
 
 }
 
@@ -314,6 +314,7 @@ bool ORNL2016Processor::Process(RawEvent &event) {
     } //GE loop end
 
     //Hagrid 
+
 
     for(vector<ChanEvent*>::const_iterator itHag = labr3Evts.begin();
 	itHag != labr3Evts.end(); itHag++){

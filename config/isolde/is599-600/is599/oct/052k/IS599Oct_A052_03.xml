@@ -5,27 +5,24 @@
     <Email>stanpaulauskas AT gmail DOT com</Email>
     <Date>April 18, 2016</Date>
   </Author>
-  
+
   <Description>
-    This is the base configuration file for the IS599 and IS600 experiments for 
-    data taken in July/August. This file will NOT BE altered. It contains all 
-    of the appropriate setup for the processors, TreeCorrelator and fitting 
-    algorithms. Care should be taken to ensure that the appropriate calibrations 
-    are input when necessary. 
+    Configuration for IS599Oct_A052_03.ldf
   </Description>
-  
+
   <Global>
     <Revision version="F"/>
     <EventWidth unit="s" value="1e-6"/>
     <EnergyContraction value="1.0"/>
     <Path>config/</Path>
     <NumOfTraces value="50"/>
+    <HasRaw value="false"/>
   </Global>
-  
+
   <DetectorDriver>
     <Analyzer name="WaveformAnalyzer"/>
     <Analyzer name="FittingAnalyzer"/>
-    
+
     <Processor name="LogicProcessor"/>
     <Processor name="GeProcessor"
                gamma_threshold="10.0"
@@ -43,7 +40,7 @@
                types="small,medium" res="2" offset="1000" NumStarts="1"/>
     <Processor name="IS600Processor"/>
   </DetectorDriver>
-  
+
   <Map>
     <Module number="0">
       <Channel number="0" type="beta" subtype="double" tags="start,left"></Channel>
@@ -188,42 +185,18 @@
 	<WalkCorrection model="VM"> </WalkCorrection></Channel>
       <Channel number="3" type="vandle" subtype="medium" tags="right">
 	<WalkCorrection model="VM"> </WalkCorrection></Channel>
-      <Channel number="6" type="vandle" subtype="small" tags="left"></Channel>
-      <Channel number="7" type="vandle" subtype="small" tags="right"></Channel>
-      <Channel number="8" type="vandle" subtype="small" tags="left"></Channel>
-      <Channel number="9" type="vandle" subtype="small" tags="right"></Channel>
-      <Channel number="10" type="vandle" subtype="small" tags="left"></Channel>
-      <Channel number="11" type="vandle" subtype="small" tags="right"></Channel>
-      <Channel number="12" type="vandle" subtype="small" tags="left"></Channel>
-      <Channel number="13" type="vandle" subtype="small" tags="right"></Channel>
-      <Channel number="14" type="vandle" subtype="small" tags="left"></Channel>
-      <Channel number="15" type="vandle" subtype="small" tags="right"></Channel>
     </Module>
     <Module number="6">
-      <Channel number="0" type="vandle" subtype="small" tags="left"></Channel>
-      <Channel number="1" type="vandle" subtype="small" tags="right"></Channel>
-      <Channel number="2" type="vandle" subtype="small" tags="left"></Channel>
-      <Channel number="3" type="vandle" subtype="small" tags="right"></Channel>
-      <Channel number="4" type="vandle" subtype="small" tags="left"></Channel>
-      <Channel number="5" type="vandle" subtype="small" tags="right"></Channel>
-      <Channel number="6" type="vandle" subtype="small" tags="left"></Channel>
-      <Channel number="7" type="vandle" subtype="small" tags="right"></Channel>
-      <Channel number="8" type="vandle" subtype="small" tags="left"></Channel>
-      <Channel number="9" type="vandle" subtype="small" tags="right"></Channel>
-      <Channel number="10" type="vandle" subtype="small" tags="left"></Channel>
-      <Channel number="11" type="vandle" subtype="small" tags="right"></Channel>
-      <Channel number="12" type="vandle" subtype="small" tags="left"></Channel>
-      <Channel number="13" type="vandle" subtype="small" tags="right"></Channel>
       <Channel number="15" type="ignore" subtype="ignore"></Channel>
     </Module>
   </Map>
-  
+
   <TreeCorrelator name="root" verbose="False">
     <Place type="PlaceOR" name="Beta" fifo="4">
       <Place type="PlaceThreshold" name="DoubleBeta1"
 	     low_limit="50.0" high_limit="16382" replace="false"/>
     </Place>
-    
+
     <Place type="PlaceOR" name="Gamma">
       <Place type="PlaceOR" name="Clover0">
         <Place type="PlaceThreshold" name="ge_clover_high_0-3"
@@ -234,7 +207,7 @@
                low_limit="20.0" high_limit="99999" replace="true"/>
       </Place>
     </Place>
-    
+
     <Place type="PlaceDetector" name="Vandle" reset="false"/>
     <Place type="PlaceDetector" name="Proton" reset="false"/>
     <Place type="PlaceDetector" name="Supercycle" reset="false"/>
@@ -242,14 +215,93 @@
     <Place type="PlaceDetector" name="Beam" reset="false"/>
     <Place type="PlaceDetector" name="Cycle" reset="false"/>
   </TreeCorrelator>
-  
+
   <TimeCalibration verbose_timing="False">
     <Vandle>
+    <medium>
+    <Bar number="0" lroffset="0" z0="100.5" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="0"/>
+    </Bar>
+    <Bar number="1" lroffset="0" z0="100" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="0"/>
+    </Bar>
+    <Bar number="2" lroffset="6.97912" z0="100" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="87.16622"/>
+    </Bar>
+    <Bar number="3" lroffset="8.44231" z0="100.7" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="87.86371"/>
+    </Bar>
+    <Bar number="4" lroffset="-2.13872" z0="100.4" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="79.79518"/>
+    </Bar>
+    <Bar number="5" lroffset="2.56402" z0="100.4" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="81.31095"/>
+    </Bar>
+    <Bar number="6" lroffset="-3.51139" z0="100.8" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="80.36718"/>
+    </Bar>
+    <Bar number="7" lroffset="-.42568" z0="101.1" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="79.95735"/>
+    </Bar>
+    <Bar number="8" lroffset="-2.28286" z0="101.2" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="82.47480"/>
+    </Bar>
+    <Bar number="9" lroffset="7.21854" z0="101.4" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="86.50227"/>
+    </Bar>
+    <Bar number="10" lroffset="7.41065" z0="101.9" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="79.75819"/>
+    </Bar>
+    <Bar number="11" lroffset="3.65568" z0="101.7" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="85.59898"/>
+    </Bar>
+    <Bar number="12" lroffset="-1.32211" z0="101.9" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="85.48769"/>
+    </Bar>
+    <Bar number="13" lroffset="8.51375" z0="101.7" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="93.78197"/>
+    </Bar>
+    <Bar number="14" lroffset="-1.41466" z0="101.6" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="84.09768"/>
+    </Bar>
+    <Bar number="15" lroffset="9.65719" z0="102" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="93.39008"/>
+    </Bar>
+    <Bar number="16" lroffset="-.80351" z0="101.5" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="88.85565"/>
+    </Bar>
+    <Bar number="17" lroffset="-3.33966" z0="101.1" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="84.40373"/>
+    </Bar>
+    <Bar number="18" lroffset="6.38859" z0="100.7" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="84.97712"/>
+    </Bar>
+    <Bar number="19" lroffset="9.45616" z0="101.1" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="84.88013"/>
+    </Bar>
+    <Bar number="20" lroffset="-.42931" z0="100.8" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="89.11995"/>
+    </Bar>
+    <Bar number="21" lroffset="-.91384" z0="101.1" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="89.74720"/>
+    </Bar>
+    <Bar number="22" lroffset="-3.72079" z0="100.3" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="86.90437"/>
+    </Bar>
+    <Bar number="23" lroffset="-.25104" z0="100.7" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="89.76699"/>
+    </Bar>
+    <Bar number="24" lroffset="-3.58848" z0="100.8" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="106.39556"/>
+    </Bar>
+    <Bar number="25" lroffset="8.35749" z0="100.2" xoffset="0" zoffset="0">
+        <TofOffset location="0" offset="119.65520"/>
+    </Bar>
+</medium>
+
     </Vandle>
-    <Beta>
-    </Beta>
   </TimeCalibration>
-  
+
   <Timing>
     <Physical>
       <NeutronMass unit="MeV/c/c" value="939.565560"/>
@@ -269,7 +321,7 @@
       <TraceLength unit="ns" value="496"/>
       <QdcCompression value="1.0"/>
     </Trace>
-    
+
     <Fitting>
       <SigmaBaselineThresh value="3.0"/>
       <SiPmtSigmaBaselineThresh value = "25.0"/>
@@ -289,6 +341,6 @@
       </Parameters>
     </Fitting>
   </Timing>
-  
+
   <Notebook file="notes.txt" mode="r"/>
 </Configuration>

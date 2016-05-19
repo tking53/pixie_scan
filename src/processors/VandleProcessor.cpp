@@ -50,7 +50,7 @@ namespace dammIds {
 using namespace std;
 using namespace dammIds::vandle;
 
-VandleProcessor::VandleProcessor(): 
+VandleProcessor::VandleProcessor():
     EventProcessor(OFFSET, RANGE, "VandleProcessor") {
     associatedTypes.insert("vandle");
 }
@@ -172,7 +172,7 @@ bool VandleProcessor::PreProcess(RawEvent &event) {
     if (!EventProcessor::PreProcess(event))
         return false;
     ClearMaps();
-    
+
     static const vector<ChanEvent*> &events =
         event.GetSummary("vandle")->GetList();
 
@@ -264,7 +264,7 @@ void VandleProcessor::AnalyzeBarStarts(void) {
 
             double corTof =
                 CorrectTOF(tof, bar.GetFlightPath(), cal.GetZ0());
-	    
+
             plot(DD_TOFBARS+histTypeOffset, tof*plotMult_+plotOffset_,
                  barPlusStartLoc);
             plot(DD_CORTOFBARS, corTof*plotMult_+plotOffset_, barPlusStartLoc);
@@ -307,7 +307,7 @@ void VandleProcessor::AnalyzeStarts(void) {
 
         for(TimingMap::iterator itStart = starts_.begin();
         itStart != starts_.end(); itStart++) {
-            if(!(*itStart).second.GetIsValidData())
+            if(!(*itStart).second.GetIsValid())
                 continue;
 
             unsigned int startLoc = (*itStart).first.first;
@@ -316,7 +316,7 @@ void VandleProcessor::AnalyzeStarts(void) {
 
             double tof = bar.GetCorTimeAve() -
                 start.GetCorrectedTime() + cal.GetTofOffset(startLoc);
-	    
+
             double corTof =
                 CorrectTOF(tof, bar.GetFlightPath(), cal.GetZ0());
 
