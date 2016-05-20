@@ -271,8 +271,8 @@ bool ORNL2016Processor::Process(RawEvent &event) {
       naiIt != naiEvts.end(); naiIt++) {
     int nainum= (*naiIt)->GetChanID().GetLocation();
     calgam.NaI[nainum] = (*naiIt)->GetCalEnergy();
-    plot(DD_RAWNAIXVSTIME + nainum,( (*naiIt)->GetEnergy())/2,cycleNum);
-    plot(DD_CALNAIXVSTIME + nainum,( (*naiIt)->GetCalEnergy())/2,cycleNum);
+    //plot(DD_RAWNAIXVSTIME + nainum,( (*naiIt)->GetEnergy())/2,cycleNum);
+    // plot(DD_CALNAIXVSTIME + nainum,( (*naiIt)->GetCalEnergy())/2,cycleNum);
        
     } //NaI loop End
 
@@ -281,8 +281,8 @@ bool ORNL2016Processor::Process(RawEvent &event) {
       itGe != geEvts.end(); itGe++) {
     int genum = (*itGe)->GetChanID().GetLocation();
     
-    plot(DD_GEXVSTIME + genum,(*itGe)->GetEnergy()/2,cycleNum);
-    plot(DD_CALGEXVSTIME + genum,(*itGe)->GetCalEnergy()/2,cycleNum);
+    // plot(DD_GEXVSTIME + genum,(*itGe)->GetEnergy()/2,cycleNum);
+    //plot(DD_CALGEXVSTIME + genum,(*itGe)->GetCalEnergy()/2,cycleNum);
     calgam.Ge[genum] = (*itGe)->GetCalEnergy();
   } //GE loop end
 
@@ -290,8 +290,8 @@ bool ORNL2016Processor::Process(RawEvent &event) {
     for(vector<ChanEvent*>::const_iterator itHag = labr3Evts.begin();
 	itHag != labr3Evts.end(); itHag++){
       int hagnum = (*itHag)->GetChanID().GetLocation();
-      plot(DD_RAWHAGXVSTIME + hagnum, ((*itHag)->GetEnergy()/2),cycleNum);
-      plot(DD_CALHAGXVSTIME + hagnum, ((*itHag)->GetCalEnergy()/2),cycleNum);
+      // plot(DD_RAWHAGXVSTIME + hagnum, ((*itHag)->GetEnergy()/2),cycleNum);
+      // plot(DD_CALHAGXVSTIME + hagnum, ((*itHag)->GetCalEnergy()/2),cycleNum);
       calgam.Hag[hagnum]= (*itHag)->GetCalEnergy();
     } //Hagrid loop end	  
     
