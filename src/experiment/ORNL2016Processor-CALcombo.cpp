@@ -31,7 +31,6 @@
 #include "TH1.h"
 #include "TH2.h"
 #include "TProfile.h"
-#include "TRandom3.h"
 #include "TTree.h"
 
 namespace dammIds {
@@ -57,14 +56,8 @@ namespace dammIds {
 	const int DD_TOFVSHAGRID = 13+ORNL2016_OFFSET;
 	const int DD_TOFVSGE = 14+ORNL2016_OFFSET;
 
-      // const int DD_CYCVSGE0 = 30+ORNL2016_OFFSET;
-      // const int DD_CYCVSGE0R = 31+ORNL2016_OFFSET;
-      // const int D_GE0 = 34+ORNL2016_OFFSET;
-      // const int D_GE0R = 35+ORNL2016_OFFSET;
-      
-      
       //seeds for Damm cycle his
-      const int D_BETASCALARVSTIME= 29+ORNL2016_OFFSET;
+      const int D_BETASCALARVSTIME= 29+ORNL2016_OFFSET; //6079 in his
       //Ge Vs Cycle both Raw and calibrate
       const int DD_GEXVSTIME = 30+ORNL2016_OFFSET;
       const int DD_CALGEXVSTIME = 60+ORNL2016_OFFSET; 
@@ -98,12 +91,7 @@ void ORNL2016Processor::DeclarePlots(void) {
     DeclareHistogram2D(DD_TOFVSNAI, SC, SB, "ToF vs. NaI");
     DeclareHistogram2D(DD_TOFVSHAGRID, SC, SB, "ToF vs. HAGRiD");
     DeclareHistogram2D(DD_TOFVSGE, SC, SB, "ToF vs. Ge");
-    // DeclareHistogram2D(DD_CYCVSGE0 , SD ,S7, "Apples+apples GE[0]");
-    // DeclareHistogram2D(DD_CYCVSGE0R , SD ,S7, "Apples+apples RAW GE[0]");
-    // DeclareHistogram1D(D_GE0 , SD , "Apples+apples GE[0] remove of 1313");
-    // DeclareHistogram1D(D_GE0R , SD , "Apples+apples GE[0] remove of 113");
-    
-
+   
     static int cycleCount = S8; // Sets max ploted cycles for the "per cycle" histograms
    
     DeclareHistogram1D(D_BETASCALARVSTIME,SB,"Beta scalar per cycle");
@@ -261,75 +249,55 @@ bool ORNL2016Processor::Process(RawEvent &event) {
       double cycleTime = TreeCorrelator::get()->place("Cycle")->last().time;
       cycleTime *= (Globals::get()->clockInSeconds()*1.e9);
       if ( cycleTime != cycleLast ){
-
 	double tdiff = (cycleTime - cycleLast) / 1e6; //Outputs cycle length in msecs.
 	if (cycleNum == 0){cout<<" #  There are some events at the beginning of the first segment missing from Histograms that use cycleNum."<<endl<<" #  This is a product of not starting the cycle After the LDF."<<endl<<" #  This First TDIFF is most likly nonsense"<<endl;}
 	cycleLast = cycleTime;
 	cycleNum++;
 	cout<< "Cycle Change "<<endl<<"Tdiff (Cycle start and Now) (ms)= "<<tdiff<<endl<<"Starting on Cycle #"<<cycleNum<<endl; 
       }
-  	
   }
-  calgam.cycle = cycleNum; //ROOT Set
-  //rawgam.cycle = cycleNum;
-  
+  calgam.cycle = cycleNum;
+    
 
   //Betas
   for(map<unsigned int, pair<double,double> >::iterator bIt = lrtBetas.begin();
       bIt != lrtBetas.end(); bIt++){
-    
     plot(D_BETASCALARVSTIME,cycleNum ); //PLOTTING BETA SCALAR SUM per CYCLE (LIKE 759 but per cycle vs per second
-    
-    
     calgam.beta = (bIt->second.second);
   }
-      
-
-  //NaI    
     
-
+  //NaI    
   for(vector<ChanEvent*>::const_iterator naiIt = naiEvts.begin();
-	naiIt != naiEvts.end(); naiIt++) {
-      int nainum= (*naiIt)->GetChanID().GetLocation();
-     
-      calgam.NaI[nainum] = (*naiIt)->GetCalEnergy();
-      //      rawgam.NaI[nainum] = (*naiIt)->GetEnergy();
-      plot(DD_RAWNAIXVSTIME + nainum,( (*naiIt)->GetEnergy())/2,cycleNum);
-      plot(DD_CALNAIXVSTIME + nainum,( (*naiIt)->GetCalEnergy())/2,cycleNum);
+      naiIt != naiEvts.end(); naiIt++) {
+    int nainum= (*naiIt)->GetChanID().GetLocation();
+    calgam.NaI[nainum] = (*naiIt)->GetCalEnergy();
+    plot(DD_RAWNAIXVSTIME + nainum,( (*naiIt)->GetEnergy())/2,cycleNum);
+    plot(DD_CALNAIXVSTIME + nainum,( (*naiIt)->GetCalEnergy())/2,cycleNum);
        
     } //NaI loop End
 
-
   //HPGe
-
-    for(vector<ChanEvent*>::const_iterator itGe = geEvts.begin();
-	itGe != geEvts.end(); itGe++) {
-      int genum = (*itGe)->GetChanID().GetLocation();
-
-      plot(DD_GEXVSTIME + genum,(*itGe)->GetEnergy()/2,cycleNum);
-      plot(DD_CALGEXVSTIME + genum,(*itGe)->GetCalEnergy()/2,cycleNum);
-      //rawgam.Ge[genum] = (*itGe)->GetEnergy();
-      calgam.Ge[genum] = (*itGe)->GetCalEnergy();
-     
-    } //GE loop end
+  for(vector<ChanEvent*>::const_iterator itGe = geEvts.begin();
+      itGe != geEvts.end(); itGe++) {
+    int genum = (*itGe)->GetChanID().GetLocation();
+    
+    plot(DD_GEXVSTIME + genum,(*itGe)->GetEnergy()/2,cycleNum);
+    plot(DD_CALGEXVSTIME + genum,(*itGe)->GetCalEnergy()/2,cycleNum);
+    calgam.Ge[genum] = (*itGe)->GetCalEnergy();
+  } //GE loop end
 
     //Hagrid 
-
-
     for(vector<ChanEvent*>::const_iterator itHag = labr3Evts.begin();
 	itHag != labr3Evts.end(); itHag++){
       int hagnum = (*itHag)->GetChanID().GetLocation();
       plot(DD_RAWHAGXVSTIME + hagnum, ((*itHag)->GetEnergy()/2),cycleNum);
       plot(DD_CALHAGXVSTIME + hagnum, ((*itHag)->GetCalEnergy()/2),cycleNum);
-      //rawgam.Hag[hagnum]= (*itHag)->GetEnergy();
       calgam.Hag[hagnum]= (*itHag)->GetCalEnergy();
     } //Hagrid loop end	  
     
+
+
     tree->Fill();      
-
-
     EndProcess();
-    
     return(true);
-
 }
