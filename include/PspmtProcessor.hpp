@@ -10,6 +10,7 @@
 #include "RawEvent.hpp"
 #include "EventProcessor.hpp"
 
+///Class to handle processing of position sensitive pmts
 class PspmtProcessor : public EventProcessor {
 public:
     /** Default Constructor */
@@ -28,8 +29,10 @@ public:
      * \return Returns true if the processing was successful */
     virtual bool Process(RawEvent &event);
 private:
+    ///Structure defining what data we're storing
     struct PspmtData {
+	///Clears the data from the processor 
         void Clear(void);
-    } data_;
+    } data_; //!< instance of structure to hold the data 
 };
 #endif // __PSPMTPROCESSOR_HPP__

@@ -46,6 +46,7 @@ private:
   TTree *tree ;
   TBranch *calbranch;
   TBranch *rawbranch;
+  TBranch *auxBranch;
 
   struct RAY { 
     double Hag[16];
@@ -53,7 +54,11 @@ private:
     double Ge[4];
     double beta;
     int cycle;
-  } calgam, rawgam, blank;
+    int eventNum;
+    int gMulti;
+    int nMulti;
+    int hMulti;
+  } aux;
 
 
   TFile *rootFName_;

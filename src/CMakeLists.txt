@@ -15,33 +15,25 @@ set_target_properties(pixie_ldf_c PROPERTIES LINKER_LANGUAGE Fortran)
 target_link_libraries(pixie_ldf_c ${HRIBF_LIBRARIES})
 
 
-add_executable(pixie_ldf_c_TOF
-  $<TARGET_OBJECTS:ScanorObjects> 
-  $<TARGET_OBJECTS:CoreObjects> 
-  $<TARGET_OBJECTS:AnalyzerObjects> 
-  $<TARGET_OBJECTS:ProcessorObjects>
-  $<TARGET_OBJECTS:ExperimentObjectsTOF> )
 
-set_target_properties(pixie_ldf_c_TOF PROPERTIES LINKER_LANGUAGE Fortran)
-target_link_libraries(pixie_ldf_c_TOF ${HRIBF_LIBRARIES})
 
 
 if(USE_GFORTRAN)
   target_link_libraries(pixie_ldf_c -lgfortran)
-  target_link_libraries(pixie_ldf_c_TOF -lgfortran)
+
 else(USE_G77)
   target_link_libraries(pixie_ldf_c -lg2c -g77libs)
-  target_link_libraries(pixie_ldf_c_TOF -lg2c -g77libs)
+
 endif(USE_GFORTRAN)
 
 if(USE_ROOT)
     target_link_libraries(pixie_ldf_c ${ROOT_LIBRARIES})
-    target_link_libraries(pixie_ldf_c_TOF ${ROOT_LIBRARIES})
+
 endif(USE_ROOT)
 
 if(USE_GSL)
     target_link_libraries(pixie_ldf_c ${LIBS})
-    target_link_libraries(pixie_ldf_c_TOF ${LIBS})
+
 endif(USE_GSL)
 
-install(TARGETS pixie_ldf_c pixie_ldf_c_TOF DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(TARGETS pixie_ldf_c DESTINATION ${CMAKE_INSTALL_PREFIX})

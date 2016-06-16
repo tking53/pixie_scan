@@ -2,7 +2,7 @@
  * \brief Lists Offsets and Ranges for various Processors
  */
 #ifndef __DAMM_PLOTIDS_HPP_
-#define __DAMM_PLOTIDS_HPP_ 1
+#define __DAMM_PLOTIDS_HPP_
 
 /**
  * Histogram sizes consts
@@ -48,8 +48,14 @@ namespace dammIds {
 
     /// in PspmtProcessor.cpp
     namespace pspmt {
-        const int OFFSET = 1900;
-        const int RANGE =  99;
+        const int OFFSET = 1900; //!< Offset for PspmtProcessor
+        const int RANGE =  100; //!< Range for PspmtProcessor
+    }
+
+    ///in TemplateProcessor.cpp
+    namespace dettemplate {
+        const int OFFSET = 2000;//!< Offset for TemplateProcessor
+        const int RANGE = 10;//!< Range for TemplateProcessor
     }
 
     ///in McpProcessor.cpp
@@ -150,8 +156,8 @@ namespace dammIds {
 
     /// For Experiment specific processors
     namespace experiment{
-	const int OFFSET = 6050;
-	const int RANGE = 250;
+	const int OFFSET = 6050; //!< Offset for Experiment processors
+	const int RANGE = 250; //!< Range for Experiment Processors
     }
 
     /// in DssdProcessor.cpp
@@ -172,16 +178,11 @@ namespace dammIds {
         const int RANGE = 150; //!< Range for the traces
         const int traceBins = SA; //!< Number of Bins for Traces
 
-        namespace tracefilterer {
-            const int DD_TRACE = 0;//!< traces
-            const int DD_FILTER1 = 1;//!< results for filter 1
-            const int DD_FILTER2 = 2;//!< results for filter 2
-            const int DD_FILTER3 = 3;//!< results for filter 3
-            const int DD_AVERAGE_TRACE = 4;//!< average trace
-            const int DD_REJECTED_TRACE = 5;//!< rejected traces
-            const int DD_ENERGY__BOARD_FILTER = 6;//!< energy of onboard filter
-            const int D_RATIO_BOARD_FILTER = 7;//!< ratio between onboard filter and ours
-            const int D_ENERGY1 = 8; //!< distributions of energy 1
+        namespace tracefilteranalyzer {
+	    const int D_RETVALS = 0; //!< Return values for TraceFilter class
+            const int DD_TRIGGER_FILTER = 1;//!< Trigger Filter
+            const int DD_REJECTED_TRACE = 2;//!< Traces with some kind of error
+	    const int DD_PILEUP = 3; //!< Piled up traces
         }
 
         namespace doubletraceanalyzer {

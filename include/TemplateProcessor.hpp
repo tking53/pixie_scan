@@ -28,11 +28,11 @@ public:
     * \return true if processing was successful */
     virtual bool Process(RawEvent &event);
     /** \return The processed Template events */
-    const std::vector<ChanEvent*> * GetTemplateEvents(void) const {
-        return(&evts_);
+    std::vector<ChanEvent*> GetTemplateEvents(void) const {
+        return(evts_);
     }
 private:
-    double a_;
-    std::vector<ChanEvent*> evts_;
+    double a_; //!< a variable global to the class
+    std::vector<ChanEvent*> evts_; //!< vector of events for people to get
 };
 #endif // __TEMPLATEPROCESSOR_HPP__

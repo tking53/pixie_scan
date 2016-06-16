@@ -3,16 +3,17 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="pixie_scan" />
+		<Option makefile_is_custom="1" />
 		<Option execution_dir="../../pixie_scan" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<MakeCommands>
-			<Build command="$make -j20" />
-			<CompileFile command="$make -f $makefile $file" />
-			<Clean command="$make clean" />
+			<Build command="$make -C build/ -j20 install" />
+			<CompileFile command="$make -C build/ -f $makefile $file" />
+			<Clean command="$make -C build/ clean" />
 			<DistClean command="$make -f $makefile distclean$target" />
-			<AskRebuildNeeded command="$make -q -f $makefile $target" />
-			<SilentBuild command="$make -j20" />
+			<AskRebuildNeeded command="$make -C build/ -q -f $makefile $target" />
+			<SilentBuild command="$make -C build/ -j20 install" />
 		</MakeCommands>
 		<Build>
 			<Target title="master">
@@ -28,12 +29,12 @@
 					<Add directory="include" />
 				</Compiler>
 				<MakeCommands>
-					<Build command="$make -j20" />
-					<CompileFile command="$make -f $makefile $file" />
-					<Clean command="$make clean" />
+					<Build command="$make -C build/ -j20 install" />
+					<CompileFile command="$make -C build/ -f $makefile $file" />
+					<Clean command="$make -C build/ clean" />
 					<DistClean command="$make -f $makefile distclean$target" />
-					<AskRebuildNeeded command="$make -q -f $makefile $target" />
-					<SilentBuild command="$make -j20" />
+					<AskRebuildNeeded command="$make -C build/ -q -f $makefile $target" />
+					<SilentBuild command="$make -C build/ -j20 install" />
 				</MakeCommands>
 			</Target>
 		</Build>
@@ -242,13 +243,16 @@
 		<Unit filename="../include/StatsData.hpp" />
 		<Unit filename="../include/TauAnalyzer.hpp" />
 		<Unit filename="../include/TeenyVandleProcessor.hpp" />
+		<Unit filename="../include/TemplateExpProcessor.hpp" />
 		<Unit filename="../include/TemplateProcessor.hpp" />
 		<Unit filename="../include/TimingCalibrator.hpp" />
 		<Unit filename="../include/TimingMapBuilder.hpp" />
 		<Unit filename="../include/Trace.hpp" />
 		<Unit filename="../include/TraceAnalyzer.hpp" />
 		<Unit filename="../include/TraceExtractor.hpp" />
-		<Unit filename="../include/TraceFilterer.hpp" />
+		<Unit filename="../include/TraceFilter.hpp" />
+		<Unit filename="../include/TraceFilterAnalyzer.hpp" />
+		<Unit filename="../include/TrapFilterParameters.hpp" />
 		<Unit filename="../include/TreeCorrelator.hpp" />
 		<Unit filename="../include/ValidProcessor.hpp" />
 		<Unit filename="../include/VandleAtLeribssProcessor.hpp" />
@@ -277,7 +281,8 @@
 		<Unit filename="../src/analyzers/TauAnalyzer.cpp" />
 		<Unit filename="../src/analyzers/TraceAnalyzer.cpp" />
 		<Unit filename="../src/analyzers/TraceExtractor.cpp" />
-		<Unit filename="../src/analyzers/TraceFilterer.cpp" />
+		<Unit filename="../src/analyzers/TraceFilter.cpp" />
+		<Unit filename="../src/analyzers/TraceFilterAnalyzer.cpp" />
 		<Unit filename="../src/analyzers/WaaAnalyzer.cpp" />
 		<Unit filename="../src/analyzers/WaveformAnalyzer.cpp" />
 		<Unit filename="../src/core/BarBuilder.cpp" />
@@ -320,6 +325,7 @@
 		<Unit filename="../src/experiment/IS600Processor.cpp" />
 		<Unit filename="../src/experiment/LaBr3TestProcessor.cpp" />
 		<Unit filename="../src/experiment/SheCorrelator.cpp" />
+		<Unit filename="../src/experiment/TemplateExpProcessor.cpp" />
 		<Unit filename="../src/experiment/VandleAtLeribssProcessor.cpp" />
 		<Unit filename="../src/experiment/WalkVandleBetaProcessor.cpp" />
 		<Unit filename="../src/processors/BetaProcessor.cpp" />

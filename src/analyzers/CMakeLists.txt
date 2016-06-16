@@ -1,10 +1,10 @@
 set(ANALYZER_SOURCES 
   CfdAnalyzer.cpp 
-  DoubleTraceAnalyzer.cpp 
   FittingAnalyzer.cpp 
   TauAnalyzer.cpp 
-  TraceExtractor.cpp 
-  TraceFilterer.cpp 
+  TraceExtractor.cpp
+  TraceFilter.cpp
+  TraceFilterAnalyzer.cpp 
   TraceAnalyzer.cpp 
   WaaAnalyzer.cpp 
   WaveformAnalyzer.cpp

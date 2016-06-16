@@ -32,42 +32,35 @@
 #include "TProfile.h"
 #include "TTree.h"
 
+ static unsigned int evtNum = 0;
+
 namespace dammIds {
     namespace experiment {
-        const unsigned int ORNL2016_OFFSET = 0;
-	const int D_VANDLEMULT  = 0+ORNL2016_OFFSET;
-
-        const int DD_CTOFNOTAPE  = 1+ORNL2016_OFFSET;
-        const int DD_QDCTOFNOGATE  = 2+ORNL2016_OFFSET;
-        const int DD_CORTOFVSEGAM  = 3+ORNL2016_OFFSET;
-        const int DD_QDCVSCORTOFMULT1  = 4+ORNL2016_OFFSET;
-        const int DD_MULT2SYM  = 5+ORNL2016_OFFSET;
-	const int DD_LIGLEN = 6+ORNL2016_OFFSET;
-	const int DD_LIGLTOF = 7+ORNL2016_OFFSET;
-
-	const int D_LABR3SUM = 8+ORNL2016_OFFSET;
-	const int D_LABR3BETA = 9+ORNL2016_OFFSET;
-
-	const int D_NAISUM = 10+ORNL2016_OFFSET;
-	const int D_NAIBETA = 11+ORNL2016_OFFSET;
-
-	const int DD_TOFVSNAI = 12+ORNL2016_OFFSET;
-	const int DD_TOFVSHAGRID = 13+ORNL2016_OFFSET;
-	const int DD_TOFVSGE = 14+ORNL2016_OFFSET;
-
-      // //seeds for Damm cycle his
-      // const int D_BETASCALARVSTIME= 29+ORNL2016_OFFSET; //6079 in his
-      // //Ge Vs Cycle both Raw and calibrate
-      // const int DD_GEXVSTIME = 30+ORNL2016_OFFSET;
-      // const int DD_CALGEXVSTIME = 60+ORNL2016_OFFSET; 
-      // //RAW NaI vs cycle
-      // const int DD_RAWNAIXVSTIME = 34+ORNL2016_OFFSET; 
-      // //RAW HAGRiD vs cycle
-      // const int DD_RAWHAGXVSTIME = 44+ORNL2016_OFFSET;
-      // //cal NaI vs cycle
-      // const int DD_CALNAIXVSTIME = 64+ORNL2016_OFFSET; 
-      // //Cal HAGRiD vs cycle
-      // const int DD_CALHAGXVSTIME = 74+ORNL2016_OFFSET;
+      const unsigned int ORNL2016_OFFSET = 0;
+      const int D_VANDLEMULT  = 0+ORNL2016_OFFSET;
+      
+      const int DD_CTOFNOTAPE  = 1+ORNL2016_OFFSET;
+      const int DD_QDCTOFNOGATE  = 2+ORNL2016_OFFSET;
+      const int DD_CORTOFVSEGAM  = 3+ORNL2016_OFFSET;
+      const int DD_QDCVSCORTOFMULT1  = 4+ORNL2016_OFFSET;
+      const int DD_MULT2SYM  = 5+ORNL2016_OFFSET;
+      const int DD_LIGLEN = 6+ORNL2016_OFFSET;
+      const int DD_LIGLTOF = 7+ORNL2016_OFFSET;
+      
+      const int D_LABR3SUM = 8+ORNL2016_OFFSET;
+      const int D_LABR3BETA = 9+ORNL2016_OFFSET;
+      
+      const int D_NAISUM = 10+ORNL2016_OFFSET;
+      const int D_NAIBETA = 11+ORNL2016_OFFSET;
+      
+      const int DD_TOFVSNAI = 12+ORNL2016_OFFSET;
+      const int DD_TOFVSHAGRID = 13+ORNL2016_OFFSET;
+      const int DD_TOFVSGE = 14+ORNL2016_OFFSET;
+      
+      //seeds for Damm cycle his
+      const int D_BETASCALARRATE= 29+ORNL2016_OFFSET; //6079 in his
+      const int D_BETAENERGY=30+ORNL2016_OFFSET;
+     
     }
 }//namespace dammIds
 
@@ -91,76 +84,34 @@ void ORNL2016Processor::DeclarePlots(void) {
     DeclareHistogram2D(DD_TOFVSHAGRID, SC, SB, "ToF vs. HAGRiD");
     DeclareHistogram2D(DD_TOFVSGE, SC, SB, "ToF vs. Ge");
    
-    // static int cycleCount = S8; // Sets max ploted cycles for the "per cycle" histograms
-   
-    //DeclareHistogram1D(D_BETASCALARVSTIME,SB,"Beta scalar per cycle");
+    DeclareHistogram1D(D_BETASCALARRATE,SB,"Beta scalar per cycle");
+    DeclareHistogram1D(D_BETAENERGY,SD,"Beta Energy");
 
-    // //Declaring Ge vs Cycle
-    // for (unsigned int i=0; i < 4; i++){
-    //   static int n=1;
-    //   stringstream ss;
-    //   ss<< "RAW  Energy/2 VS Cycle Number Ge " << n ;
-    //   DeclareHistogram2D(DD_GEXVSTIME + i,SD,cycleCount,ss.str().c_str());
-    //   n++;
-    // }
-    // for (unsigned int i=0; i < 4; i++){
-    //   static int n=1;
-    //   stringstream ss;
-    //   ss<< "Cal  Energy/2 VS Cycle Number Ge " << n ;
-    //   DeclareHistogram2D(DD_CALGEXVSTIME + i,SD,cycleCount,ss.str().c_str());
-    //   n++;
-    // }
-
-    // //Declaring NaI vs Cycle
-    // for (unsigned int i=0; i < 10; i++){
-    //   static int n=1;
-    //   stringstream ss;
-    //   ss<< "RAW Energy/2 VS Cycle Number NaI# " << n ;
-    //   DeclareHistogram2D(DD_RAWNAIXVSTIME + i,SD,cycleCount,ss.str().c_str());
-    //   n++;
-    // }
-    // for (unsigned int i=0; i < 10; i++){
-    //   static int n=1;
-    //   stringstream ss;
-    //   ss<< "Cal Energy/2 VS Cycle Number NaI# " << n ;
-    //   DeclareHistogram2D(DD_CALNAIXVSTIME + i,SD,cycleCount,ss.str().c_str());
-    //   n++;
-    // }
-    // //Declaring HAGRiD vs Cycle
-    // for (unsigned int i = 0; i < 16; i++){
-    //   static int n=1;
-    //   stringstream ss;
-    //   ss<< "RAW Energy/2 VS Cycle Number HAGRiD# " << n;
-    //   DeclareHistogram2D(DD_RAWHAGXVSTIME + i,SD,cycleCount,ss.str().c_str());
-    //   n++;
-    // }
-    // for (unsigned int i = 0; i < 16; i++){
-    //   static int n=1;
-    //   stringstream ss;
-    //   ss<< "Cal Energy/2 VS Cycle Number HAGRiD# " << n;
-    //   DeclareHistogram2D(DD_CALHAGXVSTIME + i,SD,cycleCount,ss.str().c_str());
-    //   n++;
-    // }
 }
 
 void ORNL2016Processor::rootArrayreset(double arrayName[], int arraySize){ //refills arrayName with 0s 
   fill(arrayName,arrayName + arraySize,0);
 }
 
-void ORNL2016Processor::rootGstrutInit(RAY &strutName) { //Zeros the entire root gamma structure
+void ORNL2016Processor::rootGstrutInit(RAY &strutName) { //Zeros the entire root  structure
 
   fill(strutName.Hag,strutName.Hag + 16,0);
   fill(strutName.NaI,strutName.NaI + 10,0);
   fill(strutName.Ge,strutName.Ge + 4,0);
   strutName.beta = -9999;
   strutName.cycle=-9999;
+  strutName.eventNum=-9999;
+  strutName.gMulti=-9999;
+  strutName.nMulti=-9999;
+  strutName.hMulti=-9999;
 
 }
 
 ORNL2016Processor::ORNL2016Processor() :EventProcessor(OFFSET,RANGE,"ORNL2016Processor"){
-    
 
-  associatedTypes.insert("liglass");
+ 
+
+  associatedTypes.insert("ge");
   associatedTypes.insert("nai");
   associatedTypes.insert("labr3");
   associatedTypes.insert("beta");
@@ -171,11 +122,11 @@ ORNL2016Processor::ORNL2016Processor() :EventProcessor(OFFSET,RANGE,"ORNL2016Pro
     stringstream rootname;
     rootname<<tmp<<".root";
     rootFName_ =  new TFile(rootname.str().c_str(),"RECREATE");
-    tree = new TTree("gammas","Tree containing gamma events with cycle and betas");
-    calbranch = tree->Branch("calgam",&calgam,"Hag[16]/D:NaI[10]/D:Ge[4]/D:beta/D:cycle/i");
+    tree = new TTree("Taux","Tree containing ancillary detector events with cycle");
+    auxBranch = tree->Branch("aux",&aux,"Hag[16]/D:NaI[10]/D:Ge[4]/D:beta/D:cycle/i:eventNum/i:gMulti/i:nMulti/i:hMulti/i");
     tree->SetAutoFlush(3000);
   
-    rootGstrutInit(calgam);
+    rootGstrutInit(aux);
 }
 
 
@@ -238,7 +189,7 @@ bool ORNL2016Processor::Process(RawEvent &event) {
    
    /// PLOT ANALYSIS HISTOGRAMS-------------------------------------------------------------------------------------------------------------------------------------
 
-    rootGstrutInit(calgam);
+    rootGstrutInit(aux);
       
    //Cycle timing
     static double cycleLast = 2;
@@ -254,21 +205,28 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 	cout<< "Cycle Change "<<endl<<"Tdiff (Cycle start and Now) (ms)= "<<tdiff<<endl<<"Starting on Cycle #"<<cycleNum<<endl; 
       }
   }
-  calgam.cycle = cycleNum;
+  aux.cycle = cycleNum;
     
+  //Multiplicitys
+  aux.gMulti=geEvts.size();
+  aux.nMulti=naiEvts.size();
+  aux.hMulti=labr3Evts.size();
+
+
 
   //Betas
   for(map<unsigned int, pair<double,double> >::iterator bIt = lrtBetas.begin();
       bIt != lrtBetas.end(); bIt++){
-    // plot(D_BETASCALARVSTIME,cycleNum ); //PLOTTING BETA SCALAR SUM per CYCLE (LIKE 759 but per cycle vs per second
-    calgam.beta = (bIt->second.second);
+    plot(D_BETASCALARRATE,cycleNum );//PLOTTING BETA SCALAR SUM per CYCLE (LIKE 759 but per cycle vs per second
+    plot(D_BETAENERGY,bIt->second.second);
+    aux.beta = (bIt->second.second);
   }
     
   //NaI    
   for(vector<ChanEvent*>::const_iterator naiIt = naiEvts.begin();
       naiIt != naiEvts.end(); naiIt++) {
     int nainum= (*naiIt)->GetChanID().GetLocation();
-    calgam.NaI[nainum] = (*naiIt)->GetCalEnergy();
+    aux.NaI[nainum] = (*naiIt)->GetCalEnergy();
     //plot(DD_RAWNAIXVSTIME + nainum,( (*naiIt)->GetEnergy())/2,cycleNum);
     // plot(DD_CALNAIXVSTIME + nainum,( (*naiIt)->GetCalEnergy())/2,cycleNum);
        
@@ -281,7 +239,7 @@ bool ORNL2016Processor::Process(RawEvent &event) {
     
     // plot(DD_GEXVSTIME + genum,(*itGe)->GetEnergy()/2,cycleNum);
     //plot(DD_CALGEXVSTIME + genum,(*itGe)->GetCalEnergy()/2,cycleNum);
-    calgam.Ge[genum] = (*itGe)->GetCalEnergy();
+    aux.Ge[genum] = (*itGe)->GetCalEnergy();
   } //GE loop end
 
     //Hagrid 
@@ -290,12 +248,14 @@ bool ORNL2016Processor::Process(RawEvent &event) {
       int hagnum = (*itHag)->GetChanID().GetLocation();
       // plot(DD_RAWHAGXVSTIME + hagnum, ((*itHag)->GetEnergy()/2),cycleNum);
       //plot(DD_CALHAGXVSTIME + hagnum, ((*itHag)->GetCalEnergy()),cycleNum);
-      calgam.Hag[hagnum]= (*itHag)->GetCalEnergy();
+      aux.Hag[hagnum]= (*itHag)->GetCalEnergy();
     } //Hagrid loop end	  
     
-
+    aux.eventNum=evtNum;
 
     tree->Fill();      
+    
+    evtNum++;
     EndProcess();
     return(true);
 }
