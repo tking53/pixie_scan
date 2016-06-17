@@ -19,11 +19,33 @@
 #include <TTree.h>
 #endif
 
+class ScintAddBack {
+    public:
+        /** Default constructor setting things to zero */
+        ScintAddBack() {
+            energy = time = multiplicity = 0;
+        }
+
+        /** Default constructor setting default values
+         * \param [in] ienergy : the initial energy
+         * \param [in] itime : the initial time
+         * \param [in] imultiplicity : multiplicity of the event */
+        ScintAddBack(double ienergy, double itime, unsigned imultiplicity) {
+            energy = ienergy;
+            time = itime;
+            multiplicity = imultiplicity;
+        }
+
+        double energy;//!< Energy of the addback event
+        double time;//!< time of the addback event
+        unsigned multiplicity;//!< multiplicity of the event
+};
+
 /// Class to process VANDLE analysis for ORNL2016 campaign  at the OLTF
 class ORNL2016Processor : public EventProcessor { 
 public:
     /** Default Constructor */
-    ORNL2016Processor();
+    ORNL2016Processor(double gamma_threshold_L, double sub_event_L, double gamma_threshold_N, double sub_event_N);
     /** Default Destructor */
     ~ORNL2016Processor() ;
     /** Declare the plots used in the analysis */
@@ -40,7 +62,10 @@ public:
     * \return Returns true if the processing was successful */
     virtual bool Process(RawEvent &event);
 
-
+      /** Returns the events that were added to the LaBr3 addback_ */
+  std::vector< std::vector<ScintAddBack> > GetLaddBackEvent(void) {return(LaddBack_);}
+  std::vector< std::vector<ScintAddBack> > GetNaddBackEvent(void) {return(NaddBack_);}
+  
 
 private:  
   TTree *tree ;
@@ -58,6 +83,7 @@ private:
     int gMulti;
     int nMulti;
     int hMulti;
+    int bMulti;
   } aux;
 
 
@@ -66,6 +92,21 @@ private:
   void rootArrayreset(double arrayName[], int arraySize);
 
   void rootGstrutInit(RAY &strutName);
+  
+  //thresholds and windows for gamma addback for LaBr3 (L*) and NaI (N*)
+  double LgammaThreshold_;
+  double LsubEventWindow_;
+  double NgammaThreshold_;
+  double NsubEventWindow_;
+
+  /** addbackEvents vector of vectors, where first vector
+   * enumerates crystal, second events */
+  std::vector< std::vector<ScintAddBack> > LaddBack_;
+  std::vector< std::vector<ScintAddBack> > NaddBack_;
+
+
+
 };
 #endif
+
 

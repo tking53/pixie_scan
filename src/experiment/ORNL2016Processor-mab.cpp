@@ -1,7 +1,7 @@
-/** \file ORNL2016Processor-combo.cpp
+/** \file ORNL2016Processor-mab.cpp
  * \brief A class to process data from the ORNL 2016 OLTF experiment using
  * VANDLE. Using Root and Damm for histogram analysis. 
- * This cpp generates both the Calgam root tree and the damm cycle his. 
+ * Generates aux root tree  with add backs and multiplicies 
  *
  *\author S. V. Paulauskas
  *\date February 10, 2016
@@ -108,7 +108,7 @@ void ORNL2016Processor::rootGstrutInit(RAY &strutName) { //Zeros the entire root
 
 }
 
-ORNL2016Processor::ORNL2016Processor() :EventProcessor(OFFSET,RANGE,"ORNL2016Processor"){
+ORNL2016Processor::ORNL2016Processor(double gamma_threshold_L, double sub_event_L, double gamma_threshold_N, double sub_event_N) :EventProcessor(OFFSET,RANGE,"ORNL2016Processor"){
 
  
 
@@ -116,6 +116,12 @@ ORNL2016Processor::ORNL2016Processor() :EventProcessor(OFFSET,RANGE,"ORNL2016Pro
   associatedTypes.insert("nai");
   associatedTypes.insert("labr3");
   associatedTypes.insert("beta");
+
+  LgammaThreshold_ = gamma_threshold_L;
+  LsubEventWindow_ = sub_event_L;
+  NgammaThreshold_ = gamma_threshold_N;
+  NsubEventWindow_ = sub_event_N;
+
     char hisFileName[32];
     GetArgument(1,hisFileName,32);
     string tmp = hisFileName;

@@ -111,10 +111,17 @@ void DetectorDriver::LoadProcessors(Messenger& m) {
 
     DetectorLibrary::get();
 
+
+    
+
     pugi::xml_node driver = doc.child("Configuration").child("DetectorDriver");
     for (pugi::xml_node processor = driver.child("Processor"); processor;
         processor = processor.next_sibling("Processor")) {
         string name = processor.attribute("name").value();
+
+	//Moving Declare for these 2 up here so that the nai and Labr can be slaved to the Ge as default
+	double gamma_threshold;
+	double sub_event;
 
         m.detail("Loading " + name);
         if (name == "BetaScintProcessor") {
@@ -129,7 +136,7 @@ void DetectorDriver::LoadProcessors(Messenger& m) {
             vecProcess.push_back(new BetaScintProcessor(gamma_beta_limit,
                                                         energy_contraction));
         } else if (name == "GeProcessor") {
-            double gamma_threshold =
+            gamma_threshold =
                 processor.attribute("gamma_threshold").as_double(1.0);
             if (gamma_threshold == 1.0)
                 m.warning("Using default gamma_threshold = 1.0", 1);
@@ -141,7 +148,7 @@ void DetectorDriver::LoadProcessors(Messenger& m) {
                 processor.attribute("high_ratio").as_double(3.0);
             if (high_ratio == 3.0)
                 m.warning("Using default high_ratio = 3.0", 1);
-            double sub_event =
+            sub_event =
                 processor.attribute("sub_event").as_double(100.e-9);
             if (sub_event == 100.e-9)
                 m.warning("Using default sub_event = 100e-9", 1);
@@ -213,7 +220,24 @@ void DetectorDriver::LoadProcessors(Messenger& m) {
         } else if (name == "PspmtProcessor") {
             vecProcess.push_back(new PspmtProcessor());
         } else if (name == "ORNL2016Processor") {
-            vecProcess.push_back(new ORNL2016Processor());
+	  double gamma_threshold_L =
+                processor.attribute("gamma_threshold_L").as_double(gamma_threshold);
+            if (gamma_threshold == 1.0)
+                m.warning("LaBr3 Threshold = Ge Threshold", 1);
+	    double sub_event_L =
+                processor.attribute("sub_event_L").as_double(sub_event);
+            if (sub_event == 100.e-9)
+                m.warning("LaBr3 sub_event = Ge sub_event", 1);
+	  double gamma_threshold_N =
+                processor.attribute("gamma_threshold_N").as_double(gamma_threshold);
+            if (gamma_threshold == 1.0)
+                m.warning("NaI Threshold = Ge Threshold", 1);
+	    double sub_event_N =
+                processor.attribute("sub_event_N").as_double(sub_event);
+            if (sub_event == 100.e-9)
+                m.warning("NaI sub_event = Ge sub_event", 1);
+            vecProcess.push_back(new ORNL2016Processor(gamma_threshold_L,sub_event_L,
+						       gamma_threshold_N,sub_event_N));
         } else if (name == "TemplateProcessor") {
             vecProcess.push_back(new TemplateProcessor());
 	}
