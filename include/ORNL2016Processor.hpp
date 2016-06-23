@@ -45,7 +45,7 @@ class ScintAddBack {
 class ORNL2016Processor : public EventProcessor { 
 public:
     /** Default Constructor */
-    ORNL2016Processor(double gamma_threshold_L, double sub_event_L, double gamma_threshold_N, double sub_event_N);
+    ORNL2016Processor(double gamma_threshold_L, double sub_event_L, double gamma_threshold_N, double sub_event_N, double gamma_threshold_G, double sub_event_G);
     /** Default Destructor */
     ~ORNL2016Processor() ;
     /** Declare the plots used in the analysis */
@@ -62,47 +62,63 @@ public:
     * \return Returns true if the processing was successful */
     virtual bool Process(RawEvent &event);
 
-      /** Returns the events that were added to the LaBr3 addback_ */
-  std::vector< std::vector<ScintAddBack> > GetLaddBackEvent(void) {return(LaddBack_);}
-  std::vector< std::vector<ScintAddBack> > GetNaddBackEvent(void) {return(NaddBack_);}
+      /** Returns the events that were added to the vaious  addback_ vectors */
+  std::vector<ScintAddBack>  GetLaddBackEvent(void) {return(LaddBack_);}
+  std::vector<ScintAddBack>  GetNaddBackEvent(void) {return(NaddBack_);}
+  std::vector<ScintAddBack>  GetGaddBackEvent(void) {return(GaddBack_);}
   
 
 private:  
-  TTree *tree ;
-  TBranch *calbranch;
-  TBranch *rawbranch;
+  TTree *Taux ;
+  TTree *Tab ;
   TBranch *auxBranch;
+  TBranch *adbkBranch;
 
   struct RAY { 
-    double Hag[16];
+    double LaBr[16];
     double NaI[10];
     double Ge[4];
     double beta;
+    double eventNum;    
     int cycle;
-    int eventNum;
     int gMulti;
     int nMulti;
-    int hMulti;
+    int lMulti;
     int bMulti;
   } aux;
 
+  struct adbk {
+    double LabE;
+    double NabE;
+    double GabE;
+    double LabEvtNum;
+    double NabEvtNum;
+    double GabEvtNum;
+    int Lmulti;
+    int Nmulti;
+    int Gmulti;
+    
+  } pab;
 
   TFile *rootFName_;
     //functions for root preocessing
   void rootArrayreset(double arrayName[], int arraySize);
 
   void rootGstrutInit(RAY &strutName);
+  void rootGstrutInit2(adbk &strutName);
   
   //thresholds and windows for gamma addback for LaBr3 (L*) and NaI (N*)
   double LgammaThreshold_;
   double LsubEventWindow_;
   double NgammaThreshold_;
   double NsubEventWindow_;
+  double GgammaThreshold_;
+  double GsubEventWindow_;
 
-  /** addbackEvents vector of vectors, where first vector
-   * enumerates crystal, second events */
-  std::vector< std::vector<ScintAddBack> > LaddBack_;
-  std::vector< std::vector<ScintAddBack> > NaddBack_;
+  
+  std::vector<ScintAddBack> LaddBack_;
+  std::vector<ScintAddBack> NaddBack_;
+  std::vector<ScintAddBack> GaddBack_;
 
 
 

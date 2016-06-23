@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Configuration>
     <Author>
-        <Name>S. V. Paulauskas</Name>
-        <Email>stanpaulauskas AT gmail DOT com</Email>
-        <Date>February 10, 2016</Date>
+        <Name>Thomas King</Name>
+        <Email>tking35 AT vols.utk DOT edu</Email>
+        <Date>June 17, 2016</Date>
     </Author>
 
     <Description>
-      Configuration for SVP To test stuffs.
+      Internal 094Rb_14 calibrated. 
     </Description>
 
     <Global>

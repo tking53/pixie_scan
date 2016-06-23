@@ -1,13 +1,14 @@
 /** \file ORNL2016Processor-mab.cpp
  * \brief A class to process data from the ORNL 2016 OLTF experiment using
  * VANDLE. Using Root and Damm for histogram analysis. 
- * Generates aux root tree  with add backs and multiplicies 
+ * Generates aux root branch  with add backs and multiplicies 
+ * And pab root branch with procesor addback.
  *
  *\author S. V. Paulauskas
  *\date February 10, 2016
  *
  *\Edits by Thomas King 
- *\Starting April 2016
+ *\Starting June 2016
  * 
  *
 */
@@ -25,6 +26,7 @@
 
 #include "ORNL2016Processor.hpp"
 #include "DoubleBetaProcessor.hpp"
+#include "GeProcessor.hpp"
 
 #include "TFile.h"
 #include "TH1.h"
@@ -60,6 +62,11 @@ namespace dammIds {
       //seeds for Damm cycle his
       const int D_BETASCALARRATE= 29+ORNL2016_OFFSET; //6079 in his
       const int D_BETAENERGY=30+ORNL2016_OFFSET;
+      const int D_IGEBETA=31+ORNL2016_OFFSET;
+      const int D_INAIBETA=35+ORNL2016_OFFSET;
+      const int D_IHAGBETA=45+ORNL2016_OFFSET;
+
+
      
     }
 }//namespace dammIds
@@ -86,6 +93,29 @@ void ORNL2016Processor::DeclarePlots(void) {
    
     DeclareHistogram1D(D_BETASCALARRATE,SB,"Beta scalar per cycle");
     DeclareHistogram1D(D_BETAENERGY,SD,"Beta Energy");
+    
+ 
+    // //Declaring beta gated
+    // for (unsigned int i=0; i < 4; i++){
+    //   stringstream ss;
+    //   ss<< "HPGe " << i <<" - beta gated " ;
+    //   DeclareHistogram1D(D_IGEBETA + i,SC,ss.str().c_str());     
+    // }
+
+    // //Declaring NaI beta gated
+    // for (unsigned int i=0; i < 10; i++){
+    //   stringstream ss;
+    //   ss<< "NaI " << i << " - beta gated ";
+    //   DeclareHistogram1D(D_INAIBETA + i ,SC,ss.str().c_str());     
+    // }
+
+    // //Declaring Hagrid beta gated
+    // for (unsigned int i = 0; i < 16; i++){
+    //   stringstream ss;
+    //   ss<< "LaBr " << i << " - beta gated ";
+    //   DeclareHistogram1D(D_IHAGBETA + i ,SC,ss.str().c_str());     
+
+    // }   
 
 }
 
@@ -93,9 +123,9 @@ void ORNL2016Processor::rootArrayreset(double arrayName[], int arraySize){ //ref
   fill(arrayName,arrayName + arraySize,0);
 }
 
-void ORNL2016Processor::rootGstrutInit(RAY &strutName) { //Zeros the entire root  structure
+void ORNL2016Processor::rootGstrutInit(RAY &strutName) { //Zeros the entire aux  structure
 
-  fill(strutName.Hag,strutName.Hag + 16,0);
+  fill(strutName.LaBr,strutName.LaBr + 16,0);
   fill(strutName.NaI,strutName.NaI + 10,0);
   fill(strutName.Ge,strutName.Ge + 4,0);
   strutName.beta = -9999;
@@ -103,12 +133,23 @@ void ORNL2016Processor::rootGstrutInit(RAY &strutName) { //Zeros the entire root
   strutName.eventNum=-9999;
   strutName.gMulti=-9999;
   strutName.nMulti=-9999;
-  strutName.hMulti=-9999;
+  strutName.lMulti=-9999;
   strutName.bMulti=-9999;
 
 }
+void ORNL2016Processor::rootGstrutInit2(adbk &strutName) { //Zeros the entire pab  structure
+  strutName.LabE=-999;
+  strutName.NabE=-999;
+  strutName.GabE=-999;
+  strutName.LabEvtNum=-9999;
+  strutName.NabEvtNum=-9999;
+  strutName.GabEvtNum=-9999;
+  strutName.Lmulti=-999;
+  strutName.Nmulti=-999;  
+  strutName.Gmulti=-999;
+}
 
-ORNL2016Processor::ORNL2016Processor(double gamma_threshold_L, double sub_event_L, double gamma_threshold_N, double sub_event_N) :EventProcessor(OFFSET,RANGE,"ORNL2016Processor"){
+ORNL2016Processor::ORNL2016Processor(double gamma_threshold_L, double sub_event_L, double gamma_threshold_N, double sub_event_N, double gamma_threshold_G, double sub_event_G) :EventProcessor(OFFSET,RANGE,"ORNL2016Processor"){
 
  
 
@@ -121,23 +162,39 @@ ORNL2016Processor::ORNL2016Processor(double gamma_threshold_L, double sub_event_
   LsubEventWindow_ = sub_event_L;
   NgammaThreshold_ = gamma_threshold_N;
   NsubEventWindow_ = sub_event_N;
+  GgammaThreshold_ = gamma_threshold_G;
+  GsubEventWindow_ = sub_event_G;
 
-    char hisFileName[32];
-    GetArgument(1,hisFileName,32);
-    string tmp = hisFileName;
-    tmp= tmp.substr(0,tmp.find_first_of(" "));
-    stringstream rootname;
-    rootname<<tmp<<".root";
-    rootFName_ =  new TFile(rootname.str().c_str(),"RECREATE");
-    tree = new TTree("Taux","Tree containing ancillary detector events with cycle");
-    auxBranch = tree->Branch("aux",&aux,"Hag[16]/D:NaI[10]/D:Ge[4]/D:beta/D:cycle/i:eventNum/i:gMulti/i:nMulti/i:hMulti/i:bMulti/i");
-    tree->SetAutoFlush(3000);
+  // //initalize addback vecs
+  LaddBack_.push_back(ScintAddBack());
+  NaddBack_.push_back(ScintAddBack());
+  GaddBack_.push_back(ScintAddBack());
+
+
+
+
+  char hisFileName[32];
+  GetArgument(1,hisFileName,32);
+  string tmp = hisFileName;
+  tmp= tmp.substr(0,tmp.find_first_of(" "));
+  stringstream rootname;
+  rootname<<tmp<<".root";
+  rootFName_ =  new TFile(rootname.str().c_str(),"RECREATE");
+  Taux = new TTree("Taux","Tree containing ancillary detector events with cycle");
+  auxBranch = Taux->Branch("aux",&aux,"LaBr[16]/D:NaI[10]/D:Ge[4]/D:beta/D:eventNum/D:cycle/i:gMulti/i:nMulti/i:hMulti/i:bMulti/i");
+  Taux->SetAutoFlush(3000);
+  Tab = new TTree("Tab","Tree containing Processor add back information");
+  adbkBranch = Tab->Branch("pab",&pab,"LabE/D:NabE/D:GabE/D:LabEvtNum/D:NabEvtNum/D:GabEvtNum/D:Lmulti/i:Nmulti/i:Gmulti/i");
+  Tab->SetAutoFlush(3000);
+
   
     rootGstrutInit(aux);
+    rootGstrutInit2(pab);
 }
 
 
 ORNL2016Processor::~ORNL2016Processor(){
+  
   rootFName_->Write();
   rootFName_->Close();
   
@@ -197,7 +254,16 @@ bool ORNL2016Processor::Process(RawEvent &event) {
    /// PLOT ANALYSIS HISTOGRAMS-------------------------------------------------------------------------------------------------------------------------------------
 
     rootGstrutInit(aux);
+    rootGstrutInit2(pab);
       
+    //Seting vars for addback
+    double LrefTime = -2.0 * LsubEventWindow_;
+    double NrefTime = -2.0 * NsubEventWindow_;
+    double GrefTime = -2.0 * GsubEventWindow_;
+
+    
+
+
    //Cycle timing
     static double cycleLast = 2;
     static int cycleNum = 0;
@@ -217,7 +283,7 @@ bool ORNL2016Processor::Process(RawEvent &event) {
   //Multiplicitys
   aux.gMulti=geEvts.size();
   aux.nMulti=naiEvts.size();
-  aux.hMulti=labr3Evts.size();
+  aux.lMulti=labr3Evts.size();
   aux.bMulti=lrtBetas.size();
 
 
@@ -230,37 +296,126 @@ bool ORNL2016Processor::Process(RawEvent &event) {
   }
     
   //NaI    
-  for(vector<ChanEvent*>::const_iterator naiIt = naiEvts.begin();
-      naiIt != naiEvts.end(); naiIt++) {
-    int nainum= (*naiIt)->GetChanID().GetLocation();
-    aux.NaI[nainum] = (*naiIt)->GetCalEnergy();
-    //plot(DD_RAWNAIXVSTIME + nainum,( (*naiIt)->GetEnergy())/2,cycleNum);
-    // plot(DD_CALNAIXVSTIME + nainum,( (*naiIt)->GetCalEnergy())/2,cycleNum);
+  for(vector<ChanEvent*>::const_iterator itNai = naiEvts.begin();
+      itNai != naiEvts.end(); itNai++) {
+    int nainum= (*itNai)->GetChanID().GetLocation();
+    aux.NaI[nainum] = (*itNai)->GetCalEnergy();
+        
+    if (hasBeta){  //Beta Gated to Remove La Contamination
+      //begin addback calulations for NaI
+
+      double energy = (*itNai)->GetCalEnergy();
+      double time = (*itNai)->GetCorrectedTime();
+      
+      if (energy < NgammaThreshold_){
+	continue;
+      }//end energy comp if statment
+      
+      double t1 = Globals::get()->clockInSeconds();
+      double dtime = abs(time-NrefTime)*t1;
+      
+      if (dtime > GsubEventWindow_){ //if event time is outside sub event window start new addback after filling tree
+	
+	pab.NabEvtNum = evtNum;
+	pab.NabE = NaddBack_.back().energy;
+	pab.Nmulti = NaddBack_.back().multiplicity;
+	Tab->Fill();
+	NaddBack_.push_back(ScintAddBack());
+      }
+      
+      NaddBack_.back().energy += energy;
+      NaddBack_.back().time = time;
+      NaddBack_.back().multiplicity +=1;
+      NrefTime = time;
+    }
        
-    } //NaI loop End
+  } //NaI loop End
 
   //HPGe
   for(vector<ChanEvent*>::const_iterator itGe = geEvts.begin();
       itGe != geEvts.end(); itGe++) {
     int genum = (*itGe)->GetChanID().GetLocation();
-    
-    // plot(DD_GEXVSTIME + genum,(*itGe)->GetEnergy()/2,cycleNum);
-    //plot(DD_CALGEXVSTIME + genum,(*itGe)->GetCalEnergy()/2,cycleNum);
     aux.Ge[genum] = (*itGe)->GetCalEnergy();
-  } //GE loop end
+    
+    if (hasBeta){ //betagated addback to cut LaBr contamination out
+           
+     //begin addback calulations for clover
+    //ChanEvent *chan =(*itGe);
+    double energy = (*itGe)->GetCalEnergy();
+    double time = (*itGe)->GetCorrectedTime();
+    
+    if (energy < GgammaThreshold_){
+      continue;
+    }//end energy comp if statment
+    
+    double t1 = Globals::get()->clockInSeconds();
+    double dtime = abs(time-GrefTime)*t1;
+       
+    if (dtime > GsubEventWindow_){ //if event time is outside sub event window start new addback after filling tree
+      
+      pab.GabEvtNum = evtNum;
+      pab.GabE = GaddBack_.back().energy;
+      pab.Gmulti = GaddBack_.back().multiplicity;
+      Tab->Fill();
+      GaddBack_.push_back(ScintAddBack());
+    }
+    
+    GaddBack_.back().energy += energy;
+    GaddBack_.back().time = time;
+    GaddBack_.back().multiplicity +=1;
+    GrefTime = time;
+    }
+ } //GE loop end
 
     //Hagrid 
-    for(vector<ChanEvent*>::const_iterator itHag = labr3Evts.begin();
-	itHag != labr3Evts.end(); itHag++){
-      int hagnum = (*itHag)->GetChanID().GetLocation();
-      // plot(DD_RAWHAGXVSTIME + hagnum, ((*itHag)->GetEnergy()/2),cycleNum);
-      //plot(DD_CALHAGXVSTIME + hagnum, ((*itHag)->GetCalEnergy()),cycleNum);
-      aux.Hag[hagnum]= (*itHag)->GetCalEnergy();
+    for(vector<ChanEvent*>::const_iterator itLabr = labr3Evts.begin();
+	itLabr != labr3Evts.end(); itLabr++){
+      int LaBrnum = (*itLabr)->GetChanID().GetLocation();
+      
+      if (hasBeta){
+	//begin addback calulations for LaBr Beta Gated to Remove La Contamination
+	
+	double energy = (*itLabr)->GetCalEnergy();
+	double time = (*itLabr)->GetCorrectedTime();
+	
+	if (energy < LgammaThreshold_){
+	  continue;
+	}//end energy comp if statment
+	
+      double t1 = Globals::get()->clockInSeconds();
+      double dtime = abs(time-NrefTime)*t1;
+      
+      if (dtime > GsubEventWindow_){ //if event time is outside sub event window start new addback after filling tree
+	
+	pab.LabEvtNum = evtNum;
+	pab.LabE = LaddBack_.back().energy;
+	pab.Lmulti = LaddBack_.back().multiplicity;
+	Tab->Fill();
+	LaddBack_.push_back(ScintAddBack());
+      }// end if for new entry in vector
+      
+      LaddBack_.back().energy += energy;
+      LaddBack_.back().time = time;
+      LaddBack_.back().multiplicity +=1;
+      LrefTime = time;
+
+
+      }//end beta gate
+
+
+      aux.LaBr[LaBrnum]= (*itLabr)->GetCalEnergy();
     } //Hagrid loop end	  
     
-    aux.eventNum=evtNum;
+   
 
-    tree->Fill();      
+
+
+
+
+    aux.eventNum=evtNum;
+    
+
+    Taux->Fill();      
     
     evtNum++;
     EndProcess();
