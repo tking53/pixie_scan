@@ -144,9 +144,9 @@ void ORNL2016Processor::rootGstrutInit2(adbk &strutName) { //Zeros the entire pa
   strutName.LabEvtNum=-9999;
   strutName.NabEvtNum=-9999;
   strutName.GabEvtNum=-9999;
-  strutName.Lmulti=-999;
-  strutName.Nmulti=-999;  
-  strutName.Gmulti=-999;
+  strutName.Lmulti=-1;
+  strutName.Nmulti=-1;  
+  strutName.Gmulti=-1;
 }
 
 ORNL2016Processor::ORNL2016Processor(double gamma_threshold_L, double sub_event_L, double gamma_threshold_N, double sub_event_N, double gamma_threshold_G, double sub_event_G) :EventProcessor(OFFSET,RANGE,"ORNL2016Processor"){
@@ -166,9 +166,9 @@ ORNL2016Processor::ORNL2016Processor(double gamma_threshold_L, double sub_event_
   GsubEventWindow_ = sub_event_G;
 
   // //initalize addback vecs
-  LaddBack_.push_back(ScintAddBack());
-  NaddBack_.push_back(ScintAddBack());
-  GaddBack_.push_back(ScintAddBack());
+  LaddBack_.push_back(ScintAddBack(0,0,0));
+  NaddBack_.push_back(ScintAddBack(0,0,0));
+  GaddBack_.push_back(ScintAddBack(0,0,0));
 
 
 
@@ -184,7 +184,7 @@ ORNL2016Processor::ORNL2016Processor(double gamma_threshold_L, double sub_event_
   auxBranch = Taux->Branch("aux",&aux,"LaBr[16]/D:NaI[10]/D:Ge[4]/D:beta/D:eventNum/D:cycle/i:gMulti/i:nMulti/i:hMulti/i:bMulti/i");
   Taux->SetAutoFlush(3000);
   Tab = new TTree("Tab","Tree containing Processor add back information");
-  adbkBranch = Tab->Branch("pab",&pab,"LabE/D:NabE/D:GabE/D:LabEvtNum/D:NabEvtNum/D:GabEvtNum/D:Lmulti/i:Nmulti/i:Gmulti/i");
+  adbkBranch = Tab->Branch("pab",&pab,"LabE/D:NabE/D:GabE/D:LabEvtNum/D:NabEvtNum/D:GabEvtNum/D:Lmulti/D:Nmulti/D:Gmulti/D");
   Tab->SetAutoFlush(3000);
 
   
@@ -202,7 +202,7 @@ ORNL2016Processor::~ORNL2016Processor(){
 
 
 }
- 
+  
 
 bool ORNL2016Processor::PreProcess(RawEvent &event) {
     if (!EventProcessor::PreProcess(event))
@@ -231,29 +231,10 @@ bool ORNL2016Processor::Process(RawEvent &event) {
     static const vector<ChanEvent*> &geEvts =
         event.GetSummary("ge")->GetList();
 
-
-    ///PLOTTING THE SINGLES AND BETA GATED SPECTRA FOR HAGRiD
-    for(vector<ChanEvent*>::const_iterator it = labr3Evts.begin(); 
-	it != labr3Evts.end(); it++) {
-	plot(D_LABR3SUM, (*it)->GetCalEnergy());
-	if(hasBeta)
-	plot(D_LABR3BETA, (*it)->GetCalEnergy());
-
-    }
-    
-    
-    ///PLOTTING THE SINGLES AND BETA GATED SPECTRA FOR NAI
-    for(vector<ChanEvent*>::const_iterator naiIt = naiEvts.begin(); 
-     	naiIt != naiEvts.end(); naiIt++) {
-	plot(D_NAISUM, (*naiIt)->GetCalEnergy());
-	if (hasBeta)
-	  plot(D_NAIBETA, (*naiIt)->GetCalEnergy());
-    }
-    
-   
+ 
    /// PLOT ANALYSIS HISTOGRAMS-------------------------------------------------------------------------------------------------------------------------------------
 
-    rootGstrutInit(aux);
+    rootGstrutInit(aux); // initalize the root structures
     rootGstrutInit2(pab);
       
     //Seting vars for addback
@@ -280,14 +261,14 @@ bool ORNL2016Processor::Process(RawEvent &event) {
   }
   aux.cycle = cycleNum;
     
-  //Multiplicitys
-  aux.gMulti=geEvts.size();
+ //set multiplicys for aux branch based on the size of the detector maps for the event. limitation: sub event is smaller than full event this will end up being too large
+  aux.gMulti=geEvts.size(); 
   aux.nMulti=naiEvts.size();
   aux.lMulti=labr3Evts.size();
   aux.bMulti=lrtBetas.size();
 
 
-  //Betas
+  //Betas------------------------------------------------------------------------------------------------------------
   for(map<unsigned int, pair<double,double> >::iterator bIt = lrtBetas.begin();
       bIt != lrtBetas.end(); bIt++){
     plot(D_BETASCALARRATE,cycleNum );//PLOTTING BETA SCALAR SUM per CYCLE (LIKE 759 but per cycle vs per second
@@ -295,85 +276,81 @@ bool ORNL2016Processor::Process(RawEvent &event) {
     aux.beta = (bIt->second.second);
   }
     
-  //NaI    
+  //NaI ----------------------------------------------------------------------------------------------------------------------------------------------
   for(vector<ChanEvent*>::const_iterator itNai = naiEvts.begin();
       itNai != naiEvts.end(); itNai++) {
     int nainum= (*itNai)->GetChanID().GetLocation();
     aux.NaI[nainum] = (*itNai)->GetCalEnergy();
-        
-    if (hasBeta){  //Beta Gated to Remove La Contamination
-      //begin addback calulations for NaI
+    plot(D_NAISUM, (*itNai)->GetCalEnergy()); //plot totals
 
+    if (hasBeta){  //Beta Gate
+      plot(D_NAIBETA, (*itNai)->GetCalEnergy()); //plot beta-gated totals
+
+      //begin addback calulations for NaI
       double energy = (*itNai)->GetCalEnergy();
       double time = (*itNai)->GetCorrectedTime();
-      
+
       if (energy < NgammaThreshold_){
 	continue;
       }//end energy comp if statment
-      
       double t1 = Globals::get()->clockInSeconds();
       double dtime = abs(time-NrefTime)*t1;
       
-      if (dtime > GsubEventWindow_){ //if event time is outside sub event window start new addback after filling tree
-	
+      if (dtime > NsubEventWindow_){ //if event time is outside sub event window start new addback after filling tree
 	pab.NabEvtNum = evtNum;
 	pab.NabE = NaddBack_.back().energy;
 	pab.Nmulti = NaddBack_.back().multiplicity;
 	Tab->Fill();
 	NaddBack_.push_back(ScintAddBack());
-      }
-      
-      NaddBack_.back().energy += energy;
+      }//end subEvent IF
+      NaddBack_.back().energy += energy; // if still inside sub window: incrament
       NaddBack_.back().time = time;
       NaddBack_.back().multiplicity +=1;
       NrefTime = time;
-    }
-       
+    }//end beta gate
   } //NaI loop End
 
-  //HPGe
+  //HPGe  ----------------------------------------------------------------------------------------------------------------------------------------------
   for(vector<ChanEvent*>::const_iterator itGe = geEvts.begin();
       itGe != geEvts.end(); itGe++) {
     int genum = (*itGe)->GetChanID().GetLocation();
     aux.Ge[genum] = (*itGe)->GetCalEnergy();
     
     if (hasBeta){ //betagated addback to cut LaBr contamination out
-           
+          
      //begin addback calulations for clover
-    //ChanEvent *chan =(*itGe);
     double energy = (*itGe)->GetCalEnergy();
     double time = (*itGe)->GetCorrectedTime();
-    
     if (energy < GgammaThreshold_){
       continue;
     }//end energy comp if statment
-    
     double t1 = Globals::get()->clockInSeconds();
     double dtime = abs(time-GrefTime)*t1;
        
     if (dtime > GsubEventWindow_){ //if event time is outside sub event window start new addback after filling tree
-      
       pab.GabEvtNum = evtNum;
       pab.GabE = GaddBack_.back().energy;
       pab.Gmulti = GaddBack_.back().multiplicity;
       Tab->Fill();
       GaddBack_.push_back(ScintAddBack());
-    }
-    
+    } //end subEvent IF
+   
     GaddBack_.back().energy += energy;
     GaddBack_.back().time = time;
     GaddBack_.back().multiplicity +=1;
     GrefTime = time;
-    }
+    } //end BetaGate
  } //GE loop end
 
-    //Hagrid 
+    //Hagrid  ----------------------------------------------------------------------------------------------------------------------------------------------
     for(vector<ChanEvent*>::const_iterator itLabr = labr3Evts.begin();
 	itLabr != labr3Evts.end(); itLabr++){
       int LaBrnum = (*itLabr)->GetChanID().GetLocation();
+      plot(D_LABR3SUM, (*itLabr)->GetCalEnergy()); //plot non-gated totals
       
       if (hasBeta){
-	//begin addback calulations for LaBr Beta Gated to Remove La Contamination
+	plot(D_LABR3BETA, (*itLabr)->GetCalEnergy()); //plot beta-gated totals
+	//begin addback calulations for LaBr | Beta Gated to Remove La Contamination
 	
 	double energy = (*itLabr)->GetCalEnergy();
 	double time = (*itLabr)->GetCorrectedTime();
@@ -383,9 +360,9 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 	}//end energy comp if statment
 	
       double t1 = Globals::get()->clockInSeconds();
-      double dtime = abs(time-NrefTime)*t1;
+      double dtime = abs(time-LrefTime)*t1;
       
-      if (dtime > GsubEventWindow_){ //if event time is outside sub event window start new addback after filling tree
+      if (dtime > LsubEventWindow_){ //if event time is outside sub event window start new addback after filling tree
 	
 	pab.LabEvtNum = evtNum;
 	pab.LabE = LaddBack_.back().energy;
@@ -398,23 +375,13 @@ bool ORNL2016Processor::Process(RawEvent &event) {
       LaddBack_.back().time = time;
       LaddBack_.back().multiplicity +=1;
       LrefTime = time;
-
-
       }//end beta gate
-
 
       aux.LaBr[LaBrnum]= (*itLabr)->GetCalEnergy();
     } //Hagrid loop end	  
     
    
-
-
-
-
-
     aux.eventNum=evtNum;
-    
-
     Taux->Fill();      
     
     evtNum++;

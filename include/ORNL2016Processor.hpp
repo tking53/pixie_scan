@@ -30,7 +30,7 @@ class ScintAddBack {
          * \param [in] ienergy : the initial energy
          * \param [in] itime : the initial time
          * \param [in] imultiplicity : multiplicity of the event */
-        ScintAddBack(double ienergy, double itime, unsigned imultiplicity) {
+        ScintAddBack(double ienergy, double itime, double imultiplicity) {
             energy = ienergy;
             time = itime;
             multiplicity = imultiplicity;
@@ -38,7 +38,7 @@ class ScintAddBack {
 
         double energy;//!< Energy of the addback event
         double time;//!< time of the addback event
-        unsigned multiplicity;//!< multiplicity of the event
+        double multiplicity;//!< multiplicity of the event
 };
 
 /// Class to process VANDLE analysis for ORNL2016 campaign  at the OLTF
@@ -94,9 +94,9 @@ private:
     double LabEvtNum;
     double NabEvtNum;
     double GabEvtNum;
-    int Lmulti;
-    int Nmulti;
-    int Gmulti;
+    double Lmulti;
+    double Nmulti;
+    double Gmulti;
     
   } pab;
 
