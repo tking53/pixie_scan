@@ -183,9 +183,9 @@ ORNL2016Processor::ORNL2016Processor(double gamma_threshold_L, double sub_event_
   Taux = new TTree("Taux","Tree containing ancillary detector events with cycle");
   auxBranch = Taux->Branch("aux",&aux,"LaBr[16]/D:NaI[10]/D:Ge[4]/D:beta/D:eventNum/D:cycle/i:gMulti/i:nMulti/i:hMulti/i:bMulti/i");
   Taux->SetAutoFlush(3000);
-  Tab = new TTree("Tab","Tree containing Processor add back information");
-  adbkBranch = Tab->Branch("pab",&pab,"LabE/D:NabE/D:GabE/D:LabEvtNum/D:NabEvtNum/D:GabEvtNum/D:Lmulti/D:Nmulti/D:Gmulti/D");
-  Tab->SetAutoFlush(3000);
+  //Tab = new TTree("Tab","Tree containing Processor add back information");
+  adbkBranch = Taux->Branch("pab",&pab,"LabE/D:NabE/D:GabE/D:LabEvtNum/D:NabEvtNum/D:GabEvtNum/D:Lmulti/D:Nmulti/D:Gmulti/D");
+  //Tab->SetAutoFlush(3000);
 
   
     rootGstrutInit(aux);
@@ -262,7 +262,7 @@ bool ORNL2016Processor::Process(RawEvent &event) {
   aux.cycle = cycleNum;
     
  //set multiplicys for aux branch based on the size of the detector maps for the event. limitation: sub event is smaller than full event this will end up being too large
-  aux.gMulti=geEvts.size(); 
+  aux.gMulti=geEvts.size();
   aux.nMulti=naiEvts.size();
   aux.lMulti=labr3Evts.size();
   aux.bMulti=lrtBetas.size();
@@ -300,7 +300,7 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 	pab.NabEvtNum = evtNum;
 	pab.NabE = NaddBack_.back().energy;
 	pab.Nmulti = NaddBack_.back().multiplicity;
-	Tab->Fill();
+	Taux->Fill();
 	NaddBack_.push_back(ScintAddBack());
       }//end subEvent IF
       NaddBack_.back().energy += energy; // if still inside sub window: incrament
@@ -331,7 +331,7 @@ bool ORNL2016Processor::Process(RawEvent &event) {
       pab.GabEvtNum = evtNum;
       pab.GabE = GaddBack_.back().energy;
       pab.Gmulti = GaddBack_.back().multiplicity;
-      Tab->Fill();
+      Taux->Fill();
       GaddBack_.push_back(ScintAddBack());
     } //end subEvent IF
    
@@ -367,7 +367,7 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 	pab.LabEvtNum = evtNum;
 	pab.LabE = LaddBack_.back().energy;
 	pab.Lmulti = LaddBack_.back().multiplicity;
-	Tab->Fill();
+	Taux->Fill();
 	LaddBack_.push_back(ScintAddBack());
       }// end if for new entry in vector
       

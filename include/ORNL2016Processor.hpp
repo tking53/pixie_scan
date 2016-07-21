@@ -70,7 +70,7 @@ public:
 
 private:  
   TTree *Taux ;
-  TTree *Tab ;
+  //TTree *Tab ;
   TBranch *auxBranch;
   TBranch *adbkBranch;
 
