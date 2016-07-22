@@ -22,17 +22,12 @@
 #include "DammPlotIds.hpp"
 #include "DetectorDriver.hpp"
 #include "GetArguments.hpp"
-#include "Globals.hpp"
 
 #include "ORNL2016Processor.hpp"
 #include "DoubleBetaProcessor.hpp"
 #include "GeProcessor.hpp"
 
-#include "TFile.h"
 #include "TH1.h"
-#include "TH2.h"
-#include "TProfile.h"
-#include "TTree.h"
 
 static unsigned int evtNum = 0;
 
@@ -283,8 +278,8 @@ bool ORNL2016Processor::Process(RawEvent &event) {
     //NaI ----------------------------------------------------------------------------------------------------------------------------------------------
     for (vector<ChanEvent *>::const_iterator itNai = naiEvts.begin();
          itNai != naiEvts.end(); itNai++) {
-        int nainum = (*itNai)->GetChanID().GetLocation();
-        sing.NaI[nainum] = (*itNai)->GetCalEnergy();
+        int naiNum = (*itNai)->GetChanID().GetLocation();
+        sing.NaI[naiNum] = (*itNai)->GetCalEnergy();
         plot(D_NAISUM, (*itNai)->GetCalEnergy()); //plot totals
 
         if (hasBeta) {  //Beta Gate
@@ -312,16 +307,34 @@ bool ORNL2016Processor::Process(RawEvent &event) {
             NaddBack_.back().time = time;
             NaddBack_.back().multiplicity += 1;
             NrefTime = time;
+
+            // Begin Symplot inner loop
+            for (vector<ChanEvent *>::const_iterator itNai2 = itNai+1;
+                 itNai2 != geEvts.end(); itNai2++) {
+                double energy2=(*itNai2)->GetCalEnergy();
+                int naiNum2=(*itNai2)->GetChanID().GetLocation();
+                //double time2=(*itGe2)->GetCorrectedTime();
+                if (energy2 < NgammaThreshold_ ) {
+                    continue;
+                }//end energy comp if statement
+                if (naiNum2 != naiNum) {
+                    Npro.SymX=energy;
+                    Npro.SymY=energy2;
+                    Taux->Fill();
+                }
+
+
+            } //end symplot inner loop
         }//end beta gate
     } //NaI loop End
 
-    //HPGe  ----------------------------------------------------------------------------------------------------------------------------------------------
+    //HPGe CLOVER--------------------------------------------------------------------------------------------------------------------------------------
     for (vector<ChanEvent *>::const_iterator itGe = geEvts.begin();
          itGe != geEvts.end(); itGe++) {
-        int genum = (*itGe)->GetChanID().GetLocation();
-        sing.Ge[genum] = (*itGe)->GetCalEnergy();
+        int geNum = (*itGe)->GetChanID().GetLocation();
+        sing.Ge[geNum] = (*itGe)->GetCalEnergy();
 
-        if (hasBeta) { //betagated addback to cut LaBr contamination out
+        if (hasBeta) { //beta-gated Processing to cut LaBr contamination out
 
             //begin addback calulations for clover
             double energy = (*itGe)->GetCalEnergy();
@@ -345,13 +358,35 @@ bool ORNL2016Processor::Process(RawEvent &event) {
             GaddBack_.back().time = time;
             GaddBack_.back().multiplicity += 1;
             GrefTime = time;
+
+            // Begin Symplot inner loop
+            for (vector<ChanEvent *>::const_iterator itGe2 = itGe+1;
+                 itGe2 != geEvts.end(); itGe2++) {
+                double energy2=(*itGe2)->GetCalEnergy();
+                int geNum2=(*itGe2)->GetChanID().GetLocation();
+                //double time2=(*itGe2)->GetCorrectedTime();
+                if (energy2 < GgammaThreshold_ ) {
+                    continue;
+                }//end energy comp if statement
+                if (geNum2 != geNum) {
+                    Gpro.SymX=energy;
+                    Gpro.SymY=energy2;
+                    Taux->Fill();
+                }
+
+
+            } //end symplot inner loop
+
+
+
+
         } //end BetaGate
     } //GE loop end
 
     //Hagrid  ----------------------------------------------------------------------------------------------------------------------------------------------
     for (vector<ChanEvent *>::const_iterator itLabr = labr3Evts.begin();
          itLabr != labr3Evts.end(); itLabr++) {
-        int LaBrnum = (*itLabr)->GetChanID().GetLocation();
+        int labrNum = (*itLabr)->GetChanID().GetLocation();
         plot(D_LABR3SUM, (*itLabr)->GetCalEnergy()); //plot non-gated totals
 
         if (hasBeta) {
@@ -383,9 +418,27 @@ bool ORNL2016Processor::Process(RawEvent &event) {
             LaddBack_.back().time = time;
             LaddBack_.back().multiplicity += 1;
             LrefTime = time;
+
+            for (vector<ChanEvent *>::const_iterator itLabr2 = itLabr+1;
+                 itLabr2 != geEvts.end(); itLabr2++) {
+                double energy2=(*itLabr2)->GetCalEnergy();
+                int labrNum2=(*itLabr2)->GetChanID().GetLocation();
+                //double time2=(*itGe2)->GetCorrectedTime();
+                if (energy2 < LgammaThreshold_ ) {
+                    continue;
+                }//end energy comp if statement
+                if (labrNum2 != labrNum) {
+                    Lpro.SymX=energy;
+                    Lpro.SymY=energy2;
+                    Taux->Fill();
+                }
+
+
+            } //end symplot inner loop
+
         }//end beta gate
 
-        sing.LaBr[LaBrnum] = (*itLabr)->GetCalEnergy();
+        sing.LaBr[labrNum] = (*itLabr)->GetCalEnergy();
     } //Hagrid loop end
 
 
