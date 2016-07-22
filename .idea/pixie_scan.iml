@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="CPP_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/experiment/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/experiment/ORNL2016Processor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/analyzers/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/analyzers/TraceFilterAnalyzer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/analyzers/WaaAnalyzer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/analyzers/TauAnalyzer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/analyzers/TraceExtractor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/analyzers/WaveformAnalyzer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/analyzers/FittingAnalyzer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/analyzers/TraceFilter.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/analyzers/TraceAnalyzer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/analyzers/CfdAnalyzer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/Initialize.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/TimingMapBuilder.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/Globals.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/Calibrator.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/pugixml.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/Notebook.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/RandomPool.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/PlaceBuilder.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/DetectorDriver.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/Messenger.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/PixieStd.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/TreeCorrelator.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/ChanEvent.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/RawEvent.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/BarBuilder.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/ReadBuffDataA.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/WalkCorrector.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/ReadBuffDataF.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/ReadBuffDataD.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/DetectorSummary.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/DetectorLibrary.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/Places.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/StatsData.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/Plots.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/Trace.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/Identifier.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/PlotsRegister.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/TimingCalibrator.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/scan/scanor.f" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/scan/set2cc.f" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/scan/messlog.f" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/scan/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/scan/mildatim.f" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/processors/RootProcessor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/processors/BetaScintProcessor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/processors/PspmtProcessor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/processors/IonChamberProcessor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/processors/PulserProcessor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/processors/GeCalibProcessor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/processors/GeProcessor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/processors/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/processors/EventProcessor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/processors/Hen3Processor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/processors/VandleProcessor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/processors/DoubleBetaProcessor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/processors/LiquidScintProcessor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/processors/TemplateProcessor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/processors/LogicProcessor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/processors/NeutronScintProcessor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/processors/PositionProcessor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/processors/TeenyVandleProcessor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/processors/SsdProcessor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cmakeModules/FindHRIBF.cmake" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cmakeModules/FindROOT.cmake" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cmakeModules/FindGSL.cmake" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
+    </content>
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library">
+      <library name="Header Search Paths">
+        <CLASSES>
+          <root url="file:///usr/include" />
+          <root url="file:///usr/lib/gcc/x86_64-redhat-linux/4.4.7/include" />
+          <root url="file:///usr/local/include" />
+          <root url="file:///opt/root/5.34.32/include/root" />
+        </CLASSES>
+        <SOURCES>
+          <root url="file:///usr/include" />
+          <root url="file:///usr/lib/gcc/x86_64-redhat-linux/4.4.7/include" />
+          <root url="file:///usr/local/include" />
+          <root url="file:///opt/root/5.34.32/include/root" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+  </component>
+</module>
