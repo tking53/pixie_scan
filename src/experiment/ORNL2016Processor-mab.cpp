@@ -310,7 +310,7 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 
             // Begin Symplot inner loop
             for (vector<ChanEvent *>::const_iterator itNai2 = itNai+1;
-                 itNai2 != geEvts.end(); itNai2++) {
+                 itNai2 != naiEvts.end(); itNai2++) {
                 double energy2=(*itNai2)->GetCalEnergy();
                 int naiNum2=(*itNai2)->GetChanID().GetLocation();
                 //double time2=(*itGe2)->GetCorrectedTime();
@@ -420,7 +420,7 @@ bool ORNL2016Processor::Process(RawEvent &event) {
             LrefTime = time;
 
             for (vector<ChanEvent *>::const_iterator itLabr2 = itLabr+1;
-                 itLabr2 != geEvts.end(); itLabr2++) {
+                 itLabr2 != labr3Evts.end(); itLabr2++) {
                 double energy2=(*itLabr2)->GetCalEnergy();
                 int labrNum2=(*itLabr2)->GetChanID().GetLocation();
                 //double time2=(*itGe2)->GetCorrectedTime();
