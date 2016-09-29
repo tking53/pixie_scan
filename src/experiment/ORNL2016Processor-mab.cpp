@@ -3,13 +3,14 @@
  * VANDLE. Using Root and Damm for histogram analysis. 
  * Generates aux root branch  with add backs and multiplicies 
  * And pab root branch with procesor addback.
+ * September 2016 adding vandle back in.
  *
  *\author S. V. Paulauskas
  *\date February 10, 2016
  *
  *\Edits by Thomas King 
  *\Starting June 2016
- * 
+ *
  *
 */
 #include <fstream>
@@ -17,6 +18,7 @@
 #include <iomanip>
 #include <sstream>
 #include <cmath>
+#include <VandleProcessor.hpp>
 
 
 #include "DammPlotIds.hpp"
@@ -137,11 +139,22 @@ void ORNL2016Processor::rootGstrutInit2(PROSS &strutName) { //Zeros the entire p
     strutName.SymY = -999;
 }
 
+void ORNL2016Processor::rootNstrutInit(NBAR &strutName) { //Zeros the entire processed structure
+    strutName.tof = -999;
+    strutName.qdc = -999;
+    strutName.bEn = -999;
+    strutName.snrl = -999;
+    strutName.snrr = -999;
+    strutName.Qpos = -999;
+    strutName.tDiff = -999;
+    strutName.barid = -999;
+}
+
 ORNL2016Processor::ORNL2016Processor(double gamma_threshold_L, double sub_event_L, double gamma_threshold_N,
                                      double sub_event_N, double gamma_threshold_G, double sub_event_G) : EventProcessor(
         OFFSET, RANGE, "ORNL2016Processor") {
 
-
+    associatedTypes.insert("vandle");
     associatedTypes.insert("ge");
     associatedTypes.insert("nai");
     associatedTypes.insert("labr3");
@@ -169,17 +182,19 @@ ORNL2016Processor::ORNL2016Processor(double gamma_threshold_L, double sub_event_
     rootFName_ = new TFile(rootname.str().c_str(), "RECREATE");
     Taux = new TTree("Taux", "Tree containing ancillary detector events with cycle");
     singBranch = Taux->Branch("sing", &sing,
-                             "LaBr[16]/D:NaI[10]/D:Ge[4]/D:beta/D:eventNum/D:cycle/i:gMulti/i:nMulti/i:hMulti/i:bMulti/i");
+                              "LaBr[16]/D:NaI[10]/D:Ge[4]/D:beta/D:eventNum/D:cycle/i:gMulti/i:nMulti/i:hMulti/i:bMulti/i");
 
-    gProcBranch = Taux->Branch("Gpro", &Gpro,"AbE/D:AbEvtNum/D:Multi/D:SymX/D:SymY/D");
-    lProcBranch = Taux->Branch("Lpro", &Lpro,"AbE/D:AbEvtNum/D:Multi/D:SymX/D:SymY/D");
-    nProcBranch = Taux->Branch("Npro", &Npro,"AbE/D:AbEvtNum/D:Multi/D:SymX/D:SymY/D");
+    gProcBranch = Taux->Branch("Gpro", &Gpro, "AbE/D:AbEvtNum/D:Multi/D:SymX/D:SymY/D");
+    lProcBranch = Taux->Branch("Lpro", &Lpro, "AbE/D:AbEvtNum/D:Multi/D:SymX/D:SymY/D");
+    nProcBranch = Taux->Branch("Npro", &Npro, "AbE/D:AbEvtNum/D:Multi/D:SymX/D:SymY/D");
+    mVanBranch = Taux->Branch("mVan", &mVan, "tof/D:qdc/D:bEn/D:snrl/D:snrr/D:Qpos/D:tDiff/D:barid/I");
 
     Taux->SetAutoFlush(3000);
     rootGstrutInit(sing);
     rootGstrutInit2(Gpro);
     rootGstrutInit2(Lpro);
     rootGstrutInit2(Npro);
+    rootNstrutInit(mVan);
 }
 
 
@@ -206,10 +221,19 @@ bool ORNL2016Processor::PreProcess(RawEvent &event) {
 bool ORNL2016Processor::Process(RawEvent &event) {
     if (!EventProcessor::Process(event))
         return (false);
+    double plotOffset_ = 1000;
 
+    BarMap vbars, betas;
     map<unsigned int, pair<double, double> > lrtBetas;
     bool hasBeta = TreeCorrelator::get()->place(
             "Beta")->status(); //might need a static initalize to false + reset at the end
+
+    if(event.GetSummary("vandle")->GetList().size() != 0)
+        vbars = ((VandleProcessor*)DetectorDriver::get()->
+                GetProcessor("VandleProcessor"))->GetBars();
+    if(event.GetSummary("beta:double")->GetList().size() != 0) {
+        betas = ((DoubleBetaProcessor*)DetectorDriver::get()->
+                GetProcessor("DoubleBetaProcessor"))->GetBars();
 
     if (event.GetSummary("beta:double")->GetList().size() != 0) {
         lrtBetas = ((DoubleBetaProcessor *) DetectorDriver::get()->
@@ -230,7 +254,7 @@ bool ORNL2016Processor::Process(RawEvent &event) {
     rootGstrutInit2(Lpro);
     rootGstrutInit2(Npro);
 
-    //Seting vars for addback
+    //Setting vars for addback
     double LrefTime = -2.0 * LsubEventWindow_;
     double NrefTime = -2.0 * NsubEventWindow_;
     double GrefTime = -2.0 * GsubEventWindow_;
@@ -299,7 +323,7 @@ bool ORNL2016Processor::Process(RawEvent &event) {
                 NsubEventWindow_) { //if event time is outside sub event window start new addback after filling tree
                 Npro.AbEvtNum = evtNum;
                 Npro.AbE = NaddBack_.back().energy;
-                Npro.Multi= NaddBack_.back().multiplicity;
+                Npro.Multi = NaddBack_.back().multiplicity;
                 Taux->Fill();
                 NaddBack_.push_back(ScintAddBack());
             }//end subEvent IF
@@ -309,17 +333,17 @@ bool ORNL2016Processor::Process(RawEvent &event) {
             NrefTime = time;
 
             // Begin Symplot inner loop
-            for (vector<ChanEvent *>::const_iterator itNai2 = itNai+1;
+            for (vector<ChanEvent *>::const_iterator itNai2 = itNai + 1;
                  itNai2 != naiEvts.end(); itNai2++) {
-                double energy2=(*itNai2)->GetCalEnergy();
-                int naiNum2=(*itNai2)->GetChanID().GetLocation();
+                double energy2 = (*itNai2)->GetCalEnergy();
+                int naiNum2 = (*itNai2)->GetChanID().GetLocation();
                 //double time2=(*itGe2)->GetCorrectedTime();
-                if (energy2 < NgammaThreshold_ ) {
+                if (energy2 < NgammaThreshold_) {
                     continue;
                 }//end energy comp if statement
                 if (naiNum2 != naiNum) {
-                    Npro.SymX=energy;
-                    Npro.SymY=energy2;
+                    Npro.SymX = energy;
+                    Npro.SymY = energy2;
                     Taux->Fill();
                 }
 
@@ -347,9 +371,9 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 
             if (dtime >
                 GsubEventWindow_) { //if event time is outside sub event window start new addback after filling tree
-                Gpro.AbEvtNum= evtNum;
-                Gpro.Multi= GaddBack_.back().multiplicity;
-                Gpro.AbE= GaddBack_.back().energy;
+                Gpro.AbEvtNum = evtNum;
+                Gpro.Multi = GaddBack_.back().multiplicity;
+                Gpro.AbE = GaddBack_.back().energy;
                 Taux->Fill();
                 GaddBack_.push_back(ScintAddBack());
             } //end subEvent IF
@@ -360,17 +384,17 @@ bool ORNL2016Processor::Process(RawEvent &event) {
             GrefTime = time;
 
             // Begin Symplot inner loop
-            for (vector<ChanEvent *>::const_iterator itGe2 = itGe+1;
+            for (vector<ChanEvent *>::const_iterator itGe2 = itGe + 1;
                  itGe2 != geEvts.end(); itGe2++) {
-                double energy2=(*itGe2)->GetCalEnergy();
-                int geNum2=(*itGe2)->GetChanID().GetLocation();
+                double energy2 = (*itGe2)->GetCalEnergy();
+                int geNum2 = (*itGe2)->GetChanID().GetLocation();
                 //double time2=(*itGe2)->GetCorrectedTime();
-                if (energy2 < GgammaThreshold_ ) {
+                if (energy2 < GgammaThreshold_) {
                     continue;
                 }//end energy comp if statement
                 if (geNum2 != geNum) {
-                    Gpro.SymX=energy;
-                    Gpro.SymY=energy2;
+                    Gpro.SymX = energy;
+                    Gpro.SymY = energy2;
                     Taux->Fill();
                 }
 
@@ -407,9 +431,9 @@ bool ORNL2016Processor::Process(RawEvent &event) {
             if (dtime >
                 LsubEventWindow_) { //if event time is outside sub event window start new addback after filling tree
 
-                Lpro.AbEvtNum= evtNum;
-                Lpro.AbE= LaddBack_.back().energy;
-                Lpro.Multi= LaddBack_.back().multiplicity;
+                Lpro.AbEvtNum = evtNum;
+                Lpro.AbE = LaddBack_.back().energy;
+                Lpro.Multi = LaddBack_.back().multiplicity;
                 Taux->Fill();
                 LaddBack_.push_back(ScintAddBack());
             }// end if for new entry in vector
@@ -419,17 +443,17 @@ bool ORNL2016Processor::Process(RawEvent &event) {
             LaddBack_.back().multiplicity += 1;
             LrefTime = time;
 
-            for (vector<ChanEvent *>::const_iterator itLabr2 = itLabr+1;
+            for (vector<ChanEvent *>::const_iterator itLabr2 = itLabr + 1;
                  itLabr2 != labr3Evts.end(); itLabr2++) {
-                double energy2=(*itLabr2)->GetCalEnergy();
-                int labrNum2=(*itLabr2)->GetChanID().GetLocation();
+                double energy2 = (*itLabr2)->GetCalEnergy();
+                int labrNum2 = (*itLabr2)->GetChanID().GetLocation();
                 //double time2=(*itGe2)->GetCorrectedTime();
-                if (energy2 < LgammaThreshold_ ) {
+                if (energy2 < LgammaThreshold_) {
                     continue;
                 }//end energy comp if statement
                 if (labrNum2 != labrNum) {
-                    Lpro.SymX=energy;
-                    Lpro.SymY=energy2;
+                    Lpro.SymX = energy;
+                    Lpro.SymY = energy2;
                     Taux->Fill();
                 }
 
@@ -440,6 +464,53 @@ bool ORNL2016Processor::Process(RawEvent &event) {
 
         sing.LaBr[labrNum] = (*itLabr)->GetCalEnergy();
     } //Hagrid loop end
+
+    //Begin VANDLE
+    for (BarMap::iterator it = vbars.begin(); it !=  vbars.end(); it++) {
+        TimingDefs::TimingIdentifier barId = (*it).first;
+        BarDetector bar = (*it).second;
+
+
+        if (!bar.GetHasEvent() || bar.GetType() == "small")
+            continue;
+
+        int barLoc = barId.first;
+        TimingCalibration cal = bar.GetCalibration();
+
+        for (BarMap::iterator itStart = betas.begin();
+             itStart != betas.end(); itStart++) {
+            unsigned int startLoc = (*itStart).first.first;
+            BarDetector start = (*itStart).second;
+            if (!start.GetHasEvent())
+                continue;
+
+            double tofOffset = cal.GetTofOffset(startLoc);
+            double tof = bar.GetCorTimeAve() -
+                         start.GetCorTimeAve() + tofOffset;
+
+            double corTof = ((VandleProcessor *) DetectorDriver::get()->
+                    GetProcessor("VandleProcessor"))->
+                    CorrectTOF(tof, bar.GetFlightPath(), cal.GetZ0());
+            mVan.qdc = bar.GetQdc();
+            mVan.Qpos = bar.GetQdcPosition();
+            mVan.tDiff = bar.GetTimeDifference();
+            mVan.tof = corTof;
+            mVan.barid = barLoc;
+            mVan.snrl = bar.GetLeftSide().GetSignalToNoiseRatio();
+            mVan.snrr = bar.GetRightSide().GetSignalToNoiseRatio();
+            mVan.bEn = start.GetQdc();
+        }
+    }//End VANDLE
+
+
+
+
+
+
+
+
+
+
 
 
     sing.eventNum = evtNum;

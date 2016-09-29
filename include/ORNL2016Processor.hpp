@@ -83,6 +83,7 @@ private:
     TBranch *gProcBranch;
     TBranch *lProcBranch;
     TBranch *nProcBranch;
+    TBranch *mVanBranch;
 
     struct RAY {
         double LaBr[16];
@@ -106,6 +107,17 @@ private:
 
     } Gpro, Lpro, Npro;
 
+    struct NBAR {
+        double tof;
+        double qdc ;
+        double bEn;
+        double snrl;
+        double snrr;
+        double Qpos;
+        double tDiff;
+        int barid;
+    } mVan;
+
     TFile *rootFName_;
 
     //functions for root preocessing
@@ -114,6 +126,8 @@ private:
     void rootGstrutInit(RAY &strutName);
 
     void rootGstrutInit2(PROSS &strutName);
+
+    void rootNstrutInit(NBAR &strutName);
 
     //thresholds and windows for gamma addback for LaBr3 (L*) and NaI (N*)
     double LgammaThreshold_;
