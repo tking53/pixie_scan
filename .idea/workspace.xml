@@ -17,10 +17,32 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="41d36380-c551-43a6-a813-97635d69449f" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/config/ornl/OLTFvandle2016/analysis/Config.xml.ThirdCal" afterPath="" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/config/ornl/vandle2016/2016-03-29.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/config/ornl/vandle2016/bri0.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/config/ornl/vandle2016/notimecal.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/config/ornl/vandle2016/rbcs.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/config/ornl/vandle2016/rbcs2.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/config/ornl/vandle2016/svp.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/config/ornl/vandle2016/test-liglass.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/config/ornl/vandle2016/test.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/include/Ornl2016Processor.hpp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/scripts/ornl2016/090br.cmd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/scripts/ornl2016/091br.cmd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/scripts/ornl2016/097rb.cmd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/scripts/ornl2016/099rb.cmd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/scripts/ornl2016/099rb_500.cmd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/scripts/ornl2016/099rbp.cmd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/scripts/ornl2016/138i.cmd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/scripts/ornl2016/143cs.cmd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/scripts/ornl2016/252cf_tcal_00.cmd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/scripts/ornl2016/cf03.cmd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/experiment/CMakeLists.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/experiment/Ornl2016Processor.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/pixie_scan.iml" afterPath="$PROJECT_DIR$/.idea/pixie_scan.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/ORNL2016Processor.hpp" afterPath="$PROJECT_DIR$/include/ORNL2016Processor.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/experiment/ORNL2016Processor-mab.cpp" afterPath="$PROJECT_DIR$/src/experiment/ORNL2016Processor-mab.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Config.xml" afterPath="$PROJECT_DIR$/Config.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/DetectorLibrary.cpp" afterPath="$PROJECT_DIR$/src/core/DetectorLibrary.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/processors/VandleProcessor.cpp" afterPath="$PROJECT_DIR$/src/processors/VandleProcessor.cpp" />
     </list>
     <ignored path="pixie_scan.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -39,46 +61,28 @@
     <favorites_list name="pixie_scan" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.7102861">
-      <split-first>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="ORNL2016Processor.cpp" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/src/experiment/ORNL2016Processor.cpp">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="919">
-                  <caret line="505" column="0" selection-start-line="505" selection-start-column="0" selection-end-line="505" selection-end-column="0" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="ORNL2016Processor.hpp" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/include/ORNL2016Processor.hpp">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="2124">
-                  <caret line="118" column="11" selection-start-line="118" selection-start-column="11" selection-end-line="118" selection-end-column="11" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-first>
-      <split-second>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="ORNL2016Processor.hpp" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/include/ORNL2016Processor.hpp">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="523">
-                  <caret line="129" column="14" selection-start-line="129" selection-start-column="14" selection-end-line="129" selection-end-column="14" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-second>
-    </splitter>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="ORNL2016Processor.hpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/include/ORNL2016Processor.hpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="523">
+              <caret line="129" column="14" selection-start-line="129" selection-start-column="14" selection-end-line="129" selection-end-column="14" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DetectorDriver.cpp" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/core/DetectorDriver.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-2531">
+              <caret line="71" column="21" selection-start-line="71" selection-start-column="17" selection-end-line="71" selection-end-column="21" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -144,6 +148,38 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="pixie_scan" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="pixie_scan" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="pixie_scan" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="pixie_scan" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="pixie_scan" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="core" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -378,19 +414,21 @@
       <workItem from="1474985575516" duration="636000" />
       <workItem from="1474986442224" duration="5176000" />
       <workItem from="1475175347885" duration="443000" />
+      <workItem from="1475176072418" duration="1475000" />
+      <workItem from="1475244680380" duration="694000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="19093000" />
+    <option name="totallyTimeSpent" value="21262000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1680" y="27" width="1920" height="1147" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14427084" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295238" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -424,6 +462,22 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/experiment/ORNL2016Processor.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="9090">
+          <caret line="505" column="0" selection-start-line="505" selection-start-column="0" selection-end-line="505" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/ORNL2016Processor.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2124">
+          <caret line="118" column="11" selection-start-line="118" selection-start-column="11" selection-end-line="118" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/experiment/ORNL2016Processor.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="9090">
@@ -746,14 +800,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/ORNL2016Processor.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2124">
-          <caret line="118" column="11" selection-start-line="118" selection-start-column="11" selection-end-line="118" selection-end-column="11" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Config.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -764,8 +810,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/experiment/ORNL2016Processor.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="919">
-          <caret line="505" column="0" selection-start-line="505" selection-start-column="0" selection-end-line="505" selection-end-column="0" />
+        <state relative-caret-position="577">
+          <caret line="504" column="0" selection-start-line="504" selection-start-column="0" selection-end-line="504" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/ORNL2016Processor.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="523">
+          <caret line="129" column="14" selection-start-line="129" selection-start-column="14" selection-end-line="129" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/core/DetectorDriver.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2531">
+          <caret line="71" column="21" selection-start-line="71" selection-start-column="17" selection-end-line="71" selection-end-column="21" />
           <folding />
         </state>
       </provider>

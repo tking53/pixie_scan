@@ -5,21 +5,22 @@
       <sourceFolder url="file://$MODULE_DIR$/src/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/experiment/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/experiment/ORNL2016Processor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/analyzers/FittingAnalyzer.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/analyzers/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/analyzers/TraceFilterAnalyzer.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/analyzers/WaaAnalyzer.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/analyzers/TauAnalyzer.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/analyzers/TraceExtractor.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/analyzers/WaveformAnalyzer.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/analyzers/FittingAnalyzer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/analyzers/Gsl1Fitter.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/analyzers/TraceFilter.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/analyzers/TraceAnalyzer.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/analyzers/CfdAnalyzer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/WalkCorrector.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/core/Initialize.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/core/TimingMapBuilder.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/core/Globals.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/core/Calibrator.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/core/pugixml.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/core/Notebook.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/core/RandomPool.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/core/PlaceBuilder.cpp" isTestSource="false" />
@@ -32,8 +33,8 @@
       <sourceFolder url="file://$MODULE_DIR$/src/core/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/core/BarBuilder.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/core/ReadBuffDataA.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/core/WalkCorrector.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/core/ReadBuffDataF.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/core/pugixml.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/core/ReadBuffDataD.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/core/DetectorSummary.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/core/DetectorLibrary.cpp" isTestSource="false" />

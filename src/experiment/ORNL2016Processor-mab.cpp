@@ -232,276 +232,276 @@ bool ORNL2016Processor::Process(RawEvent &event) {
         vbars = ((VandleProcessor*)DetectorDriver::get()->
                 GetProcessor("VandleProcessor"))->GetBars();
     if(event.GetSummary("beta:double")->GetList().size() != 0) {
-        betas = ((DoubleBetaProcessor*)DetectorDriver::get()->
+        betas = ((DoubleBetaProcessor *) DetectorDriver::get()->
                 GetProcessor("DoubleBetaProcessor"))->GetBars();
 
-    if (event.GetSummary("beta:double")->GetList().size() != 0) {
-        lrtBetas = ((DoubleBetaProcessor *) DetectorDriver::get()->
-                GetProcessor("DoubleBetaProcessor"))->GetLowResBars();
-    }
-    static const vector<ChanEvent *> &labr3Evts =
-            event.GetSummary("labr3")->GetList();
-    static const vector<ChanEvent *> &naiEvts =
-            event.GetSummary("nai")->GetList();
-    static const vector<ChanEvent *> &geEvts =
-            event.GetSummary("ge")->GetList();
+        if (event.GetSummary("beta:double")->GetList().size() != 0) {
+            lrtBetas = ((DoubleBetaProcessor *) DetectorDriver::get()->
+                    GetProcessor("DoubleBetaProcessor"))->GetLowResBars();
+        }
+        static const vector<ChanEvent *> &labr3Evts =
+                event.GetSummary("labr3")->GetList();
+        static const vector<ChanEvent *> &naiEvts =
+                event.GetSummary("nai")->GetList();
+        static const vector<ChanEvent *> &geEvts =
+                event.GetSummary("ge")->GetList();
 
 
-    /// PLOT ANALYSIS HISTOGRAMS-------------------------------------------------------------------------------------------------------------------------------------
+        /// PLOT ANALYSIS HISTOGRAMS-------------------------------------------------------------------------------------------------------------------------------------
 
-    rootGstrutInit(sing); // initalize the root structures
-    rootGstrutInit2(Gpro);
-    rootGstrutInit2(Lpro);
-    rootGstrutInit2(Npro);
+        rootGstrutInit(sing); // initalize the root structures
+        rootGstrutInit2(Gpro);
+        rootGstrutInit2(Lpro);
+        rootGstrutInit2(Npro);
 
-    //Setting vars for addback
-    double LrefTime = -2.0 * LsubEventWindow_;
-    double NrefTime = -2.0 * NsubEventWindow_;
-    double GrefTime = -2.0 * GsubEventWindow_;
-
-
+        //Setting vars for addback
+        double LrefTime = -2.0 * LsubEventWindow_;
+        double NrefTime = -2.0 * NsubEventWindow_;
+        double GrefTime = -2.0 * GsubEventWindow_;
 
 
-    //Cycle timing
-    static double cycleLast = 2;
-    static int cycleNum = 0;
-    if (TreeCorrelator::get()->place("Cycle")->status()) {
-        double cycleTime = TreeCorrelator::get()->place("Cycle")->last().time;
-        cycleTime *= (Globals::get()->clockInSeconds() * 1.e9);
-        if (cycleTime != cycleLast) {
-            double tdiff = (cycleTime - cycleLast) / 1e6; //Outputs cycle length in msecs.
-            if (cycleNum == 0) {
-                cout
-                        << " #  There are some events at the beginning of the first segment missing from Histograms that use cycleNum."
-                        << endl << " #  This is a product of not starting the cycle After the LDF." << endl
-                        << " #  This First TDIFF is most likly nonsense" << endl;
+
+
+        //Cycle timing
+        static double cycleLast = 2;
+        static int cycleNum = 0;
+        if (TreeCorrelator::get()->place("Cycle")->status()) {
+            double cycleTime = TreeCorrelator::get()->place("Cycle")->last().time;
+            cycleTime *= (Globals::get()->clockInSeconds() * 1.e9);
+            if (cycleTime != cycleLast) {
+                double tdiff = (cycleTime - cycleLast) / 1e6; //Outputs cycle length in msecs.
+                if (cycleNum == 0) {
+                    cout
+                            << " #  There are some events at the beginning of the first segment missing from Histograms that use cycleNum."
+                            << endl << " #  This is a product of not starting the cycle After the LDF." << endl
+                            << " #  This First TDIFF is most likly nonsense" << endl;
+                }
+                cycleLast = cycleTime;
+                cycleNum++;
+                cout << "Cycle Change " << endl << "Tdiff (Cycle start and Now) (ms)= " << tdiff << endl
+                     << "Starting on Cycle #" << cycleNum << endl;
             }
-            cycleLast = cycleTime;
-            cycleNum++;
-            cout << "Cycle Change " << endl << "Tdiff (Cycle start and Now) (ms)= " << tdiff << endl
-                 << "Starting on Cycle #" << cycleNum << endl;
         }
-    }
-    sing.cycle = cycleNum;
+        sing.cycle = cycleNum;
 
-    //set multiplicys for sing branch based on the size of the detector maps for the event. limitation: sub event is smaller than full event this will end up being too large
-    sing.gMulti = geEvts.size();
-    sing.nMulti = naiEvts.size();
-    sing.lMulti = labr3Evts.size();
-    sing.bMulti = lrtBetas.size();
-
-
-    //Betas------------------------------------------------------------------------------------------------------------
-    for (map<unsigned int, pair<double, double> >::iterator bIt = lrtBetas.begin();
-         bIt != lrtBetas.end(); bIt++) {
-        plot(D_BETASCALARRATE, cycleNum);//PLOTTING BETA SCALAR SUM per CYCLE (LIKE 759 but per cycle vs per second
-        plot(D_BETAENERGY, bIt->second.second);
-        sing.beta = (bIt->second.second);
-    }
-
-    //NaI ----------------------------------------------------------------------------------------------------------------------------------------------
-    for (vector<ChanEvent *>::const_iterator itNai = naiEvts.begin();
-         itNai != naiEvts.end(); itNai++) {
-        int naiNum = (*itNai)->GetChanID().GetLocation();
-        sing.NaI[naiNum] = (*itNai)->GetCalEnergy();
-        plot(D_NAISUM, (*itNai)->GetCalEnergy()); //plot totals
-
-        if (hasBeta) {  //Beta Gate
-            plot(D_NAIBETA, (*itNai)->GetCalEnergy()); //plot beta-gated totals
-
-            //begin addback calulations for NaI
-            double energy = (*itNai)->GetCalEnergy();
-            double time = (*itNai)->GetCorrectedTime();
-
-            if (energy < NgammaThreshold_) {
-                continue;
-            }//end energy comp if statment
-            double t1 = Globals::get()->clockInSeconds();
-            double dtime = abs(time - NrefTime) * t1;
-
-            if (dtime >
-                NsubEventWindow_) { //if event time is outside sub event window start new addback after filling tree
-                Npro.AbEvtNum = evtNum;
-                Npro.AbE = NaddBack_.back().energy;
-                Npro.Multi = NaddBack_.back().multiplicity;
-                Taux->Fill();
-                NaddBack_.push_back(ScintAddBack());
-            }//end subEvent IF
-            NaddBack_.back().energy += energy; // if still inside sub window: incrament
-            NaddBack_.back().time = time;
-            NaddBack_.back().multiplicity += 1;
-            NrefTime = time;
-
-            // Begin Symplot inner loop
-            for (vector<ChanEvent *>::const_iterator itNai2 = itNai + 1;
-                 itNai2 != naiEvts.end(); itNai2++) {
-                double energy2 = (*itNai2)->GetCalEnergy();
-                int naiNum2 = (*itNai2)->GetChanID().GetLocation();
-                //double time2=(*itGe2)->GetCorrectedTime();
-                if (energy2 < NgammaThreshold_) {
-                    continue;
-                }//end energy comp if statement
-                if (naiNum2 != naiNum) {
-                    Npro.SymX = energy;
-                    Npro.SymY = energy2;
-                    Taux->Fill();
-                }
+        //set multiplicys for sing branch based on the size of the detector maps for the event. limitation: sub event is smaller than full event this will end up being too large
+        sing.gMulti = geEvts.size();
+        sing.nMulti = naiEvts.size();
+        sing.lMulti = labr3Evts.size();
+        sing.bMulti = lrtBetas.size();
 
 
-            } //end symplot inner loop
-        }//end beta gate
-    } //NaI loop End
-
-    //HPGe CLOVER--------------------------------------------------------------------------------------------------------------------------------------
-    for (vector<ChanEvent *>::const_iterator itGe = geEvts.begin();
-         itGe != geEvts.end(); itGe++) {
-        int geNum = (*itGe)->GetChanID().GetLocation();
-        sing.Ge[geNum] = (*itGe)->GetCalEnergy();
-
-        if (hasBeta) { //beta-gated Processing to cut LaBr contamination out
-
-            //begin addback calulations for clover
-            double energy = (*itGe)->GetCalEnergy();
-            double time = (*itGe)->GetCorrectedTime();
-            if (energy < GgammaThreshold_) {
-                continue;
-            }//end energy comp if statment
-            double t1 = Globals::get()->clockInSeconds();
-            double dtime = abs(time - GrefTime) * t1;
-
-            if (dtime >
-                GsubEventWindow_) { //if event time is outside sub event window start new addback after filling tree
-                Gpro.AbEvtNum = evtNum;
-                Gpro.Multi = GaddBack_.back().multiplicity;
-                Gpro.AbE = GaddBack_.back().energy;
-                Taux->Fill();
-                GaddBack_.push_back(ScintAddBack());
-            } //end subEvent IF
-
-            GaddBack_.back().energy += energy;
-            GaddBack_.back().time = time;
-            GaddBack_.back().multiplicity += 1;
-            GrefTime = time;
-
-            // Begin Symplot inner loop
-            for (vector<ChanEvent *>::const_iterator itGe2 = itGe + 1;
-                 itGe2 != geEvts.end(); itGe2++) {
-                double energy2 = (*itGe2)->GetCalEnergy();
-                int geNum2 = (*itGe2)->GetChanID().GetLocation();
-                //double time2=(*itGe2)->GetCorrectedTime();
-                if (energy2 < GgammaThreshold_) {
-                    continue;
-                }//end energy comp if statement
-                if (geNum2 != geNum) {
-                    Gpro.SymX = energy;
-                    Gpro.SymY = energy2;
-                    Taux->Fill();
-                }
-
-
-            } //end symplot inner loop
-
-
-
-
-        } //end BetaGate
-    } //GE loop end
-
-    //Hagrid  ----------------------------------------------------------------------------------------------------------------------------------------------
-    for (vector<ChanEvent *>::const_iterator itLabr = labr3Evts.begin();
-         itLabr != labr3Evts.end(); itLabr++) {
-        int labrNum = (*itLabr)->GetChanID().GetLocation();
-        plot(D_LABR3SUM, (*itLabr)->GetCalEnergy()); //plot non-gated totals
-
-        if (hasBeta) {
-
-            plot(D_LABR3BETA, (*itLabr)->GetCalEnergy()); //plot beta-gated totals
-            //begin addback calculations for LaBr | Beta Gated to Remove La Contamination
-
-            double energy = (*itLabr)->GetCalEnergy();
-            double time = (*itLabr)->GetCorrectedTime();
-
-            if (energy < LgammaThreshold_) {
-                continue;
-            }//end energy comp if statment
-
-            double t1 = Globals::get()->clockInSeconds();
-            double dtime = abs(time - LrefTime) * t1;
-
-            if (dtime >
-                LsubEventWindow_) { //if event time is outside sub event window start new addback after filling tree
-
-                Lpro.AbEvtNum = evtNum;
-                Lpro.AbE = LaddBack_.back().energy;
-                Lpro.Multi = LaddBack_.back().multiplicity;
-                Taux->Fill();
-                LaddBack_.push_back(ScintAddBack());
-            }// end if for new entry in vector
-
-            LaddBack_.back().energy += energy;
-            LaddBack_.back().time = time;
-            LaddBack_.back().multiplicity += 1;
-            LrefTime = time;
-
-            for (vector<ChanEvent *>::const_iterator itLabr2 = itLabr + 1;
-                 itLabr2 != labr3Evts.end(); itLabr2++) {
-                double energy2 = (*itLabr2)->GetCalEnergy();
-                int labrNum2 = (*itLabr2)->GetChanID().GetLocation();
-                //double time2=(*itGe2)->GetCorrectedTime();
-                if (energy2 < LgammaThreshold_) {
-                    continue;
-                }//end energy comp if statement
-                if (labrNum2 != labrNum) {
-                    Lpro.SymX = energy;
-                    Lpro.SymY = energy2;
-                    Taux->Fill();
-                }
-
-
-            } //end symplot inner loop
-
-        }//end beta gate
-
-        sing.LaBr[labrNum] = (*itLabr)->GetCalEnergy();
-    } //Hagrid loop end
-
-    //Begin VANDLE
-    for (BarMap::iterator it = vbars.begin(); it !=  vbars.end(); it++) {
-        TimingDefs::TimingIdentifier barId = (*it).first;
-        BarDetector bar = (*it).second;
-
-
-        if (!bar.GetHasEvent() || bar.GetType() == "small")
-            continue;
-
-        int barLoc = barId.first;
-        TimingCalibration cal = bar.GetCalibration();
-
-        for (BarMap::iterator itStart = betas.begin();
-             itStart != betas.end(); itStart++) {
-            unsigned int startLoc = (*itStart).first.first;
-            BarDetector start = (*itStart).second;
-            if (!start.GetHasEvent())
-                continue;
-
-            double tofOffset = cal.GetTofOffset(startLoc);
-            double tof = bar.GetCorTimeAve() -
-                         start.GetCorTimeAve() + tofOffset;
-
-            double corTof = ((VandleProcessor *) DetectorDriver::get()->
-                    GetProcessor("VandleProcessor"))->
-                    CorrectTOF(tof, bar.GetFlightPath(), cal.GetZ0());
-            mVan.qdc = bar.GetQdc();
-            mVan.Qpos = bar.GetQdcPosition();
-            mVan.tDiff = bar.GetTimeDifference();
-            mVan.tof = corTof;
-            mVan.barid = barLoc;
-            mVan.snrl = bar.GetLeftSide().GetSignalToNoiseRatio();
-            mVan.snrr = bar.GetRightSide().GetSignalToNoiseRatio();
-            mVan.bEn = start.GetQdc();
+        //Betas------------------------------------------------------------------------------------------------------------
+        for (map<unsigned int, pair<double, double> >::iterator bIt = lrtBetas.begin();
+             bIt != lrtBetas.end(); bIt++) {
+            plot(D_BETASCALARRATE, cycleNum);//PLOTTING BETA SCALAR SUM per CYCLE (LIKE 759 but per cycle vs per second
+            plot(D_BETAENERGY, bIt->second.second);
+            sing.beta = (bIt->second.second);
         }
-    }//End VANDLE
 
+        //NaI ----------------------------------------------------------------------------------------------------------------------------------------------
+        for (vector<ChanEvent *>::const_iterator itNai = naiEvts.begin();
+             itNai != naiEvts.end(); itNai++) {
+            int naiNum = (*itNai)->GetChanID().GetLocation();
+            sing.NaI[naiNum] = (*itNai)->GetCalEnergy();
+            plot(D_NAISUM, (*itNai)->GetCalEnergy()); //plot totals
+
+            if (hasBeta) {  //Beta Gate
+                plot(D_NAIBETA, (*itNai)->GetCalEnergy()); //plot beta-gated totals
+
+                //begin addback calulations for NaI
+                double energy = (*itNai)->GetCalEnergy();
+                double time = (*itNai)->GetCorrectedTime();
+
+                if (energy < NgammaThreshold_) {
+                    continue;
+                }//end energy comp if statment
+                double t1 = Globals::get()->clockInSeconds();
+                double dtime = abs(time - NrefTime) * t1;
+
+                if (dtime >
+                    NsubEventWindow_) { //if event time is outside sub event window start new addback after filling tree
+                    Npro.AbEvtNum = evtNum;
+                    Npro.AbE = NaddBack_.back().energy;
+                    Npro.Multi = NaddBack_.back().multiplicity;
+                    Taux->Fill();
+                    NaddBack_.push_back(ScintAddBack());
+                }//end subEvent IF
+                NaddBack_.back().energy += energy; // if still inside sub window: incrament
+                NaddBack_.back().time = time;
+                NaddBack_.back().multiplicity += 1;
+                NrefTime = time;
+
+                // Begin Symplot inner loop
+                for (vector<ChanEvent *>::const_iterator itNai2 = itNai + 1;
+                     itNai2 != naiEvts.end(); itNai2++) {
+                    double energy2 = (*itNai2)->GetCalEnergy();
+                    int naiNum2 = (*itNai2)->GetChanID().GetLocation();
+                    //double time2=(*itGe2)->GetCorrectedTime();
+                    if (energy2 < NgammaThreshold_) {
+                        continue;
+                    }//end energy comp if statement
+                    if (naiNum2 != naiNum) {
+                        Npro.SymX = energy;
+                        Npro.SymY = energy2;
+                        Taux->Fill();
+                    }
+
+
+                } //end symplot inner loop
+            }//end beta gate
+        } //NaI loop End
+
+        //HPGe CLOVER--------------------------------------------------------------------------------------------------------------------------------------
+        for (vector<ChanEvent *>::const_iterator itGe = geEvts.begin();
+             itGe != geEvts.end(); itGe++) {
+            int geNum = (*itGe)->GetChanID().GetLocation();
+            sing.Ge[geNum] = (*itGe)->GetCalEnergy();
+
+            if (hasBeta) { //beta-gated Processing to cut LaBr contamination out
+
+                //begin addback calulations for clover
+                double energy = (*itGe)->GetCalEnergy();
+                double time = (*itGe)->GetCorrectedTime();
+                if (energy < GgammaThreshold_) {
+                    continue;
+                }//end energy comp if statment
+                double t1 = Globals::get()->clockInSeconds();
+                double dtime = abs(time - GrefTime) * t1;
+
+                if (dtime >
+                    GsubEventWindow_) { //if event time is outside sub event window start new addback after filling tree
+                    Gpro.AbEvtNum = evtNum;
+                    Gpro.Multi = GaddBack_.back().multiplicity;
+                    Gpro.AbE = GaddBack_.back().energy;
+                    Taux->Fill();
+                    GaddBack_.push_back(ScintAddBack());
+                } //end subEvent IF
+
+                GaddBack_.back().energy += energy;
+                GaddBack_.back().time = time;
+                GaddBack_.back().multiplicity += 1;
+                GrefTime = time;
+
+                // Begin Symplot inner loop
+                for (vector<ChanEvent *>::const_iterator itGe2 = itGe + 1;
+                     itGe2 != geEvts.end(); itGe2++) {
+                    double energy2 = (*itGe2)->GetCalEnergy();
+                    int geNum2 = (*itGe2)->GetChanID().GetLocation();
+                    //double time2=(*itGe2)->GetCorrectedTime();
+                    if (energy2 < GgammaThreshold_) {
+                        continue;
+                    }//end energy comp if statement
+                    if (geNum2 != geNum) {
+                        Gpro.SymX = energy;
+                        Gpro.SymY = energy2;
+                        Taux->Fill();
+                    }
+
+
+                } //end symplot inner loop
+
+
+
+
+            } //end BetaGate
+        } //GE loop end
+
+        //Hagrid  ----------------------------------------------------------------------------------------------------------------------------------------------
+        for (vector<ChanEvent *>::const_iterator itLabr = labr3Evts.begin();
+             itLabr != labr3Evts.end(); itLabr++) {
+            int labrNum = (*itLabr)->GetChanID().GetLocation();
+            plot(D_LABR3SUM, (*itLabr)->GetCalEnergy()); //plot non-gated totals
+
+            if (hasBeta) {
+
+                plot(D_LABR3BETA, (*itLabr)->GetCalEnergy()); //plot beta-gated totals
+                //begin addback calculations for LaBr | Beta Gated to Remove La Contamination
+
+                double energy = (*itLabr)->GetCalEnergy();
+                double time = (*itLabr)->GetCorrectedTime();
+
+                if (energy < LgammaThreshold_) {
+                    continue;
+                }//end energy comp if statment
+
+                double t1 = Globals::get()->clockInSeconds();
+                double dtime = abs(time - LrefTime) * t1;
+
+                if (dtime >
+                    LsubEventWindow_) { //if event time is outside sub event window start new addback after filling tree
+
+                    Lpro.AbEvtNum = evtNum;
+                    Lpro.AbE = LaddBack_.back().energy;
+                    Lpro.Multi = LaddBack_.back().multiplicity;
+                    Taux->Fill();
+                    LaddBack_.push_back(ScintAddBack());
+                }// end if for new entry in vector
+
+                LaddBack_.back().energy += energy;
+                LaddBack_.back().time = time;
+                LaddBack_.back().multiplicity += 1;
+                LrefTime = time;
+
+                for (vector<ChanEvent *>::const_iterator itLabr2 = itLabr + 1;
+                     itLabr2 != labr3Evts.end(); itLabr2++) {
+                    double energy2 = (*itLabr2)->GetCalEnergy();
+                    int labrNum2 = (*itLabr2)->GetChanID().GetLocation();
+                    //double time2=(*itGe2)->GetCorrectedTime();
+                    if (energy2 < LgammaThreshold_) {
+                        continue;
+                    }//end energy comp if statement
+                    if (labrNum2 != labrNum) {
+                        Lpro.SymX = energy;
+                        Lpro.SymY = energy2;
+                        Taux->Fill();
+                    }
+
+
+                } //end symplot inner loop
+
+            }//end beta gate
+
+            sing.LaBr[labrNum] = (*itLabr)->GetCalEnergy();
+        } //Hagrid loop end
+
+        //Begin VANDLE
+        for (BarMap::iterator it = vbars.begin(); it != vbars.end(); it++) {
+            TimingDefs::TimingIdentifier barId = (*it).first;
+            BarDetector bar = (*it).second;
+
+
+            if (!bar.GetHasEvent() || bar.GetType() == "small")
+                continue;
+
+            int barLoc = barId.first;
+            TimingCalibration cal = bar.GetCalibration();
+
+            for (BarMap::iterator itStart = betas.begin();
+                 itStart != betas.end(); itStart++) {
+                unsigned int startLoc = (*itStart).first.first;
+                BarDetector start = (*itStart).second;
+                if (!start.GetHasEvent())
+                    continue;
+
+                double tofOffset = cal.GetTofOffset(startLoc);
+                double tof = bar.GetCorTimeAve() -
+                             start.GetCorTimeAve() + tofOffset;
+
+                double corTof = ((VandleProcessor *) DetectorDriver::get()->
+                        GetProcessor("VandleProcessor"))->
+                        CorrectTOF(tof, bar.GetFlightPath(), cal.GetZ0());
+                mVan.qdc = bar.GetQdc();
+                mVan.Qpos = bar.GetQdcPosition();
+                mVan.tDiff = bar.GetTimeDifference();
+                mVan.tof = corTof;
+                mVan.barid = barLoc;
+                mVan.snrl = bar.GetLeftSide().GetSignalToNoiseRatio();
+                mVan.snrr = bar.GetRightSide().GetSignalToNoiseRatio();
+                mVan.bEn = start.GetQdc();
+            }
+        }//End VANDLE
+    }
 
 
 
