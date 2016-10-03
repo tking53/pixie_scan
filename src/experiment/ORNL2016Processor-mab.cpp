@@ -222,6 +222,7 @@ bool ORNL2016Processor::Process(RawEvent &event) {
     if (!EventProcessor::Process(event))
         return (false);
     double plotOffset_ = 1000;
+    double plotMult_ = 2 ;
 
     BarMap vbars, betas;
     map<unsigned int, pair<double, double> > lrtBetas;
@@ -499,6 +500,22 @@ bool ORNL2016Processor::Process(RawEvent &event) {
                 mVan.snrl = bar.GetLeftSide().GetSignalToNoiseRatio();
                 mVan.snrr = bar.GetRightSide().GetSignalToNoiseRatio();
                 mVan.bEn = start.GetQdc();
+		//tof vs gammas in damm for testing against root when its working right
+
+		for (vector<ChanEvent *>::const_iterator it = labr3Evts.begin();
+                     it != labr3Evts.end(); it++)
+                    plot(DD_TOFVSHAGRID, (*it)->GetCalEnergy(),
+                         tof * plotMult_ + 200);
+
+                for (vector<ChanEvent *>::const_iterator naiIt = naiEvts.begin();
+                     naiIt != naiEvts.end(); naiIt++)
+                    plot(DD_TOFVSNAI, (*naiIt)->GetCalEnergy(),
+                         tof * plotMult_ + 200);
+
+                for (vector<ChanEvent *>::const_iterator itGe = geEvts.begin();
+                     itGe != geEvts.end(); itGe++)
+                    plot(DD_TOFVSGE, (*itGe)->GetCalEnergy(),
+                         tof * plotMult_ + 200);
             }
         }//End VANDLE
     }

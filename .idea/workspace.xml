@@ -17,7 +17,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="41d36380-c551-43a6-a813-97635d69449f" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/pixie_scan.iml" afterPath="$PROJECT_DIR$/.idea/pixie_scan.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config/ornl/OLTFvandle2016/analysis/Config.xml.97rb" afterPath="$PROJECT_DIR$/config/ornl/OLTFvandle2016/analysis/Config.xml.97rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/start.cmd" afterPath="$PROJECT_DIR$/scripts/start.cmd" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/experiment/ORNL2016Processor-mab.cpp" afterPath="$PROJECT_DIR$/src/experiment/ORNL2016Processor-mab.cpp" />
     </list>
     <ignored path="pixie_scan.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -37,51 +40,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="ORNL2016Processor.hpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/include/ORNL2016Processor.hpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="537">
-              <caret line="129" column="14" selection-start-line="129" selection-start-column="14" selection-end-line="129" selection-end-column="14" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ORNL2016Processor.cpp" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ORNL2016Processor.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/experiment/ORNL2016Processor.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6909">
-              <caret line="504" column="0" selection-start-line="504" selection-start-column="0" selection-end-line="504" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="VandleProcessor.cpp" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/processors/VandleProcessor.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-5583">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DetectorDriver.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/core/DetectorDriver.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="18">
-              <caret line="71" column="21" selection-start-line="71" selection-start-column="17" selection-end-line="71" selection-end-column="21" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Config.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Config.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="316">
+              <caret line="224" column="19" selection-start-line="224" selection-start-column="19" selection-end-line="224" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -96,6 +59,7 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/include/ORNL2016Processor.hpp" />
+        <option value="$PROJECT_DIR$/src/processors/VandleProcessor.cpp" />
         <option value="$PROJECT_DIR$/src/experiment/ORNL2016Processor.cpp" />
       </list>
     </option>
@@ -108,10 +72,10 @@
   </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectFrameBounds">
-    <option name="x" value="1680" />
-    <option name="y" value="27" />
-    <option name="width" value="1920" />
-    <option name="height" value="1147" />
+    <option name="x" value="8" />
+    <option name="y" value="31" />
+    <option name="width" value="1916" />
+    <option name="height" value="1027" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -203,24 +167,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="experiment" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pixie_scan" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pixie_scan" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="core" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -458,34 +404,36 @@
       <workItem from="1475176072418" duration="1475000" />
       <workItem from="1475244680380" duration="694000" />
       <workItem from="1475263518119" duration="615000" />
+      <workItem from="1475292526587" duration="605000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="21877000" />
+    <option name="totallyTimeSpent" value="22482000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1680" y="27" width="1920" height="1147" extended-state="6" />
-    <editor active="false" />
+    <frame x="8" y="31" width="1916" height="1027" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14427084" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1440501" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295238" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="LuaJ" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32984293" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295238" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -560,13 +508,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///usr/include/c++/4.4.4/bits/stl_vector.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="11394">
-          <caret line="633" column="0" selection-start-line="633" selection-start-column="0" selection-end-line="633" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file:///usr/include/c++/4.4.4/bits/stl_vector.h" />
     <entry file="file://$PROJECT_DIR$/src/core/ChanEvent.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="846">
@@ -611,13 +553,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///usr/include/c++/4.4.4/bits/stl_vector.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="11394">
-          <caret line="633" column="0" selection-start-line="633" selection-start-column="0" selection-end-line="633" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file:///usr/include/c++/4.4.4/bits/stl_vector.h" />
     <entry file="file://$PROJECT_DIR$/src/core/ChanEvent.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="846">
@@ -815,13 +751,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/.CLion2016.2/clion64.vmoptions">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$USER_HOME$/.CLion2016.2/clion64.vmoptions" />
     <entry file="file://$PROJECT_DIR$/src/processors/GeProcessor.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="9612">
@@ -843,17 +773,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///usr/include/c++/4.4.4/bits/stl_vector.h">
+    <entry file="file:///usr/include/c++/4.4.4/bits/stl_vector.h" />
+    <entry file="file://$PROJECT_DIR$/src/processors/VandleProcessor.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="11340">
-          <caret line="633" column="0" selection-start-line="633" selection-start-column="0" selection-end-line="633" selection-end-column="0" />
+        <state relative-caret-position="298">
+          <caret line="62" column="13" selection-start-line="62" selection-start-column="4" selection-end-line="62" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/ORNL2016Processor.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2088">
+          <caret line="120" column="22" selection-start-line="120" selection-start-column="22" selection-end-line="120" selection-end-column="22" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/core/DetectorDriver.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="18">
-          <caret line="71" column="21" selection-start-line="71" selection-start-column="17" selection-end-line="71" selection-end-column="21" />
+          <caret line="68" column="21" selection-start-line="68" selection-start-column="21" selection-end-line="68" selection-end-column="21" />
           <folding />
         </state>
       </provider>
@@ -866,26 +806,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/ORNL2016Processor.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="537">
-          <caret line="129" column="14" selection-start-line="129" selection-start-column="14" selection-end-line="129" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/experiment/ORNL2016Processor.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6909">
-          <caret line="504" column="0" selection-start-line="504" selection-start-column="0" selection-end-line="504" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/processors/VandleProcessor.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-5583">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="316">
+          <caret line="224" column="19" selection-start-line="224" selection-start-column="19" selection-end-line="224" selection-end-column="19" />
           <folding />
         </state>
       </provider>
