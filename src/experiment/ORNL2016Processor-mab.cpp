@@ -135,14 +135,17 @@ void ORNL2016Processor::rootGstrutInit2(PROSS &strutName) { //Zeros the entire p
     strutName.AbE = -999;
     strutName.AbEvtNum = -9999;
     strutName.Multi = 0;
-    strutName.SymX = -999;
-    strutName.SymY = -999;
+    //strutName.SymX = -999;
+    //strutName.SymY = -999;
 }
 
-void ORNL2016Processor::rootNstrutInit(NBAR &strutName) { //Zeros the entire processed structure
+void ORNL2016Processor::rootNstrutInit(NBAR &strutName) { //Zeros the entire VANDLE structure
+    fill(strutName.LaBr, strutName.LaBr + 16, 0);
+    fill(strutName.NaI, strutName.NaI + 10, 0);
+    fill(strutName.Ge, strutName.Ge + 4, 0);
     strutName.tof = -999;
     strutName.qdc = -999;
-    strutName.bEn = -999;
+    strutName.betaEn = -999;
     strutName.snrl = -999;
     strutName.snrr = -999;
     strutName.Qpos = -999;
@@ -180,14 +183,14 @@ ORNL2016Processor::ORNL2016Processor(double gamma_threshold_L, double sub_event_
     stringstream rootname;
     rootname << tmp << ".root";
     rootFName_ = new TFile(rootname.str().c_str(), "RECREATE");
-    Taux = new TTree("Taux", "Tree containing ancillary detector events with cycle");
+    Taux = new TTree("Taux", "Tree for VANDLE@OTLF@ORNL2016");
     singBranch = Taux->Branch("sing", &sing,
                               "LaBr[16]/D:NaI[10]/D:Ge[4]/D:beta/D:eventNum/D:cycle/i:gMulti/i:nMulti/i:hMulti/i:bMulti/i");
 
-    gProcBranch = Taux->Branch("Gpro", &Gpro, "AbE/D:AbEvtNum/D:Multi/D:SymX/D:SymY/D");
-    lProcBranch = Taux->Branch("Lpro", &Lpro, "AbE/D:AbEvtNum/D:Multi/D:SymX/D:SymY/D");
-    nProcBranch = Taux->Branch("Npro", &Npro, "AbE/D:AbEvtNum/D:Multi/D:SymX/D:SymY/D");
-    mVanBranch = Taux->Branch("mVan", &mVan, "tof/D:qdc/D:bEn/D:snrl/D:snrr/D:Qpos/D:tDiff/D:barid/I");
+    gProcBranch = Taux->Branch("Gpro", &Gpro, "AbE/D:AbEvtNum/D:Multi/D");
+    lProcBranch = Taux->Branch("Lpro", &Lpro, "AbE/D:AbEvtNum/D:Multi/D");
+    nProcBranch = Taux->Branch("Npro", &Npro, "AbE/D:AbEvtNum/D:Multi/D");
+    mVanBranch = Taux->Branch("mVan", &mVan, "LaBr[16]/D:NaI[10]/D:Ge[4]/D:tof/D:qdc/D:betaEn/D:snrl/D:snrr/D:Qpos/D:tDiff/D:barid/i");
 
     Taux->SetAutoFlush(3000);
     rootGstrutInit(sing);
@@ -333,23 +336,6 @@ bool ORNL2016Processor::Process(RawEvent &event) {
                 NaddBack_.back().multiplicity += 1;
                 NrefTime = time;
 
-                // Begin Symplot inner loop
-                for (vector<ChanEvent *>::const_iterator itNai2 = itNai + 1;
-                     itNai2 != naiEvts.end(); itNai2++) {
-                    double energy2 = (*itNai2)->GetCalEnergy();
-                    int naiNum2 = (*itNai2)->GetChanID().GetLocation();
-                    //double time2=(*itGe2)->GetCorrectedTime();
-                    if (energy2 < NgammaThreshold_) {
-                        continue;
-                    }//end energy comp if statement
-                    if (naiNum2 != naiNum) {
-                        Npro.SymX = energy;
-                        Npro.SymY = energy2;
-                        Taux->Fill();
-                    }
-
-
-                } //end symplot inner loop
             }//end beta gate
         } //NaI loop End
 
@@ -383,26 +369,6 @@ bool ORNL2016Processor::Process(RawEvent &event) {
                 GaddBack_.back().time = time;
                 GaddBack_.back().multiplicity += 1;
                 GrefTime = time;
-
-                // Begin Symplot inner loop
-                for (vector<ChanEvent *>::const_iterator itGe2 = itGe + 1;
-                     itGe2 != geEvts.end(); itGe2++) {
-                    double energy2 = (*itGe2)->GetCalEnergy();
-                    int geNum2 = (*itGe2)->GetChanID().GetLocation();
-                    //double time2=(*itGe2)->GetCorrectedTime();
-                    if (energy2 < GgammaThreshold_) {
-                        continue;
-                    }//end energy comp if statement
-                    if (geNum2 != geNum) {
-                        Gpro.SymX = energy;
-                        Gpro.SymY = energy2;
-                        Taux->Fill();
-                    }
-
-
-                } //end symplot inner loop
-
-
 
 
             } //end BetaGate
@@ -444,22 +410,24 @@ bool ORNL2016Processor::Process(RawEvent &event) {
                 LaddBack_.back().multiplicity += 1;
                 LrefTime = time;
 
-                for (vector<ChanEvent *>::const_iterator itLabr2 = itLabr + 1;
-                     itLabr2 != labr3Evts.end(); itLabr2++) {
-                    double energy2 = (*itLabr2)->GetCalEnergy();
-                    int labrNum2 = (*itLabr2)->GetChanID().GetLocation();
-                    //double time2=(*itGe2)->GetCorrectedTime();
-                    if (energy2 < LgammaThreshold_) {
-                        continue;
-                    }//end energy comp if statement
-                    if (labrNum2 != labrNum) {
-                        Lpro.SymX = energy;
-                        Lpro.SymY = energy2;
-                        Taux->Fill();
-                    }
 
-
-                } //end symplot inner loop
+                // Left in for referance but not usefull without more than 1 detc
+//                for (vector<ChanEvent *>::const_iterator itLabr2 = itLabr + 1;
+//                     itLabr2 != labr3Evts.end(); itLabr2++) {
+//                    double energy2 = (*itLabr2)->GetCalEnergy();
+//                    int labrNum2 = (*itLabr2)->GetChanID().GetLocation();
+//                    //double time2=(*itGe2)->GetCorrectedTime();
+//                    if (energy2 < LgammaThreshold_) {
+//                        continue;
+//                    }//end energy comp if statement
+//                    if (labrNum2 != labrNum) {
+//                        Lpro.SymX = energy;
+//                        Lpro.SymY = energy2;
+//                        Taux->Fill();
+//                    }
+//
+//
+//                } //end symplot inner loop
 
             }//end beta gate
 
@@ -486,37 +454,60 @@ bool ORNL2016Processor::Process(RawEvent &event) {
                     continue;
 
                 double tofOffset = cal.GetTofOffset(startLoc);
-                double tof = bar.GetCorTimeAve() -
-                             start.GetCorTimeAve() + tofOffset;
+                double tof = bar.GetTimeAverage() -
+                             start.GetTimeAverage() + tofOffset;
 
                 double corTof = ((VandleProcessor *) DetectorDriver::get()->
                         GetProcessor("VandleProcessor"))->
                         CorrectTOF(tof, bar.GetFlightPath(), cal.GetZ0());
+
                 mVan.qdc = bar.GetQdc();
                 mVan.Qpos = bar.GetQdcPosition();
                 mVan.tDiff = bar.GetTimeDifference();
-                mVan.tof = corTof;
+                mVan.tof = tof;
+                mVan.cortof = corTof;
                 mVan.barid = barLoc;
                 mVan.snrl = bar.GetLeftSide().GetSignalToNoiseRatio();
                 mVan.snrr = bar.GetRightSide().GetSignalToNoiseRatio();
-                mVan.bEn = start.GetQdc();
-		//tof vs gammas in damm for testing against root when its working right
+                mVan.betaEn = start.GetQdc();
 
-		for (vector<ChanEvent *>::const_iterator it = labr3Evts.begin();
-                     it != labr3Evts.end(); it++)
-                    plot(DD_TOFVSHAGRID, (*it)->GetCalEnergy(),
-                         tof * plotMult_ + 200);
+                //tof vs gammas in damm for testing against root when its working right
 
-                for (vector<ChanEvent *>::const_iterator naiIt = naiEvts.begin();
-                     naiIt != naiEvts.end(); naiIt++)
-                    plot(DD_TOFVSNAI, (*naiIt)->GetCalEnergy(),
-                         tof * plotMult_ + 200);
+                //labr loop for mVan
+                int labrNum; double labrEn;
+                for (vector<ChanEvent *>::const_iterator itlabr3 = labr3Evts.begin();
+                     itlabr3 != labr3Evts.end(); itlabr3++) {
+                    labrNum = (*itlabr3)->GetChanID().GetLocation();
+                    labrEn=(*itlabr3)->GetCalEnergy();
+                    plot(DD_TOFVSHAGRID, labrEn,tof * plotMult_ + 200);
+                    mVan.LaBr[labrNum]= labrEn;
+                    Taux->Fill();
+                };
 
+                //Nai loop for mVan
+                int naiNum; double naiEn;
+                for (vector<ChanEvent *>::const_iterator itNai = naiEvts.begin();
+                     itNai != naiEvts.end(); itNai++) {
+                    naiNum = (*itNai)->GetChanID().GetLocation();
+                    naiEn = (*itNai)->GetCalEnergy();
+                    mVan.NaI[naiNum] = naiEn;
+                    plot(DD_TOFVSNAI, naiEn, tof * plotMult_ + 200);
+                    Taux->Fill();
+                };
+
+                //ge loop for mVan
+                int geNum; double geEn;
                 for (vector<ChanEvent *>::const_iterator itGe = geEvts.begin();
-                     itGe != geEvts.end(); itGe++)
-                    plot(DD_TOFVSGE, (*itGe)->GetCalEnergy(),
-                         tof * plotMult_ + 200);
+                     itGe != geEvts.end(); itGe++) {
+                    geNum = (*itGe)->GetChanID().GetLocation();
+                    geEn = (*itGe)->GetCalEnergy();
+                    mVan.Ge[geNum] = geEn;
+                    plot(DD_TOFVSGE, geEn,tof * plotMult_ + 200);
+                    Taux->Fill();
+                }
+                Taux->Fill();
             }
+
         }//End VANDLE
     }
 

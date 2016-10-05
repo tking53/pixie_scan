@@ -102,20 +102,25 @@ private:
         double AbE;
         double AbEvtNum;
         double Multi;
-        double SymX;
-        double SymY;
+//        double SymX;
+//        double SymY;
 
     } Gpro, Lpro, Npro;
 
     struct NBAR {
+        double LaBr[16];
+        double NaI[10];
+        double Ge[4];
         double tof;
+        double cortof;
         double qdc ;
-        double bEn;
+        double betaEn;
         double snrl;
         double snrr;
         double Qpos;
         double tDiff;
         int barid;
+
     } mVan;
 
     TFile *rootFName_;

@@ -259,18 +259,21 @@ void VandleProcessor::AnalyzeBarStarts(void) {
 
             BarDetector start = (*itStart).second;
 
-            double tof = bar.GetCorTimeAve() -
-                start.GetCorTimeAve() + cal.GetTofOffset(startLoc);
+            double tof = (bar.GetTimeAverage() -
+            start.GetTimeAverage()) + cal.GetTofOffset(startLoc);
 
             double corTof =
                 CorrectTOF(tof, bar.GetFlightPath(), cal.GetZ0());
-
+            //if(tof< 0 ){
+             //   cout<<"ToF calculated as "<<tof<<endl;
+             //   cout<<"bar.Tavg = "<<bar.GetTimeAverage()<<endl<<"start.Tavg ="<<start.GetTimeAverage()<<endl<<"cal.Getoffset = "<<cal.GetTofOffset(startLoc)<<endl;
+            //}
             plot(DD_TOFBARS+histTypeOffset, tof*plotMult_+plotOffset_,
                  barPlusStartLoc);
             plot(DD_CORTOFBARS, corTof*plotMult_+plotOffset_, barPlusStartLoc);
 
             if(cal.GetTofOffset(startLoc) != 0) {
-                plot(DD_TQDCAVEVSTOF+histTypeOffset, tof*plotMult_+plotOffset_,
+                plot(DD_TQDCAVEVSTOF+histTypeOffset, tof * plotMult_+plotOffset_,
                      bar.GetQdc());
                 plot(DD_TQDCAVEVSCORTOF+histTypeOffset,
                      corTof*plotMult_+plotOffset_, bar.GetQdc());
