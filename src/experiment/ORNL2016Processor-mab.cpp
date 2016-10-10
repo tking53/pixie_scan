@@ -49,12 +49,15 @@ namespace dammIds {
         const int D_LABR3SUM = 8 + ORNL2016_OFFSET;
         const int D_LABR3BETA = 9 + ORNL2016_OFFSET;
 
-        const int D_NAISUM = 10 + ORNL2016_OFFSET;
-        const int D_NAIBETA = 11 + ORNL2016_OFFSET;
+        const int D_HPGESUM = 10 + ORNL2016_OFFSET;
+        const int D_HPGESUMBETA = 11 + ORNL2016_OFFSET;
 
-        const int DD_TOFVSNAI = 12 + ORNL2016_OFFSET;
-        const int DD_TOFVSHAGRID = 13 + ORNL2016_OFFSET;
-        const int DD_TOFVSGE = 14 + ORNL2016_OFFSET;
+        const int D_NAISUM = 12 + ORNL2016_OFFSET;
+        const int D_NAIBETA = 13 + ORNL2016_OFFSET;
+
+        const int DD_TOFVSNAI = 14 + ORNL2016_OFFSET;
+        const int DD_TOFVSHAGRID = 15 + ORNL2016_OFFSET;
+        const int DD_TOFVSGE = 16 + ORNL2016_OFFSET;
 
         //seeds for Damm cycle his
         const int D_BETASCALARRATE = 29 + ORNL2016_OFFSET; //6079 in his
@@ -82,6 +85,9 @@ void ORNL2016Processor::DeclarePlots(void) {
     DeclareHistogram1D(D_LABR3BETA, SC, "HAGRiD summed - BETA GATED");
     DeclareHistogram1D(D_NAISUM, SC, "NaI summed");
     DeclareHistogram1D(D_NAIBETA, SC, "NaI summed - BETA GATED");
+
+    DeclareHistogram1D(D_HPGESUM, SC, "HPGe Clover summed");
+    DeclareHistogram1D(D_HPGESUMBETA, SC,"HPGe Clover summed - BETA GATED" );
 
     DeclareHistogram2D(DD_TOFVSNAI, SC, SB, "ToF vs. NaI");
     DeclareHistogram2D(DD_TOFVSHAGRID, SC, SB, "ToF vs. HAGRiD");
@@ -157,7 +163,7 @@ ORNL2016Processor::ORNL2016Processor(double gamma_threshold_L, double sub_event_
                                      double sub_event_N, double gamma_threshold_G, double sub_event_G) : EventProcessor(
         OFFSET, RANGE, "ORNL2016Processor") {
 
-    associatedTypes.insert("vandle");
+    //associatedTypes.insert("vandle");
     associatedTypes.insert("ge");
     associatedTypes.insert("nai");
     associatedTypes.insert("labr3");
@@ -228,8 +234,9 @@ bool ORNL2016Processor::Process(RawEvent &event) {
     double plotMult_ = 2 ;
 
     BarMap vbars, betas;
+    bool hasBeta= false;
     map<unsigned int, pair<double, double> > lrtBetas;
-    bool hasBeta = TreeCorrelator::get()->place(
+    hasBeta = TreeCorrelator::get()->place(
             "Beta")->status(); //might need a static initalize to false + reset at the end
 
     if(event.GetSummary("vandle")->GetList().size() != 0)
@@ -344,9 +351,10 @@ bool ORNL2016Processor::Process(RawEvent &event) {
              itGe != geEvts.end(); itGe++) {
             int geNum = (*itGe)->GetChanID().GetLocation();
             sing.Ge[geNum] = (*itGe)->GetCalEnergy();
+            plot(D_HPGESUM, (*itGe)->GetCalEnergy()); //plot non-gated totals
 
             if (hasBeta) { //beta-gated Processing to cut LaBr contamination out
-
+                plot(D_HPGESUMBETA, (*itGe)->GetCalEnergy()); //plot non-gated totals
                 //begin addback calulations for clover
                 double energy = (*itGe)->GetCalEnergy();
                 double time = (*itGe)->GetCorrectedTime();
@@ -411,7 +419,7 @@ bool ORNL2016Processor::Process(RawEvent &event) {
                 LrefTime = time;
 
 
-                // Left in for referance but not usefull without more than 1 detc
+                // Left in for referance but not usefull without more than 1 detc per type (like 2 clovers)
 //                for (vector<ChanEvent *>::const_iterator itLabr2 = itLabr + 1;
 //                     itLabr2 != labr3Evts.end(); itLabr2++) {
 //                    double energy2 = (*itLabr2)->GetCalEnergy();
@@ -481,7 +489,7 @@ bool ORNL2016Processor::Process(RawEvent &event) {
                     labrEn=(*itlabr3)->GetCalEnergy();
                     plot(DD_TOFVSHAGRID, labrEn,tof * plotMult_ + 200);
                     mVan.LaBr[labrNum]= labrEn;
-                    Taux->Fill();
+                    ;
                 };
 
                 //Nai loop for mVan
@@ -492,7 +500,7 @@ bool ORNL2016Processor::Process(RawEvent &event) {
                     naiEn = (*itNai)->GetCalEnergy();
                     mVan.NaI[naiNum] = naiEn;
                     plot(DD_TOFVSNAI, naiEn, tof * plotMult_ + 200);
-                    Taux->Fill();
+                    ;
                 };
 
                 //ge loop for mVan
@@ -503,9 +511,8 @@ bool ORNL2016Processor::Process(RawEvent &event) {
                     geEn = (*itGe)->GetCalEnergy();
                     mVan.Ge[geNum] = geEn;
                     plot(DD_TOFVSGE, geEn,tof * plotMult_ + 200);
-                    Taux->Fill();
+                    ;
                 }
-                Taux->Fill();
             }
 
         }//End VANDLE
