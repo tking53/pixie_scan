@@ -18,10 +18,7 @@
   <component name="ChangeListManager">
     <list default="true" id="41d36380-c551-43a6-a813-97635d69449f" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/pixie_scan.iml" afterPath="$PROJECT_DIR$/.idea/pixie_scan.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/start.cmd" afterPath="$PROJECT_DIR$/scripts/start.cmd" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/experiment/ORNL2016Processor-mab.cpp" afterPath="$PROJECT_DIR$/src/experiment/ORNL2016Processor-mab.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/processors/VandleProcessor.cpp" afterPath="$PROJECT_DIR$/src/processors/VandleProcessor.cpp" />
     </list>
     <ignored path="pixie_scan.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -44,8 +41,8 @@
       <file leaf-file-name="ORNL2016Processor.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/experiment/ORNL2016Processor.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="274">
-              <caret line="236" column="21" selection-start-line="236" selection-start-column="21" selection-end-line="236" selection-end-column="21" />
+            <state relative-caret-position="868">
+              <caret line="98" column="73" selection-start-line="98" selection-start-column="73" selection-end-line="98" selection-end-column="73" />
               <folding />
             </state>
           </provider>
@@ -83,10 +80,10 @@
   </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectFrameBounds">
-    <option name="x" value="8" />
+    <option name="x" value="1680" />
     <option name="y" value="31" />
-    <option name="width" value="1600" />
-    <option name="height" value="847" />
+    <option name="width" value="1920" />
+    <option name="height" value="1147" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -459,20 +456,20 @@
       <workItem from="1475802349481" duration="940000" />
       <workItem from="1475861174961" duration="3337000" />
       <workItem from="1476110758109" duration="144000" />
+      <workItem from="1476121188800" duration="1234000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="45987000" />
+    <option name="totallyTimeSpent" value="47221000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="8" y="31" width="1600" height="847" extended-state="0" />
+    <frame x="1680" y="31" width="1920" height="1147" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.143125" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14270833" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295238" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="LuaJ" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -485,6 +482,7 @@
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="LuaJ" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3295238" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -854,8 +852,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/experiment/ORNL2016Processor.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="274">
-          <caret line="236" column="21" selection-start-line="236" selection-start-column="21" selection-end-line="236" selection-end-column="21" />
+        <state relative-caret-position="868">
+          <caret line="98" column="73" selection-start-line="98" selection-start-column="73" selection-end-line="98" selection-end-column="73" />
           <folding />
         </state>
       </provider>

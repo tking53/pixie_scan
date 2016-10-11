@@ -65,7 +65,7 @@ namespace dammIds {
         const int D_IGEBETA = 31 + ORNL2016_OFFSET;
         const int D_INAIBETA = 35 + ORNL2016_OFFSET;
         const int D_IHAGBETA = 45 + ORNL2016_OFFSET;
-
+        const int DD_QDCVTOF = 48 + ORNL2016_OFFSET;
 
     }
 }//namespace dammIds
@@ -96,6 +96,7 @@ void ORNL2016Processor::DeclarePlots(void) {
     DeclareHistogram1D(D_BETASCALARRATE, SB, "Beta scalar per cycle");
     DeclareHistogram1D(D_BETAENERGY, SD, "Beta Energy");
 
+    DeclareHistogram2D(DD_QDCVTOF,SC,SD,"exp processor made qdc vs tof");
 
     // //Declaring beta gated
     // for (unsigned int i=0; i < 4; i++){
@@ -250,6 +251,7 @@ bool ORNL2016Processor::Process(RawEvent &event) {
             lrtBetas = ((DoubleBetaProcessor *) DetectorDriver::get()->
                     GetProcessor("DoubleBetaProcessor"))->GetLowResBars();
         }
+    }
         static const vector<ChanEvent *> &labr3Evts =
                 event.GetSummary("labr3")->GetList();
         static const vector<ChanEvent *> &naiEvts =
@@ -478,6 +480,7 @@ bool ORNL2016Processor::Process(RawEvent &event) {
                 mVan.snrl = bar.GetLeftSide().GetSignalToNoiseRatio();
                 mVan.snrr = bar.GetRightSide().GetSignalToNoiseRatio();
                 mVan.betaEn = start.GetQdc();
+                plot(DD_QDCVTOF,(tof*2)+1000,bar.GetQdc());
 
                 //tof vs gammas in damm for testing against root when its working right
 
@@ -516,7 +519,7 @@ bool ORNL2016Processor::Process(RawEvent &event) {
             }
 
         }//End VANDLE
-    }
+
 
 
 
